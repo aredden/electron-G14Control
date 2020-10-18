@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+electron/node_modules
 /.pnp
 .pnp.js
 
@@ -10,6 +11,7 @@
 
 # production
 /build
+electron/build
 
 # misc
 .DS_Store

@@ -15,7 +15,12 @@ export default class ContentLayout extends Component<Props, State> {
   render() {
     return (
       <Layout className="site-layout" style={{ marginLeft: 200 }}>
-        <Header className="site-layout-background" style={{ padding: 0 }} />
+        <Header
+          className="site-layout-background content-header"
+          style={{ padding: 0 }}
+        >
+          {this.props.currentPage}
+        </Header>
         <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
           <div
             className="site-layout-background"
@@ -29,7 +34,7 @@ export default class ContentLayout extends Component<Props, State> {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Ant Design ©2018 Created by Ant UED
+          G14ControlR3 ©2020 Created by Zippy
         </Footer>
       </Layout>
     );

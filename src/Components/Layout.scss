@@ -24,6 +24,17 @@
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
 }
+
+.content-header {
+  color: white;
+  padding: 1rem;
+  border-color: white;
+  border: 5px solid white;
+  line-height: 3.8;
+  font-weight: bold;
+  background: rgb(0, 21, 41) !important;
+}
+
 .site-layout .site-layout-background {
   background: #fff;
 }

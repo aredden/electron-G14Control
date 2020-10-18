@@ -5,7 +5,7 @@ import SiderMenu from "./Menu/SiderMenu";
 import ContentLayout from "./ContentLayout";
 import { MenuInfo } from "rc-menu/lib/interface";
 import { MenuListMapper } from "../Utilities/Constants";
-const { Sider, Header, Footer } = Layout;
+const { Sider, Header } = Layout;
 
 interface Props {}
 
@@ -28,7 +28,7 @@ export default class AppLayout extends Component<Props, State> {
 
   onChooseSubmenu = (e: MenuInfo) => {
     this.setState({
-      currentSubMenu: MenuListMapper[parseInt(e.key.toString())],
+      currentSubMenu: MenuListMapper[parseInt(e.key.toString()) - 1],
     });
   };
 
