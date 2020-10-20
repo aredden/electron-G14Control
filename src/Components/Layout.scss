@@ -1,40 +1,42 @@
+/** @format */
+
 .header-main {
-  color: white;
-  background-color: RGB(51, 68, 84);
-  font-size: larger;
-  padding: 0;
-  margin: 0.8rem;
-  margin-top: 0.5rem;
-  font-weight: bold;
-  height: 50px;
-  position: relative;
-  line-height: 3;
-  margin-bottom: 1.5rem;
+	color: white;
+	background-color: RGB(51, 68, 84);
+	font-size: larger;
+	padding: 0;
+	margin: 0.8rem;
+	margin-top: 0.5rem;
+	font-weight: bold;
+	height: 50px;
+	position: relative;
+	line-height: 3;
+	margin-bottom: 1.5rem;
 }
 
 .sider-main {
-  overflow: auto;
-  height: 100vh;
-  position: fixed;
-  left: 0;
+	overflow: auto;
+	height: 100vh;
+	position: fixed;
+	left: 0;
 }
 
 #components-layout-demo-fixed-sider .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
+	height: 32px;
+	background: rgba(255, 255, 255, 0.2);
+	margin: 16px;
 }
 
 .content-header {
-  color: white;
-  padding: 1rem;
-  border-color: white;
-  border: 5px solid white;
-  line-height: 3.8;
-  font-weight: bold;
-  background: rgb(0, 21, 41) !important;
+	color: white;
+	padding: 1rem;
+	border-color: white;
+	border: 5px solid white;
+	line-height: 3.8;
+	font-weight: bold;
+	background: rgb(0, 21, 41) !important;
 }
 
 .site-layout .site-layout-background {
-  background: #fff;
+	background: #fff;
 }

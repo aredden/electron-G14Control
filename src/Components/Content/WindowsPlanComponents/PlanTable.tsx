@@ -16,6 +16,7 @@ const columns = [
 
 interface Props {
   data: Array<{ name: string; guid: string }>;
+  active: { name: string; guid: string };
 }
 
 interface State {

@@ -1,11 +1,13 @@
-import React, { Component } from "react";
+/** @format */
+
+import React, { Component } from 'react';
 
 interface Props {}
 
 interface State {}
 
 export default class Configuration extends Component {
-  render() {
-    return <div></div>;
-  }
+	render() {
+		return <div></div>;
+	}
 }
