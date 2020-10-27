@@ -107,3 +107,57 @@ export const getCPUBoostRawResult = async (
 		return false;
 	}
 };
+
+export const setBoost = async (value: string | number, guid?: string) => {
+	let activeGuid: string = guid;
+	if (!guid) {
+		let plan = await getActivePlan();
+		if (!plan) {
+			LOGGER.info('getCPUBoostRawResult active plan GUID could not be parsed.');
+			return false;
+		}
+		activeGuid = (plan as { name: string; guid: string }).guid;
+	}
+	let ac = new Promise<boolean>((resolve) => {
+		exec(
+			`powercfg /setacindex ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE ${value.toString()}`,
+			(err, out, stderr) => {
+				if (err || stderr) {
+					LOGGER.error(
+						`Problem setting boost ac power index for guid: ${activeGuid} and boost ${value}. Error:\n${JSON.stringify(
+							{ err, stderr }
+						)}`
+					);
+					resolve(false);
+				} else {
+					resolve(true);
+				}
+			}
+		);
+	});
+	let dc = new Promise<boolean>((resolve) => {
+		exec(
+			`powercfg /setdcindex ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE ${value.toString()}`,
+			(err, out, stderr) => {
+				if (err || stderr) {
+					LOGGER.error(
+						`Problem setting boost dc power index for guid: ${activeGuid} and boost ${value}. Error:\n${JSON.stringify(
+							{ err, stderr }
+						)}`
+					);
+					resolve(false);
+				} else {
+					resolve(true);
+				}
+			}
+		);
+	});
+	let result = await Promise.all([ac, dc]);
+	let resultSuccess = true;
+	result.forEach((x) => {
+		if (!x) {
+			resultSuccess = false;
+		}
+	});
+	return resultSuccess;
+};
