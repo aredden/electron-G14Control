@@ -3,6 +3,7 @@
 import { Layout } from 'antd';
 import React, { Component } from 'react';
 import { MenuListOption } from '../Utilities/Constants';
+import CPUBoost from './Content/CPUBoost';
 import WindowsPowerPlan from './Content/WindowsPowerPlan';
 
 const { Header, Content, Footer } = Layout;
@@ -15,6 +16,7 @@ interface State {}
 
 export default class ContentLayout extends Component<Props, State> {
 	render() {
+		let { currentPage } = this.props;
 		return (
 			<Layout className="site-layout" style={{ marginLeft: 200 }}>
 				<Header
@@ -26,8 +28,10 @@ export default class ContentLayout extends Component<Props, State> {
 					<div
 						className="site-layout-background"
 						style={{ padding: 24, textAlign: 'center' }}>
-						{this.props.currentPage === 'Windows Power Plan' ? (
+						{currentPage === 'Windows Power Plan' ? (
 							<WindowsPowerPlan />
+						) : currentPage === 'Processor Boost' ? (
+							<CPUBoost />
 						) : (
 							'ok'
 						)}

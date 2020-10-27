@@ -1,63 +1,11 @@
 /** @format */
 
-import { app, BrowserWindow, IpcMain, ipcMain } from 'electron';
-import { exec } from 'child_process';
-import { parsePlans } from './Utilities';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { buildIpcConnection } from './IPCListeners/IPCListeners';
 import getLogger from './Logger';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
-
-function buildComms(comms: IpcMain, window: BrowserWindow) {
-	comms.on('getWindowsPlans', async () => {
-		const prom = new Promise((resolve) => {
-			exec('powercfg /l', (err, stdout, stderr) => {
-				if (err) {
-					LOGGER.error(
-						`Error getting windows plans guid's from powercfg...\n${JSON.stringify(
-							err,
-							null,
-							2
-						)}`
-					);
-				}
-				let parsed = parsePlans(stdout);
-				resolve(parsed);
-			});
-		});
-		let parsed = await prom;
-		window.webContents.send('winplans', parsed);
-	});
-
-	comms.on('getActivePlan', async () => {
-		exec('powercfg /getactivescheme', (err, out, stderr) => {
-			if (!err) {
-				let parsed = parsePlans(out);
-				if (parsed.length === 1) {
-					window.webContents.send('activeplan', parsed[0]);
-				}
-			} else {
-				LOGGER.error(
-					`Error getting active windows plan guid's from powercfg...\n${JSON.stringify(
-						err,
-						null,
-						2
-					)}`
-				);
-			}
-		});
-	});
-
-	comms.on('setActivePlan', async (_event, guid: string) => {
-		exec(`powercfg /setactive ${guid}`, (err, out, stderr) => {
-			if (!err) {
-				window.webContents.send('setActivePlanStatus', true);
-			} else {
-				LOGGER.error(JSON.stringify(err));
-				window.webContents.send('setActivePlanStatus', false);
-			}
-		});
-	});
-}
 
 function createWindow() {
 	// Create the browser window.
@@ -72,8 +20,8 @@ function createWindow() {
 		},
 		darkTheme: true,
 	});
-	const comms = ipcMain;
-	buildComms(comms, win);
+	const ipc = ipcMain;
+	buildIpcConnection(ipc, win);
 	// and load the index.html of the app.
 	win.loadURL('http://localhost:3000/');
 }
