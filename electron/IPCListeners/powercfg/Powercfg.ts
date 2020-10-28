@@ -120,7 +120,7 @@ export const setBoost = async (value: string | number, guid?: string) => {
 	}
 	let ac = new Promise<boolean>((resolve) => {
 		exec(
-			`powercfg /setacindex ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE ${value.toString()}`,
+			`powercfg /setacvalueindex ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE ${value.toString()}`,
 			(err, out, stderr) => {
 				if (err || stderr) {
 					LOGGER.error(
@@ -137,7 +137,7 @@ export const setBoost = async (value: string | number, guid?: string) => {
 	});
 	let dc = new Promise<boolean>((resolve) => {
 		exec(
-			`powercfg /setdcindex ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE ${value.toString()}`,
+			`powercfg /setdcvalueindex ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE ${value.toString()}`,
 			(err, out, stderr) => {
 				if (err || stderr) {
 					LOGGER.error(

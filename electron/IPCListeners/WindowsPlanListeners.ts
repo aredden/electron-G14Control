@@ -55,10 +55,13 @@ export const buildWindowsPlanListeners = (
 		async (_event, datas: { name: string; guid: string }) => {
 			exec(`powercfg /setactive ${datas.guid}`, (err, out, stderr) => {
 				if (!err) {
-					window.webContents.send('setActivePlanStatus', true);
+					window.webContents.send('setActivePlanStatus', {
+						result: true,
+						data: datas,
+					});
 				} else {
 					LOGGER.error(JSON.stringify(err));
-					window.webContents.send('setActivePlanStatus', false);
+					window.webContents.send('setActivePlanStatus', { result: false });
 				}
 			});
 		}

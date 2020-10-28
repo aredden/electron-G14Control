@@ -1,8 +1,8 @@
 /** @format */
 
-import chalk from 'chalk';
 import getLogger from './Logger';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Utilities');
 
 export const parsePlans = (plans: string) => {
@@ -14,12 +14,5 @@ export const parsePlans = (plans: string) => {
 			guid: val[1],
 		};
 	});
-	LOGGER.info(
-		`Attained result of ${chalk.green(`parsePlans()`)}:\n ${JSON.stringify(
-			result,
-			null,
-			2
-		)}`
-	);
 	return result;
 };

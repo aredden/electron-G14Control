@@ -38,6 +38,15 @@ export default class WindowsPowerPlan extends Component<Props, State> {
 		this.setState({ active: data });
 	};
 
+	setActivePlanStatusListener = (
+		event: any,
+		info: { data: { name: string; guid: string }; result: boolean }
+	) => {
+		if (info.result) {
+			this.setState({ active: info.data });
+		}
+	};
+
 	componentDidMount() {
 		// Send request for windows plans to electron main thread.
 		window.ipcRenderer.send('getWindowsPlans');
@@ -46,9 +55,17 @@ export default class WindowsPowerPlan extends Component<Props, State> {
 		// Listen for response from electron main thread.
 		window.ipcRenderer.on('winplans', this.winPlansListener);
 		window.ipcRenderer.on('activeplan', this.activeWinPlanListener);
+		window.ipcRenderer.on(
+			'setActivePlanStatus',
+			this.setActivePlanStatusListener
+		);
 	}
 
 	componentWillUnmount() {
+		window.ipcRenderer.off(
+			'setActivePlanStatus',
+			this.setActivePlanStatusListener
+		);
 		window.ipcRenderer.off('winplans', this.winPlansListener);
 		window.ipcRenderer.off('activeplan', this.activeWinPlanListener);
 	}

@@ -1,9 +1,12 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { Button, Table } from 'antd';
+import { Button, Collapse, Tag } from 'antd';
 import createLogger from '../../../Logger';
+import { CaretRightFilled } from '@ant-design/icons';
+import CPUBoost from '../CPUBoost';
 
+const { Panel } = Collapse;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = createLogger('PlanTable');
 
@@ -15,7 +18,7 @@ interface Props {
 interface State {
 	top: string;
 	bottom: string;
-	dataRows: Array<{ name: string; active: boolean }>;
+	dataRows: Array<{ name: string; active: boolean; guid: string }>;
 }
 
 export default class PlanTable extends Component<Props, State> {
@@ -31,11 +34,11 @@ export default class PlanTable extends Component<Props, State> {
 
 	selectWindowsPlan = (
 		e: React.MouseEvent<HTMLElement, MouseEvent>,
-		record: { name: string; active: boolean }
+		name: string
 	) => {
 		let { data } = this.props;
 		let val = data.find((val) => {
-			return val.name === record.name;
+			return val.name === name;
 		});
 		val = val as { name: string; guid: string };
 		window.ipcRenderer.send('setWindowsPlan', val);
@@ -43,24 +46,40 @@ export default class PlanTable extends Component<Props, State> {
 
 	buildDataRows = () => {
 		let { data, active } = this.props;
+		let shouldUpdate = false;
+		let { dataRows } = this.state;
+		if (dataRows.length === 0) {
+			shouldUpdate = true;
+		}
 		if (active) {
-			let datarows = data.map((val) => {
-				if (val.guid === active.guid) {
-					return { name: val.name, active: true };
-				} else {
-					return { name: val.name, active: false };
+			dataRows.forEach((val, idx) => {
+				if (val.active) {
+					if (val.name !== active.name) {
+						shouldUpdate = true;
+					}
 				}
 			});
-			this.setState({ dataRows: datarows });
+			let datarows = data.map((val, index) => {
+				if (val.guid === active.guid) {
+					return { name: val.name, active: true, guid: data[index].guid };
+				} else {
+					return { name: val.name, active: false, guid: data[index].guid };
+				}
+			});
+			if (shouldUpdate) {
+				setTimeout(() => {
+					this.setState({ dataRows: datarows });
+				}, 100);
+			}
 		}
 	};
 
+	handleCollapseChange = (e: string | string[]) => {
+		LOGGER.info(`collapseChange info: ${e}`);
+	};
+
 	componentDidUpdate() {
-		if (this.state.dataRows.length === 0) {
-			setTimeout(() => {
-				this.buildDataRows();
-			}, 100);
-		}
+		this.buildDataRows();
 	}
 
 	componentDidMount() {
@@ -71,30 +90,37 @@ export default class PlanTable extends Component<Props, State> {
 		let { dataRows } = this.state;
 		return (
 			<>
-				<Table
-					pagination={false}
-					rowKey={Math.floor(Math.random() * 100).toString()}
-					dataSource={dataRows}>
-					<Table.Column title="Name" dataIndex="name" key="namekey" />
-					<Table.Column
-						title="Active"
-						dataIndex="active"
-						key="namekey"
-						render={(value: boolean, record, idx) => (
-							<div key={'namekey' + idx}>{value ? 'Active' : 'Not Active'}</div>
-						)}
-					/>
-					<Table.Column
-						title="Activate"
-						dataIndex="doit"
-						key="activateplankey"
-						render={(value, record: { name: string; active: boolean }, idx) => (
-							<Button onClick={(e) => this.selectWindowsPlan(e, record)}>
-								Clicko
-							</Button>
-						)}
-					/>
-				</Table>
+				<Collapse
+					bordered={true}
+					className="plantable-collapsible"
+					style={{ justifyContent: 'flex-start' }}
+					onChange={this.handleCollapseChange}
+					accordion={true}
+					expandIcon={({ isActive }) => (
+						<CaretRightFilled rotate={isActive ? 90 : 0} />
+					)}>
+					{dataRows.map((data, idx) => {
+						let { guid } = this.props.data[idx];
+						return (
+							<Panel
+								header={
+									<>
+										{data.name}{' '}
+										{data.active ? <Tag color="green">Active</Tag> : ''}
+									</>
+								}
+								key={data.name + ' ' + guid}>
+								<CPUBoost plan={{ name: data.name, guid }} />
+								<Button
+									style={{ marginTop: '1rem' }}
+									disabled={data.active}
+									onClick={(e) => this.selectWindowsPlan(e, data.name)}>
+									Select Plan
+								</Button>
+							</Panel>
+						);
+					})}
+				</Collapse>
 			</>
 		);
 	}
