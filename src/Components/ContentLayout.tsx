@@ -3,7 +3,10 @@
 import { Layout } from 'antd';
 import React, { Component } from 'react';
 import { MenuListOption } from '../Utilities/Constants';
+import AutoPowerSwitch from './Content/AutoPowerSwitch';
+import Configuration from './Content/Configuration';
 import CPUBoost from './Content/CPUBoost';
+import DiscreteGPU from './Content/DiscreteGPU';
 import WindowsPowerPlan from './Content/WindowsPowerPlan';
 
 const { Header, Content, Footer } = Layout;
@@ -17,6 +20,24 @@ interface State {}
 export default class ContentLayout extends Component<Props, State> {
 	render() {
 		let { currentPage } = this.props;
+		let displayPage = <div />;
+		switch (currentPage) {
+			case 'Processor Boost':
+				displayPage = <CPUBoost />;
+				break;
+			case 'Windows Power Plan':
+				displayPage = <WindowsPowerPlan />;
+				break;
+			case 'Configuration':
+				displayPage = <Configuration />;
+				break;
+			case 'Discrete GPU':
+				displayPage = <DiscreteGPU />;
+				break;
+			case 'Auto Power Switching':
+				displayPage = <AutoPowerSwitch />;
+				break;
+		}
 		return (
 			<Layout className="site-layout" style={{ marginLeft: 200 }}>
 				<Header
@@ -27,14 +48,8 @@ export default class ContentLayout extends Component<Props, State> {
 				<Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
 					<div
 						className="site-layout-background"
-						style={{ padding: 24, textAlign: 'center' }}>
-						{currentPage === 'Windows Power Plan' ? (
-							<WindowsPowerPlan />
-						) : currentPage === 'Processor Boost' ? (
-							<CPUBoost />
-						) : (
-							'ok'
-						)}
+						style={{ padding: 24, textAlign: 'start' }}>
+						{displayPage}
 					</div>
 				</Content>
 				<Footer style={{ textAlign: 'center' }}>
