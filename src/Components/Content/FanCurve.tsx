@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import cjs, { Chart, ChartConfiguration } from 'chart.js';
 import * as anno from 'chartjs-plugin-annotation';
 import * as cdraggable from 'chartjs-plugin-draggable';
-
+import * as dragData from 'chartjs-plugin-dragdata';
+import { createChart } from './FanCurve/options';
 interface Props {}
 
 interface State {
@@ -89,6 +90,7 @@ const options: cjs.ChartOptions = {
 				mode: 'horizontal',
 				scaleID: 'y-axis-0',
 				value: horizHeight,
+				//@ts-ignore
 				draggable: true,
 				onDrag: function (event: any) {
 					event.subject.chart.options.annotation.annotations[2].value =
@@ -109,26 +111,27 @@ export default class FanCurve extends Component<Props, State> {
 	}
 
 	componentDidMount() {
-		let namedChartAnnotation = anno;
-		namedChartAnnotation['id'] = 'annotation';
+		// let namedChartAnnotation = anno;
+		// namedChartAnnotation['id'] = 'annotation';
+		Chart.pluginService.register(dragData);
+		createChart('fanCurveChart');
+		// Chart.pluginService.register(namedChartAnnotation);
+		// Chart.pluginService.register(cdraggable);
+		// let config: ChartConfiguration = {
+		// 	data: data,
+		// 	type: 'line',
+		// 	options: options,
+		// };
 
-		Chart.pluginService.register(namedChartAnnotation);
-		Chart.pluginService.register(cdraggable);
-		let config: ChartConfiguration = {
-			data: data,
-			type: 'line',
-			options: options,
-		};
+		// // get canvas element
+		// let elem: HTMLCanvasElement = document.getElementById(
+		// 	'fanCurveChart'
+		// ) as HTMLCanvasElement;
 
-		// get canvas element
-		let elem: HTMLCanvasElement = document.getElementById(
-			'fanCurveChart'
-		) as HTMLCanvasElement;
-
-		// build final chart.
-		let ctx = elem.getContext('2d') as CanvasRenderingContext2D;
-		let chart = new Chart(ctx, config);
-		this.setState({ chart: chart });
+		// // build final chart.
+		// let ctx = elem.getContext('2d') as CanvasRenderingContext2D;
+		// let chart = new Chart(ctx, config);
+		// this.setState({ chart: chart });
 	}
 
 	render() {

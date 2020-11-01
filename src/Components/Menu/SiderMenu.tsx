@@ -10,6 +10,7 @@ import {
 	SettingOutlined,
 	PictureOutlined,
 } from '@ant-design/icons';
+import TempView from './TempView';
 
 interface Props {
 	onChooseSubmenu: (e: MenuInfo) => void;
@@ -67,6 +68,7 @@ export default class SiderMenu extends Component<Props, State> {
 					onClick={this.handleClick}>
 					Configuration
 				</Menu.Item>
+				<TempView />
 			</Menu>
 		);
 	}

@@ -1,7 +1,8 @@
 /** @format */
 
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { buildIpcConnection } from './IPCListeners/IPCListeners';
+import { buildIpcConnection } from './IPCEvents/IPCListeners';
+import { buildEmitters } from './IPCEvents/ThermalEmitter';
 import getLogger from './Logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,6 +23,7 @@ function createWindow() {
 	});
 	const ipc = ipcMain;
 	buildIpcConnection(ipc, win);
+	buildEmitters(ipc, win);
 	// and load the index.html of the app.
 	win.loadURL('http://localhost:3000/');
 }
