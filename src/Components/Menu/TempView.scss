@@ -2,9 +2,9 @@
 
 .tempView {
 	color: white;
-	background: white;
+	background: #334454;
 	border-radius: 0.4rem;
-	border: 3px solid #1890ff;
+	border: 1px solid #1890ff;
 	position: absolute;
 	bottom: 0;
 	text-align: center;
@@ -16,12 +16,12 @@
 
 .ant-statistic-title {
 	margin-bottom: -0.4rem;
-	color: black;
+	color: white;
 	font-size: 14px;
 	font-weight: bolder;
 	padding-top: 0.3rem;
 }
 
 .ant-statistic-content {
-	color: rgb(158, 44, 44);
+	color: rgb(255, 77, 77);
 }

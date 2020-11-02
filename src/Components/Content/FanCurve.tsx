@@ -24,6 +24,10 @@ export default class FanCurve extends Component<Props, State> {
 		createChart('fanCurveChart');
 	}
 
+	componentWillUnmount() {
+		Chart.pluginService.unregister(dragData);
+	}
+
 	render() {
 		return (
 			<div>

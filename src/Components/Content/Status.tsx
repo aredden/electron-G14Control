@@ -1,7 +1,6 @@
 /** @format */
 
 import { Progress } from 'antd';
-import Title from 'antd/lib/skeleton/Title';
 import React, { Component } from 'react';
 import './Status.scss';
 
@@ -19,7 +18,10 @@ export default class Status extends Component<Props, State> {
 		};
 	}
 
-	coreLoadListener = (event: any, loadvalues: any) => {
+	coreLoadListener = (
+		event: any,
+		loadvalues: Array<{ Name: string; PercentProcessorTime: number }>
+	) => {
 		this.setState({ loadValues: loadvalues });
 	};
 

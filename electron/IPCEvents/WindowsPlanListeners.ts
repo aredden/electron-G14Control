@@ -1,10 +1,14 @@
 /** @format */
 
-import { exec } from 'child_process';
 import { BrowserWindow, IpcMain } from 'electron';
 import getLogger from '../Logger';
-import { parsePlans } from '../Utilities';
+import {
+	getActivePlan,
+	getWindowsPlans,
+	setWindowsPlan,
+} from './powercfg/Powercfg';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('WindowsPlanListeners');
 
 export const buildWindowsPlanListeners = (
@@ -12,58 +16,31 @@ export const buildWindowsPlanListeners = (
 	window: BrowserWindow
 ) => {
 	comms.on('getWindowsPlans', async () => {
-		const prom = new Promise((resolve) => {
-			exec('powercfg /l', (err, stdout, stderr) => {
-				if (err || stderr) {
-					LOGGER.error(
-						`Error getting windows plans guid's from powercfg...\n${JSON.stringify(
-							{ err, stderr },
-							null,
-							2
-						)}`
-					);
-				}
-				let parsed = parsePlans(stdout);
-				resolve(parsed);
-			});
-		});
-		let parsed = await prom;
-		window.webContents.send('winplans', parsed);
+		let plans = await getWindowsPlans();
+		if (plans) {
+			window.webContents.send('winplans', plans);
+		}
 	});
 
 	comms.on('getActivePlan', async () => {
-		exec('powercfg /getactivescheme', (err, out, stderr) => {
-			if (!err && !stderr) {
-				let parsed = parsePlans(out);
-				if (parsed.length === 1) {
-					window.webContents.send('activeplan', parsed[0]);
-				}
-			} else {
-				LOGGER.error(
-					`Error getting active windows plan guid's from powercfg...\n${JSON.stringify(
-						{ err, stderr },
-						null,
-						2
-					)}`
-				);
-			}
-		});
+		let active = await getActivePlan();
+		if (active) {
+			window.webContents.send('activeplan', active);
+		}
 	});
 
 	comms.on(
 		'setWindowsPlan',
 		async (_event, datas: { name: string; guid: string }) => {
-			exec(`powercfg /setactive ${datas.guid}`, (err, out, stderr) => {
-				if (!err) {
-					window.webContents.send('setActivePlanStatus', {
-						result: true,
-						data: datas,
-					});
-				} else {
-					LOGGER.error(JSON.stringify(err));
-					window.webContents.send('setActivePlanStatus', { result: false });
-				}
-			});
+			let setResult = await setWindowsPlan(datas.guid);
+			if (setResult) {
+				window.webContents.send('setActivePlanStatus', {
+					result: true,
+					data: datas,
+				});
+			} else {
+				window.webContents.send('setActivePlanStatus', { result: false });
+			}
 		}
 	);
 };

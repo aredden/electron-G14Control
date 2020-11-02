@@ -45,20 +45,26 @@ export default class SiderMenu extends Component<Props, State> {
 					Status
 				</Menu.Item>
 				<Menu.Item
-					key="2"
+					key="1"
 					icon={<PictureOutlined />}
+					onClick={this.handleClick}>
+					Fan Curve Editor
+				</Menu.Item>
+				<Menu.Item
+					key="2"
+					icon={<WindowsOutlined />}
 					onClick={this.handleClick}>
 					Discrete GPU
 				</Menu.Item>
 				<Menu.Item
 					key="3"
-					icon={<WindowsOutlined />}
+					icon={<BarChartOutlined />}
 					onClick={this.handleClick}>
-					Windows Power Plan
+					Windows Power Plans
 				</Menu.Item>
 				<Menu.Item
 					key="4"
-					icon={<BarChartOutlined />}
+					icon={<SettingOutlined />}
 					onClick={this.handleClick}>
 					Auto Power Switching
 				</Menu.Item>
@@ -66,7 +72,7 @@ export default class SiderMenu extends Component<Props, State> {
 					key="5"
 					icon={<SettingOutlined />}
 					onClick={this.handleClick}>
-					Configuration
+					CPU Tuning
 				</Menu.Item>
 				<TempView />
 			</Menu>

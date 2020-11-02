@@ -4,8 +4,9 @@ import { Layout } from 'antd';
 import React, { Component } from 'react';
 import { MenuListOption } from '../Utilities/Constants';
 import AutoPowerSwitch from './Content/AutoPowerSwitch';
-import Configuration from './Content/Configuration';
+import CPUTuning from './Content/CPUTuning';
 import DiscreteGPU from './Content/DiscreteGPU';
+import FanCurve from './Content/FanCurve';
 import Status from './Content/Status';
 import WindowsPowerPlan from './Content/WindowsPowerPlan';
 
@@ -25,11 +26,14 @@ export default class ContentLayout extends Component<Props, State> {
 			case 'Status':
 				displayPage = <Status />;
 				break;
-			case 'Windows Power Plan':
+			case 'Fan Curve Editor':
+				displayPage = <FanCurve />;
+				break;
+			case 'Windows Power Plans':
 				displayPage = <WindowsPowerPlan />;
 				break;
-			case 'Configuration':
-				displayPage = <Configuration />;
+			case 'CPU Tuning':
+				displayPage = <CPUTuning />;
 				break;
 			case 'Discrete GPU':
 				displayPage = <DiscreteGPU />;

@@ -1,13 +1,12 @@
 /** @format */
 
 import React, { Component } from 'react';
-import FanCurve from './FanCurve';
 import RyzenADJ from './RyzenADJ';
 interface Props {}
 
 interface State {}
 
-export default class Configuration extends Component<Props, State> {
+export default class CPUTuning extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {};
@@ -19,7 +18,6 @@ export default class Configuration extends Component<Props, State> {
 		return (
 			<>
 				<RyzenADJ />
-				<FanCurve />
 			</>
 		);
 	}
