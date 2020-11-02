@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 import { MenuListOption } from '../Utilities/Constants';
 import AutoPowerSwitch from './Content/AutoPowerSwitch';
 import Configuration from './Content/Configuration';
-import CPUBoost from './Content/CPUBoost';
 import DiscreteGPU from './Content/DiscreteGPU';
+import Status from './Content/Status';
 import WindowsPowerPlan from './Content/WindowsPowerPlan';
 
 const { Header, Content, Footer } = Layout;
@@ -22,8 +22,8 @@ export default class ContentLayout extends Component<Props, State> {
 		let { currentPage } = this.props;
 		let displayPage = <div />;
 		switch (currentPage) {
-			case 'Processor Boost':
-				displayPage = <CPUBoost />;
+			case 'Status':
+				displayPage = <Status />;
 				break;
 			case 'Windows Power Plan':
 				displayPage = <WindowsPowerPlan />;

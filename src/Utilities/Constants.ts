@@ -1,6 +1,7 @@
 /** @format */
 
 export type MenuListOption =
+	| 'Status'
 	| 'Processor Boost'
 	| 'Discrete GPU'
 	| 'Windows Power Plan'
@@ -8,6 +9,7 @@ export type MenuListOption =
 	| 'Configuration';
 
 export const MenuListMapper: Array<MenuListOption> = [
+	'Status',
 	'Processor Boost',
 	'Discrete GPU',
 	'Windows Power Plan',

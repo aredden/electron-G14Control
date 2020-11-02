@@ -1,8 +1,7 @@
 /** @format */
 
-import { Card, Statistic } from 'antd';
+import { Statistic } from 'antd';
 import React, { Component } from 'react';
-import { CiCircleOutlined } from '@ant-design/icons';
 import './TempView.scss';
 interface Props {}
 
@@ -19,16 +18,16 @@ export default class TempView extends Component<Props, State> {
 	}
 
 	componentDidMount() {
+		window.ipcRenderer.send('cpuTempRun', true);
 		window.ipcRenderer.on('cpuTemperature', this.tempListener);
 	}
 
 	tempListener = (event: any, result: number) => {
-		console.log(result);
-
 		this.setState({ temperature: result });
 	};
 
 	componentWillUnmount() {
+		window.ipcRenderer.send('cpuTempRun', false);
 		window.ipcRenderer.off('cpuTemperature', this.tempListener);
 	}
 
@@ -42,7 +41,6 @@ export default class TempView extends Component<Props, State> {
 					value={temperature}
 					precision={2}
 					style={{ color: 'white' }}
-					valueStyle={{ color: 'green' }}
 					suffix="C"
 				/>
 			</div>

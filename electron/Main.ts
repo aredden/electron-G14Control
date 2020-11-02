@@ -2,7 +2,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import { buildEmitters } from './IPCEvents/ThermalEmitter';
+import { buildEmitters } from './IPCEvents/IPCEmitters';
 import getLogger from './Logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

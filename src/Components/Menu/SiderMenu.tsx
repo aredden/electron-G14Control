@@ -24,7 +24,7 @@ export default class SiderMenu extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			selection: '1',
+			selection: '0',
 		};
 	}
 
@@ -41,8 +41,8 @@ export default class SiderMenu extends Component<Props, State> {
 				theme="dark"
 				mode="inline"
 				defaultSelectedKeys={[selection.toString()]}>
-				<Menu.Item key="1" icon={<UserOutlined />} onClick={this.handleClick}>
-					Processor Boost
+				<Menu.Item key="0" icon={<UserOutlined />} onClick={this.handleClick}>
+					Status
 				</Menu.Item>
 				<Menu.Item
 					key="2"

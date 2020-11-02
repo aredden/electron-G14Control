@@ -19,13 +19,13 @@ export default class AppLayout extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			currentSubMenu: 'Processor Boost',
+			currentSubMenu: 'Status',
 		};
 	}
 
 	onChooseSubmenu = (e: MenuInfo) => {
 		this.setState({
-			currentSubMenu: MenuListMapper[parseInt(e.key.toString()) - 1],
+			currentSubMenu: MenuListMapper[parseInt(e.key.toString())],
 		});
 	};
 
