@@ -40,3 +40,10 @@
 		transform: rotate(360deg);
 	}
 }
+
+.dragArea {
+	position: absolute;
+	top: 0;
+	-webkit-user-select: none;
+	-webkit-app-region: drag;
+}

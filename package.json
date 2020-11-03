@@ -11,14 +11,15 @@
 		"chart.js": "^2.9.4",
 		"chartjs-plugin-annotation": "^0.5.7",
 		"chartjs-plugin-dragdata": "^1.1.3",
-		"chartjs-plugin-draggable": "^0.1.6",
-		"electron": "^10.1.3",
+		"dotenv": "^8.2.0",
+		"lodash": "^4.17.20",
 		"node-sass": "^4.14.1",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
 		"react-scripts": "3.4.3",
 		"typescript": "~3.7.2",
-		"winston": "^3.3.3"
+		"winston": "^3.3.3",
+		"wmi-client": "^0.5.0"
 	},
 	"scripts": {
 		"start": "react-scripts start",
@@ -27,18 +28,19 @@
 		"eject": "react-scripts eject",
 		"electron-start": "electron ./public/Main.js",
 		"preelectron-pack": "npm run build",
-		"electron-pack": "build --win --macos -c.extraMetadata.main=build/Main.js"
+		"electron-pack": "build --win -c.extraMetadata.main=electron/build/Main.js",
+		"pack": "electron-builder --dir",
+		"dist": "electron-builder"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
 	},
 	"build": {
-		"files": [
-			"build/**/*",
-			"node_modules/**/*"
-		],
-		"directories": {
-			"buildResources": "assets"
+		"appId": "g14control",
+		"win": {
+			"target": "portable",
+			"icon": "build/icon.ico",
+			"requestedExecutionLevel": "requireAdministrator"
 		}
 	},
 	"jest": {
@@ -59,11 +61,13 @@
 		]
 	},
 	"devDependencies": {
+		"electron": "^10.1.3",
 		"@types/chart.js": "^2.9.27",
 		"@types/chartjs-plugin-annotation": "^0.5.1",
 		"@types/jest": "^24.0.0",
 		"@types/node": "^12.0.0",
 		"@types/react": "^16.9.0",
-		"@types/react-dom": "^16.9.0"
+		"@types/react-dom": "^16.9.0",
+		"electron-builder": "^22.9.1"
 	}
 }

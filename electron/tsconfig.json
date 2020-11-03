@@ -8,6 +8,6 @@
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true
 	},
-	"include": ["./"],
+	"include": ["."],
 	"exclude": ["build"]
 }

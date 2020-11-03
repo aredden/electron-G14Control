@@ -20,9 +20,19 @@ export default class App extends Component<Props, State> {
 		this.state = {};
 	}
 
+	componentDidMount() {}
 	render() {
 		return (
 			<div className="App">
+				<div
+					id="dragArea"
+					className="dragArea"
+					style={{
+						width: '100%',
+						height: '20px',
+						backgroundColor: '#001529',
+						MozWindowDragging: 'drag',
+					}}></div>
 				<AppLayout></AppLayout>
 			</div>
 		);

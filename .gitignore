@@ -13,6 +13,8 @@ electron/node_modules
 /build
 electron/build
 
+.env
+
 # misc
 .DS_Store
 .env.local

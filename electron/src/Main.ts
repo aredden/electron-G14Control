@@ -16,6 +16,10 @@ function createWindow() {
 		width: 800,
 		height: 600,
 		resizable: true,
+		titleBarStyle: 'hidden',
+		autoHideMenuBar: true,
+		frame: false,
+		icon: 'assets/icon.ico',
 		webPreferences: {
 			nodeIntegration: true,
 			accessibleTitle: 'G14ControlR4',

@@ -8,3 +8,5 @@ declare type RyzenadjConfig = {
 	stapmTime?: number;
 	tctlTemp?: number;
 };
+
+declare type ArmoryPlan = 'windows' | 'silent' | 'performance' | 'turbo';
