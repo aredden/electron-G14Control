@@ -2,7 +2,8 @@
 
 import { exec } from 'child_process';
 import getLogger from '../../Logger';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const ATRO_LOC = process.env.ATRO_LOC;
 
 const LOGGER = getLogger('SetArmoryPlan');

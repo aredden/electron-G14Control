@@ -2,15 +2,15 @@
 
 import { exec } from 'child_process';
 import getLogger from '../../Logger';
-
-const RADJ_LOC =
-	'C:\\Users\\alexa\\Documents\\G14UI\\g14ui\\electron\\ryzenadj\\ryzenadj.exe';
+import dotenv from 'dotenv';
+dotenv.config();
+const RADJ_LOC = process.env.RADJ_LOC;
 
 const LOGGER = getLogger('RyzenADJ');
 
 export const setRyzenadj = (config: RyzenadjConfig) => {
 	return new Promise<RyzenadjConfig | false>((resolve) => {
-		let radjStr = `${RADJ_LOC} `;
+		let radjStr = '';
 		let {
 			stapmLimit,
 			fastLimit,

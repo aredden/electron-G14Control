@@ -53,5 +53,9 @@ This is just a starting list. I'm sure there is much more to do.
 ## Major Contributors
 
 https://github.com/thesacredmoocow/g14control-r2 (g14control's previous maintainer)
+
 https://github.com/FlyGoat/RyzenAdj (adjusting tdp)
+
 https://github.com/cronosun/atrofac (fan profiles)
+
+- advanced cli configuration [documentation](https://github.com/cronosun/atrofac/blob/master/ADVANCED.md).

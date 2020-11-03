@@ -15,9 +15,37 @@ export default class RyzenADJ extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			ryzenadjConfig: {},
+			ryzenadjConfig: {
+				fastLimit: 65000,
+				slowLimit: 54000,
+				stapmLimit: 35000,
+				stapmTime: 2,
+				slowTime: 30,
+				tctlTemp: 95,
+			},
 		};
 	}
+
+	adjResultListener = (result: false | RyzenadjConfig) => {
+		if (result) {
+			alert('Successfully set ryzenadj configuration settings!');
+		} else {
+			alert('Failed to set ryzenadj configuration settings.');
+		}
+	};
+
+	componentDidMount() {
+		window.ipcRenderer.on('setRyzenadjResult', this.adjResultListener);
+	}
+
+	componentWillUnmount() {
+		window.ipcRenderer.off('setRyzenadjResult', this.adjResultListener);
+	}
+
+	onSubmit = () => {
+		let { ryzenadjConfig } = this.state;
+		window.ipcRenderer.send('setRyzenadj', ryzenadjConfig);
+	};
 
 	onInputChange = (
 		event: string | number | undefined,
@@ -51,10 +79,6 @@ export default class RyzenADJ extends Component<Props, State> {
 				this.setState({ ryzenadjConfig });
 				break;
 		}
-	};
-
-	check = () => {
-		console.log(this.state.ryzenadjConfig);
 	};
 
 	render() {
@@ -124,7 +148,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					/>
 				</Form.Item>
 				<Form.Item>
-					<Button onClick={this.check}>Test</Button>
+					<Button onClick={this.onSubmit}>Submit</Button>
 				</Form.Item>
 			</Form>
 		);
