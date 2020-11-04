@@ -44,19 +44,19 @@ export default class ContentLayout extends Component<Props, State> {
 		}
 		return (
 			<Layout className="site-layout" style={{ marginLeft: 200 }}>
-				<Affix offsetTop={0} >
+				<Affix offsetTop={0}>
 					<Header
 						className="site-layout-background content-header dragArea"
 						style={{
 							padding: 4,
 							width: '100%',
 							border: '0px solid black',
-							position: 'relative'
+							position: 'relative',
 						}}>
 						{this.props.currentPage}
 					</Header>
 				</Affix>
-				<Content style={{ margin: '5rem 16px', overflow: 'auto' }}>
+				<Content style={{ margin: '1rem 16px', overflow: 'auto' }}>
 					<div
 						className="site-layout-background"
 						style={{ padding: 24, textAlign: 'start' }}>

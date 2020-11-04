@@ -8,33 +8,49 @@ import { getHighPrecisionTemperature } from './WMI/ThermalZone';
 let killTempLoop = false;
 let killLoadLoop = false;
 
+let tempLoop: NodeJS.Timeout;
+let loadLoop: NodeJS.Timeout;
+
+let tempLoopRunning = false;
+let loadLoopRunning = false;
+
 const LOGGER = getLogger('IPCEmitters');
 
 export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 	ipc.on('cpuTempRun', (event, run: boolean) => {
 		if (run) {
-			killTempLoop = false;
-			getTempLoop(window);
-			LOGGER.info('cpuTempRun event recieved.. running.');
+			if (!tempLoopRunning) {
+				killTempLoop = false;
+				tempLoopRunning = true;
+				getTempLoop(window);
+				LOGGER.info('cpuTempRun event recieved.. running.');
+			}
 		} else {
 			killTempLoop = true;
+			tempLoopRunning = false;
+			clearTimeout(tempLoop);
 			LOGGER.info('cpuTempRun event recieved.. terminated.');
 		}
 	});
 	ipc.on('cpuLoadRun', (event, run: boolean) => {
 		if (run) {
-			killLoadLoop = false;
-			getLoadLoop(window);
-			LOGGER.info('cpuLoadRun event recieved.. running.');
+			if (!loadLoopRunning) {
+				killLoadLoop = false;
+				loadLoopRunning = true;
+				getLoadLoop(window);
+				LOGGER.info('cpuLoadRun event recieved.. running.');
+			}
 		} else {
 			killLoadLoop = true;
+			loadLoopRunning = false;
+			clearTimeout(loadLoop);
 			LOGGER.info('cpuLoadRun event recieved.. terminated.');
 		}
 	});
 };
 
 const getTempLoop = (window: BrowserWindow) => {
-	setTimeout(async () => {
+	tempLoop = setTimeout(async () => {
 		if (!killTempLoop) {
 			let tempresult = await getHighPrecisionTemperature();
 			if (tempresult) {
@@ -47,7 +63,7 @@ const getTempLoop = (window: BrowserWindow) => {
 };
 
 const getLoadLoop = (window: BrowserWindow) => {
-	setTimeout(async () => {
+	loadLoop = setTimeout(async () => {
 		if (!killLoadLoop) {
 			let loadResult = await getCoresLoad();
 			if (loadResult) {
