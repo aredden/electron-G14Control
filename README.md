@@ -9,6 +9,7 @@ The `/electron` directory requires a `.env` file with two entries for the execut
 ```
 ATRO_LOC=<C:/path/to/atrofac-cli.exe>
 RADJ_LOC=<C:/path/to/ryzenadj.exe>
+CONFIG_LOC=<C:/path/to/electron/src/config.json>
 ```
 
 ## Dev Startup
@@ -38,12 +39,14 @@ This is just a starting list. I'm sure there is much more to do.
 - Main window styling and suggestions.
 - Allow user to choose temperature polling time.
 - Improved code commenting.
-- FanCurve page front end logic -- the ipcRenderer listener functions under /electron are already built.
-- Persistent storage for configuration and runtime events.
+- FanCurve page front end logic -- the ipcRenderer listener functions under /electron are already built. _In progess_
+- Persistent storage for configuration and runtime events. _In progress_
 - Status page design and relevent data to show.
 - Add settings page for more options such as "exit on window close" vs "run as icon app on window close", etc.
 - Header main page custom exit and minimize buttons, as well as possible dropdown menu (could use this as a 'settings page')
+
   ...
+
 - Eventually add G14Control plans configuration.
 
 ## License
