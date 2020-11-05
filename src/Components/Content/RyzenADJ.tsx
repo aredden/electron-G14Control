@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { Button, Form, InputNumber, PageHeader } from 'antd';
+import { Button, Form, InputNumber, PageHeader, message } from 'antd';
 // import RyzenadjConfig from '../../react-app-env';
 interface Props {}
 
@@ -16,35 +16,49 @@ export default class RyzenADJ extends Component<Props, State> {
 		super(props);
 		this.state = {
 			ryzenadjConfig: {
-				fastLimit: 65000,
-				slowLimit: 54000,
+				fastLimit: 40000,
+				slowLimit: 35000,
 				stapmLimit: 35000,
-				stapmTime: 2,
+				stapmTime: 5,
 				slowTime: 30,
 				tctlTemp: 95,
 			},
 		};
 	}
 
-	adjResultListener = (result: false | RyzenadjConfig) => {
-		if (result) {
-			alert('Successfully set ryzenadj configuration settings!');
-		} else {
-			alert('Failed to set ryzenadj configuration settings.');
-		}
-	};
+	// adjResultListener = (result: false | RyzenadjConfig) => {
+	// 	if (result) {
+	// 		alert('Successfully set ryzenadj configuration settings!');
+	// 	} else {
+	// 		alert('Failed to set ryzenadj configuration settings.');
+	// 	}
+	// };
 
-	componentDidMount() {
-		window.ipcRenderer.on('setRyzenadjResult', this.adjResultListener);
-	}
+	// componentDidMount() {
+	// 	window.ipcRenderer.on('setRyzenadjResult', this.adjResultListener);
+	// }
 
-	componentWillUnmount() {
-		window.ipcRenderer.off('setRyzenadjResult', this.adjResultListener);
-	}
+	// componentWillUnmount() {
+	// 	window.ipcRenderer.off('setRyzenadjResult', this.adjResultListener);
+	// }
 
-	onSubmit = () => {
+	onSubmit = async () => {
 		let { ryzenadjConfig } = this.state;
-		window.ipcRenderer.send('setRyzenadj', ryzenadjConfig);
+		let msg = message.loading({
+			content: 'Applying settings...',
+		});
+		let result = await window.ipcRenderer.invoke('setRyzenadj', ryzenadjConfig);
+		if (result) {
+			//@ts-ignore
+			msg.then(() => {
+				message.success('Successfully applied cpu settings!');
+			});
+		} else {
+			//@ts-ignore
+			msg.then(() => {
+				message.error('Failed to apply cpu settings.');
+			});
+		}
 	};
 
 	onInputChange = (

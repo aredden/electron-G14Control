@@ -2,6 +2,10 @@
 	"name": "g14ui",
 	"version": "0.1.0",
 	"private": true,
+	"author": {
+		"name": "Alex Redden",
+		"url": "https://github.com/aredden"
+	},
 	"dependencies": {
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.3.2",

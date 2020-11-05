@@ -9,6 +9,7 @@ interface Props {}
 
 interface State {
 	chart: cjs | undefined;
+	fanCurves: Map<string, Array<number>>;
 }
 
 export default class FanCurve extends Component<Props, State> {
@@ -16,12 +17,18 @@ export default class FanCurve extends Component<Props, State> {
 		super(props);
 		this.state = {
 			chart: undefined,
+			fanCurves: new Map<string, Array<number>>(),
 		};
 	}
 
+	handleMapModify(key: string, index: number, value: number) {}
+
 	componentDidMount() {
+		//Testing fan curve data
+		let map = new Map<string, Array<number>>();
+		map = map.set('default', [0, 0, 10, 15, 25, 35, 55, 55]);
 		Chart.pluginService.register(dragData);
-		createChart('fanCurveChart');
+		createChart('fanCurveChart', this.handleMapModify, map);
 	}
 
 	componentWillUnmount() {

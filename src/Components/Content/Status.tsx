@@ -27,6 +27,7 @@ export default class Status extends Component<Props, State> {
 
 	componentDidMount() {
 		window.ipcRenderer.send('cpuLoadRun', true);
+
 		window.ipcRenderer.on('coresLoad', this.coreLoadListener);
 	}
 

@@ -1,0 +1,12 @@
+{
+	"ryzenadj": {
+		"defaults": {
+			"fastLimit": 40000,
+			"slowLimit": 35000,
+			"stapmLimit": 35000,
+			"stapmTime": 5,
+			"slowTime": 30,
+			"tctlTemp": 95
+		}
+	}
+}

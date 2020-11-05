@@ -12,15 +12,29 @@ declare global {
 
 interface Props {}
 
-interface State {}
+interface State {
+	config: any;
+}
 
 export default class App extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			config: {},
+		};
 	}
 
-	componentDidMount() {}
+	loadConfig = async () => {
+		let config = await window.ipcRenderer.invoke('loadConfig');
+		if (config) {
+			this.setState({ config: config });
+		}
+		console.log(config);
+	};
+
+	componentDidMount() {
+		this.loadConfig();
+	}
 	render() {
 		return (
 			<div className="App">
