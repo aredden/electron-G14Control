@@ -2,6 +2,10 @@
 
 # G14Control Windows Desktop App
 
+Pre-alpha sample styling:
+
+![example image](https://i.ibb.co/WVDhjLb/g14control-electron-sample.png)
+
 ## Prerequisites
 
 The `/electron` directory requires a `.env` file with two entries for the executables under `electron/atrofac-cli/` and `electron/ryzenadj/`. It should be structured as follows:
