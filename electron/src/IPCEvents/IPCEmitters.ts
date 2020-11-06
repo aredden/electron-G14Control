@@ -16,6 +16,15 @@ let loadLoopRunning = false;
 
 const LOGGER = getLogger('IPCEmitters');
 
+export const killEmitters = () => {
+	killTempLoop = true;
+	killLoadLoop = true;
+	clearTimeout(tempLoop);
+	clearTimeout(loadLoop);
+	tempLoopRunning = false;
+	loadLoopRunning = false;
+};
+
 export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 	ipc.on('cpuTempRun', (event, run: boolean) => {
 		if (run) {

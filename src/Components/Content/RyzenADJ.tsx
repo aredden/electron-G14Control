@@ -26,22 +26,6 @@ export default class RyzenADJ extends Component<Props, State> {
 		};
 	}
 
-	// adjResultListener = (result: false | RyzenadjConfig) => {
-	// 	if (result) {
-	// 		alert('Successfully set ryzenadj configuration settings!');
-	// 	} else {
-	// 		alert('Failed to set ryzenadj configuration settings.');
-	// 	}
-	// };
-
-	// componentDidMount() {
-	// 	window.ipcRenderer.on('setRyzenadjResult', this.adjResultListener);
-	// }
-
-	// componentWillUnmount() {
-	// 	window.ipcRenderer.off('setRyzenadjResult', this.adjResultListener);
-	// }
-
 	onSubmit = async () => {
 		let { ryzenadjConfig } = this.state;
 		let msg = message.loading({

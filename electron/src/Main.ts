@@ -2,17 +2,19 @@
 
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import { buildEmitters } from './IPCEvents/IPCEmitters';
+import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
 import getLogger from './Logger';
+import { kill } from 'process';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
-
+let browserWindow: BrowserWindow;
+let showIconEnabled = false;
 let tray: Tray;
-
+let trayContext: Menu;
 function createWindow() {
 	// Create the browser window.
-	const win = new BrowserWindow({
+	browserWindow = new BrowserWindow({
 		width: 800,
 		height: 600,
 		resizable: true,
@@ -28,14 +30,16 @@ function createWindow() {
 		darkTheme: true,
 	});
 	const ipc = ipcMain;
-	buildIpcConnection(ipc, win);
-	buildEmitters(ipc, win);
+	buildIpcConnection(ipc, browserWindow);
+	buildEmitters(ipc, browserWindow);
 	// and load the index.html of the app.
-	win.loadURL('http://localhost:3000/');
+	browserWindow.loadURL('http://localhost:3000/');
 }
 
 app.on('window-all-closed', () => {
 	// TODO: stop timeout looping from IPCEmitters.
+	killEmitters();
+	showIconEnabled = true;
 	LOGGER.info('window closed');
 });
 
@@ -43,11 +47,29 @@ app.on('ready', createWindow);
 app.whenReady().then(() => {
 	// TODO: FIll out full tray app functionality.
 	tray = new Tray('C:\\temp\\icon_light.png');
-	const contextMenu = Menu.buildFromTemplate([
-		{ label: 'Item1', type: 'radio' },
-		{ label: 'Item2', type: 'radio' },
-		{ label: 'Item3', type: 'radio', checked: true },
-		{ label: 'Item4', type: 'radio' },
+	trayContext = Menu.buildFromTemplate([
+		{
+			label: 'Show App',
+			type: 'normal',
+			enabled: showIconEnabled,
+			click: (item) => {
+				browserWindow.show();
+				browserWindow.webContents.reload();
+				item.enabled = !item.enabled;
+				item.menu.items[1].enabled = !item.enabled;
+			},
+		},
+		{
+			label: 'Hide App',
+			type: 'normal',
+			enabled: !showIconEnabled,
+			click: (item) => {
+				killEmitters();
+				browserWindow.hide();
+				item.enabled = !item.enabled;
+				item.menu.items[0].enabled = !item.enabled;
+			},
+		},
 		{
 			label: 'Quit',
 			type: 'normal',
@@ -57,5 +79,5 @@ app.whenReady().then(() => {
 		},
 	]);
 	tray.setToolTip('This is my application.');
-	tray.setContextMenu(contextMenu);
+	tray.setContextMenu(trayContext);
 });

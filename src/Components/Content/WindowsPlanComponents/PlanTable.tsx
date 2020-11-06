@@ -99,8 +99,7 @@ export default class PlanTable extends Component<Props, State> {
 					expandIcon={({ isActive }) => (
 						<CaretRightFilled rotate={isActive ? 90 : 0} />
 					)}>
-					{dataRows.map((data, idx) => {
-						let { guid } = this.props.data[idx];
+					{dataRows.map((data, _idx) => {
 						return (
 							<Panel
 								header={
@@ -109,8 +108,8 @@ export default class PlanTable extends Component<Props, State> {
 										{data.active ? <Tag color="green">Active</Tag> : ''}
 									</>
 								}
-								key={data.name + ' ' + guid}>
-								<CPUBoost plan={{ name: data.name, guid }} />
+								key={data.name + ' ' + data.guid}>
+								<CPUBoost plan={data} />
 								<Button
 									style={{ marginTop: '1rem' }}
 									disabled={data.active}

@@ -41,23 +41,26 @@ const parseBoost = (rawBoost: string) => {
 };
 
 export const buildCPUBoostListeners = (ipc: IpcMain, win: BrowserWindow) => {
-	ipc.on('getBoost', async (e, guid: string) => {
+	ipc.handle('getBoost', async (e, guid: string) => {
 		let boostRaw: string | false = await getCPUBoostRawResult(guid);
 		if (!boostRaw) {
-			win.webContents.send('getBoostResult', false);
+			return false;
 		} else {
-			win.webContents.send('getBoostResult', {
+			return {
 				guid: guid,
 				boost: parseBoost(boostRaw),
-			});
+			};
 		}
 	});
-	ipc.on('setBoost', async (e, boostLevel: string | number, guid?: string) => {
-		let boost =
-			typeof boostLevel === 'string'
-				? parseInt(boostLevel as string)
-				: (boostLevel as number);
-		let result = await setBoost(boost, guid);
-		win.webContents.send('setBoostResult', { guid: guid, result: result });
-	});
+	ipc.handle(
+		'setBoost',
+		async (e, boostLevel: string | number, guid?: string) => {
+			let boost =
+				typeof boostLevel === 'string'
+					? parseInt(boostLevel as string)
+					: (boostLevel as number);
+			let result = await setBoost(boost, guid);
+			return { guid: guid, result: result };
+		}
+	);
 };
