@@ -9,6 +9,7 @@ import {
 	WindowsOutlined,
 	SettingOutlined,
 	PictureOutlined,
+	LineChartOutlined,
 } from '@ant-design/icons';
 import TempView from './TempView';
 
@@ -41,31 +42,31 @@ export default class SiderMenu extends Component<Props, State> {
 				theme="dark"
 				mode="inline"
 				defaultSelectedKeys={[selection.toString()]}>
-				<Menu.Item key="0" icon={<UserOutlined />} onClick={this.handleClick}>
+				<Menu.Item
+					key="0"
+					icon={<BarChartOutlined />}
+					onClick={this.handleClick}>
 					Status
 				</Menu.Item>
 				<Menu.Item
 					key="1"
-					icon={<PictureOutlined />}
+					icon={<LineChartOutlined />}
 					onClick={this.handleClick}>
 					Fan Curve Editor
 				</Menu.Item>
 				<Menu.Item
 					key="2"
-					icon={<WindowsOutlined />}
+					icon={<PictureOutlined />}
 					onClick={this.handleClick}>
 					Discrete GPU
 				</Menu.Item>
 				<Menu.Item
 					key="3"
-					icon={<BarChartOutlined />}
+					icon={<WindowsOutlined />}
 					onClick={this.handleClick}>
 					Windows Power Plans
 				</Menu.Item>
-				<Menu.Item
-					key="4"
-					icon={<SettingOutlined />}
-					onClick={this.handleClick}>
+				<Menu.Item key="4" icon={<UserOutlined />} onClick={this.handleClick}>
 					Auto Power Switching
 				</Menu.Item>
 				<Menu.Item

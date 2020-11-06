@@ -12,24 +12,28 @@ import {
 const LOGGER = getLogger('WindowsPlanListeners');
 
 export const buildWindowsPlanListeners = (
-	comms: IpcMain,
+	ipc: IpcMain,
 	window: BrowserWindow
 ) => {
-	comms.on('getWindowsPlans', async () => {
+	ipc.handle('getWindowsPlans', async () => {
 		let plans = await getWindowsPlans();
 		if (plans) {
-			window.webContents.send('winplans', plans);
+			return plans;
+		} else {
+			return false;
 		}
 	});
 
-	comms.on('getActivePlan', async () => {
+	ipc.handle('getActivePlan', async () => {
 		let active = await getActivePlan();
 		if (active) {
-			window.webContents.send('activeplan', active);
+			return active;
+		} else {
+			return false;
 		}
 	});
 
-	comms.on(
+	ipc.on(
 		'setWindowsPlan',
 		async (_event, datas: { name: string; guid: string }) => {
 			let setResult = await setWindowsPlan(datas.guid);

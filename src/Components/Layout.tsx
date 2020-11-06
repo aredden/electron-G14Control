@@ -32,8 +32,8 @@ export default class AppLayout extends Component<Props, State> {
 	render() {
 		let { currentSubMenu } = this.state;
 		return (
-			<div>
-				<Layout>
+			<>
+				<Layout className="layoutContainer">
 					<Sider className="sider-main">
 						<div className="logo" />
 						<Header className="header-main">G14Control</Header>
@@ -41,7 +41,7 @@ export default class AppLayout extends Component<Props, State> {
 					</Sider>
 					<ContentLayout currentPage={currentSubMenu} />
 				</Layout>
-			</div>
+			</>
 		);
 	}
 }

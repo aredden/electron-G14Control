@@ -4,7 +4,6 @@ import { Radio } from 'antd';
 import React, { Component } from 'react';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import getLogger from '../../Logger';
-import Title from 'antd/lib/skeleton/Title';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('CPUBoost');
@@ -45,33 +44,6 @@ export default class CPUBoost extends Component<Props, State> {
 					this.setState({ currentBoost: result.boost });
 				}
 			});
-
-		// window.ipcRenderer.on(
-		// 	'getBoostResult',
-		// 	(
-		// 		_event: any,
-		// 		result: { guid: string; boost: { ac: string; dc: string } }
-		// 	) => {
-		// 		console.log(_event, result);
-		// 		if (this.props.plan?.guid === result.guid) {
-		// 			this.setState({ currentBoost: result.boost });
-		// 		}
-		// 	}
-		// );
-
-		// window.ipcRenderer.on(
-		// 	'setBoostResult',
-		// 	(_event: any, result: { result: boolean; guid: string }) => {
-		// 		console.log(_event, result);
-		// 		let guid = this.props.plan?.guid;
-		// 		if (result.result && guid && guid === result.guid) {
-		// 			let { chosenBoost } = this.state;
-		// 			this.setState({
-		// 				currentBoost: { ac: chosenBoost, dc: chosenBoost },
-		// 			});
-		// 		}
-		// 	}
-		// );
 	}
 
 	chooseBoost = (e: RadioChangeEvent) => {
@@ -91,7 +63,7 @@ export default class CPUBoost extends Component<Props, State> {
 					});
 				}
 			} else {
-				console.log('crap');
+				alert('There was an issue setting boost, check logs for more details.');
 			}
 		});
 	};

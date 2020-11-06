@@ -43,30 +43,35 @@ export default class ContentLayout extends Component<Props, State> {
 				break;
 		}
 		return (
-			<Layout className="site-layout" style={{ marginLeft: 200 }}>
-				<Affix offsetTop={0}>
-					<Header
-						className="site-layout-background content-header dragArea"
-						style={{
-							padding: 4,
-							width: '100%',
-							border: '0px solid black',
-							position: 'relative',
-						}}>
-						{this.props.currentPage}
-					</Header>
-				</Affix>
-				<Content style={{ margin: '1rem 16px', overflow: 'auto' }}>
-					<div
-						className="site-layout-background"
-						style={{ padding: 24, textAlign: 'start' }}>
-						{displayPage}
+			<>
+				<Layout className="site-layout" style={{ marginLeft: 200 }}>
+					<Affix offsetTop={16}>
+						<Header
+							className="site-layout-background content-header dragArea"
+							style={{
+								padding: 4,
+								border: '0px',
+								textAlign: 'center',
+								position: 'relative',
+								boxShadow: '4px 4px 4px rgba(0,0,0,.25)',
+							}}>
+							{this.props.currentPage}
+						</Header>
+					</Affix>
+					<div className="scroll-content">
+						<Content style={{ margin: '1rem 16px', overflow: 'auto' }}>
+							<div
+								className="site-layout-background"
+								style={{ padding: 24, textAlign: 'start' }}>
+								{displayPage}
+							</div>
+						</Content>
+						<Footer style={{ textAlign: 'center' }}>
+							G14ControlR3 ©2020 Created by Zippy
+						</Footer>
 					</div>
-				</Content>
-				<Footer style={{ textAlign: 'center' }}>
-					G14ControlR3 ©2020 Created by Zippy
-				</Footer>
-			</Layout>
+				</Layout>
+			</>
 		);
 	}
 }

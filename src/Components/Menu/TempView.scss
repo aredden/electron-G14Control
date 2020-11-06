@@ -6,22 +6,44 @@
 	border-radius: 0.4rem;
 	border: 1px solid #1890ff;
 	position: absolute;
-	bottom: 0;
+	top: 4.5rem;
+	font-size: 10px;
 	text-align: center;
 	justify-content: center;
 	margin-bottom: 2rem;
+	padding-top: 0.16rem;
+	vertical-align: -webkit-baseline-middle;
 	width: 80%;
+	height: 1.55rem;
 	margin-left: 10%;
-}
-
-.ant-statistic-title {
-	margin-bottom: -0.4rem;
-	color: white;
-	font-size: 14px;
-	font-weight: bolder;
-	padding-top: 0.3rem;
+	display: inline !important;
+	.ant-statistic {
+		display: inline-flex;
+	}
+	.ant-statistic-title {
+		//margin-bottom: -0.4rem;
+		color: white;
+		font-size: 11px;
+		font-weight: normal;
+		margin-bottom: 0.4rem;
+		padding-right: 0.5rem;
+	}
+	.ant-statistic-content-value {
+		display: inline;
+		font-size: 7px;
+	}
+	.ant-statistic-content-value-int {
+		font-size: 11px;
+	}
+	.ant-statistic-content-value-decimal {
+		font-size: 8px !important;
+	}
+	.ant-statistic-content-suffix {
+		font-size: 8px;
+	}
 }
 
 .ant-statistic-content {
+	font-size: 5px;
 	color: rgb(255, 77, 77);
 }

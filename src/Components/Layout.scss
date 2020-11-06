@@ -2,23 +2,32 @@
 
 .header-main {
 	color: white;
-	background-color: RGB(51, 68, 84);
+	// background-color: RGB(51, 68, 84);
 	font-size: larger;
-	padding: 0;
+	font-weight: bold;
+	border-radius: 2px;
+	height: 50px;
+	text-align: left;
+	position: absolute;
+	top: 0rem;
+	left: 2.1rem;
+	line-height: 3;
+	padding-right: 1rem;
+	padding-left: 0rem;
 	margin: 0.8rem;
 	margin-top: 0.5rem;
-	font-weight: bold;
-	height: 50px;
-	position: relative;
-	line-height: 3;
 	margin-bottom: 1.5rem;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .sider-main {
+	padding-top: 7rem;
 	overflow: auto;
 	height: 100vh;
 	position: fixed;
 	left: 0;
+	user-select: none;
 }
 
 #components-layout-demo-fixed-sider .logo {
@@ -34,9 +43,61 @@
 	border: 5px solid white;
 	line-height: 3.8;
 	font-weight: bold;
+	position: absolute;
 	background: rgb(0, 21, 41) !important;
+}
+
+.site-layout {
+	box-shadow: inset 6px 5px 5px rgba(0, 0, 0, 0.25);
 }
 
 .site-layout .site-layout-background {
 	background: #fff;
+}
+
+.layoutContainer {
+	margin-top: 1rem;
+}
+
+.scroll-content {
+	overflow-y: scroll !important;
+	&::-webkit-scrollbar {
+		width: 10px;
+		display: block;
+		color: black;
+		background-color: #001529;
+	}
+	&::-webkit-scrollbar-thumb {
+		display: block;
+	}
+}
+
+/* Box styles */
+.scroll-content {
+	border: none;
+	padding: 5px;
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll !important;
+	border-radius: 5px;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-track {
+	border: 1px solid #001529;
+	border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: white;
+	border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #001529;
 }

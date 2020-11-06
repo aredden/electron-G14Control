@@ -1,7 +1,7 @@
 /** @format */
 
 import { Progress } from 'antd';
-import Chart, { ChartPoint } from 'chart.js';
+import Chart from 'chart.js';
 import React, { Component } from 'react';
 import './Status.scss';
 
@@ -25,58 +25,58 @@ export default class Status extends Component<Props, State> {
 		event: any,
 		loadvalues: Array<{ Name: string; PercentProcessorTime: number }>
 	) => {
-		// let { chart } = this.state;
-		// (chart as Chart).data.datasets?.forEach((value, idx) => {
-		// 	//@ts-ignore
-		// 	value.data.push(loadvalues[idx].PercentProcessorTime);
-		// 	chart.data.datasets[idx] = value;
-		// });
-		// chart.update();
+		let { chart } = this.state;
+		(chart as Chart).data.datasets?.forEach((value, idx) => {
+			//@ts-ignore
+			value.data.push(loadvalues[idx].PercentProcessorTime);
+			chart.data.datasets[idx] = value;
+		});
+		chart.update();
 		this.setState({ loadValues: loadvalues });
 	};
 
 	componentDidMount() {
-		// let chart = new Chart(
-		// 	document.getElementById('statusChart') as HTMLCanvasElement,
-		// 	{
-		// 		type: 'line',
-		// 		data: {
-		// 			datasets: [
-		// 				...this.state.loadValues.map((value) => {
-		// 					return {
-		// 						label: value.Name,
-		// 						color: 'blue',
-		// 						data: [value.PercentProcessorTime],
-		// 					};
-		// 				}),
-		// 			],
-		// 		},
-		// 		options: {
-		// 			scales: {
-		// 				xAxes: [
-		// 					{
-		// 						ticks: {
-		// 							suggestedMin: 0,
-		// 							suggestedMax: 100,
-		// 						},
-		// 					},
-		// 				],
-		// 				yAxes: [
-		// 					{
-		// 						ticks: {
-		// 							suggestedMin: 0,
-		// 							suggestedMax: 100,
-		// 						},
-		// 					},
-		// 				],
-		// 			},
-		// 		},
-		// 	}
-		// );
+		let chart = new Chart(
+			document.getElementById('statusChart') as HTMLCanvasElement,
+			{
+				type: 'line',
+				data: {
+					datasets: [
+						...this.state.loadValues.map((value) => {
+							return {
+								label: value.Name,
+								color: 'blue',
+								data: [value.PercentProcessorTime],
+							};
+						}),
+					],
+				},
+				options: {
+					scales: {
+						xAxes: [
+							{
+								ticks: {
+									suggestedMin: 0,
+									suggestedMax: 100,
+								},
+							},
+						],
+						yAxes: [
+							{
+								ticks: {
+									suggestedMin: 0,
+									suggestedMax: 100,
+								},
+							},
+						],
+					},
+				},
+			}
+		);
 		window.ipcRenderer.send('cpuLoadRun', true);
 
 		window.ipcRenderer.on('coresLoad', this.coreLoadListener);
-		// this.setState({ chart });
+		this.setState({ chart });
 	}
 
 	componentWillUnmount() {

@@ -37,15 +37,13 @@ export default class App extends Component<Props, State> {
 	}
 	render() {
 		return (
-			<div className="App">
+			<div className="scrollbehavior">
 				<div
-					id="dragArea"
-					className="dragArea"
+					id="topDrag"
+					className="topDrag"
 					style={{
 						width: '100%',
 						height: '20px',
-						backgroundColor: '#001529',
-						MozWindowDragging: 'drag',
 					}}></div>
 				<AppLayout></AppLayout>
 			</div>
