@@ -8,5 +8,9 @@
 			"slowTime": 30,
 			"tctlTemp": 95
 		}
+	},
+	"loopTimes": {
+		"temp": 3000,
+		"load": 3000
 	}
 }

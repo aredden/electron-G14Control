@@ -1,7 +1,7 @@
 /** @format */
 import WmiClient from 'wmi-client';
 import getLogger from '../../Logger';
-
+import cp from 'child_process';
 const LOGGER = getLogger('WMI');
 
 export const getHighPrecisionTemperature = async () => {

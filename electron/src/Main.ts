@@ -4,7 +4,6 @@ import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
 import getLogger from './Logger';
-import { kill } from 'process';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');

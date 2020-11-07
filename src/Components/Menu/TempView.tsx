@@ -7,6 +7,7 @@ interface Props {}
 
 interface State {
 	temperature: number;
+	tempContent: HTMLDivElement | undefined;
 }
 
 export default class TempView extends Component<Props, State> {
@@ -14,6 +15,7 @@ export default class TempView extends Component<Props, State> {
 		super(props);
 		this.state = {
 			temperature: 0,
+			tempContent: undefined,
 		};
 	}
 
@@ -23,6 +25,25 @@ export default class TempView extends Component<Props, State> {
 	}
 
 	tempListener = (event: any, result: number) => {
+		if (!this.state.tempContent) {
+			let elem = document.getElementsByClassName(
+				'ant-statistic-content'
+			)[0] as HTMLDivElement;
+			this.setState({ tempContent: elem }, () => {
+				this.tempListener(undefined, result);
+			});
+			return;
+		}
+		let { tempContent: elem } = this.state;
+		if (result) {
+			if (result < 40) {
+				elem.style.color = '#89C379';
+			} else if (result < 65) {
+				elem.style.color = '#E5A153';
+			} else {
+				elem.style.color = '#FF4D4D';
+			}
+		}
 		this.setState({ temperature: result });
 	};
 
@@ -33,6 +54,7 @@ export default class TempView extends Component<Props, State> {
 
 	render() {
 		let { temperature } = this.state;
+
 		return (
 			<div className="tempView">
 				<Statistic

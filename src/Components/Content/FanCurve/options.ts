@@ -5,22 +5,22 @@ import 'chartjs-plugin-dragdata';
 import { Chart } from 'chart.js';
 
 const buildConfiguration = (
-	map: Map<string, number[]>,
-	onChange: (key: string, index: number, val: number) => any
+	values: number[],
+	onChange: (key: string, index: number, val: number) => any,
+	chartId: string
 ) => {
 	const chartConfig: ChartConfiguration = {
 		type: 'line', // or radar, bar, horizontalBar, bubble
 		data: {
 			datasets: [
-				...Array.from(map).map((value) => {
-					return {
-						label: value[0],
-						data: value[1],
-						fill: false,
-						pointHitRadius: 30,
-						borderColor: 'red',
-					};
-				}),
+				{
+					label:
+						chartId === 'fanCurveChartCPU' ? 'CPU Fan Curve' : 'GPU Fan Curve',
+					data: values,
+					fill: false,
+					pointHitRadius: 30,
+					borderColor: 'red',
+				},
 			],
 		},
 		options: {
@@ -58,6 +58,11 @@ const buildConfiguration = (
 					},
 				],
 			},
+			elements: {
+				line: {
+					tension: 0.1,
+				},
+			},
 			//@ts-ignore
 
 			dragData: true,
@@ -91,7 +96,7 @@ const buildConfiguration = (
 			) {
 				// restore default cursor style upon drag release
 				e.target.style.cursor = 'default';
-				console.log(e, datasetIndex, index, value);
+				onChange(chartId, index, value);
 				// where e = event
 			},
 			hover: {
@@ -112,13 +117,10 @@ const buildConfiguration = (
 export const createChart = (
 	chartId: string,
 	listener: (x: any, y: any, z: any) => any,
-	chartData?: Map<string, number[]>
+	chartData: number[]
 ) => {
 	const ctx = document.getElementById(chartId) as HTMLCanvasElement;
-	const options = buildConfiguration(
-		chartData as Map<string, number[]>,
-		listener
-	);
+	const options = buildConfiguration(chartData, listener, chartId);
 	const chart = new Chart(ctx, {
 		...options,
 	});
