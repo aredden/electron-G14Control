@@ -35,7 +35,14 @@ export const buildAtrofacListeners = (ipc: IpcMain, win: BrowserWindow) => {
 
 	ipc.handle(
 		'setFanCurve',
-		async (event, arrayCurve: { gpu?: Array<number>; cpu?: Array<number> }) => {
+		async (
+			event,
+			arrayCurve: {
+				gpu?: Array<number>;
+				cpu?: Array<number>;
+				plan?: ArmoryPlan;
+			}
+		) => {
 			let { cpu, gpu } = arrayCurve;
 			LOGGER.info(`Got gpu / gpu curve info: ${JSON.stringify({ cpu, gpu })}`);
 			let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;

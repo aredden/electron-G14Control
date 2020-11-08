@@ -5,7 +5,7 @@ import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
 import { createChart } from './FanCurve/options';
 import { Button, PageHeader } from 'antd';
-import _ from 'lodash';
+import ArmoryPlanSettings from './ArmoryPlan';
 interface Props {}
 
 interface State {
@@ -19,6 +19,7 @@ interface State {
 		cpu: Chart | undefined;
 		gpu: Chart | undefined;
 	};
+	plan: ArmoryPlan;
 }
 
 export default class FanCurve extends Component<Props, State> {
@@ -35,8 +36,13 @@ export default class FanCurve extends Component<Props, State> {
 				gpu: undefined,
 			},
 			fanCurves: new Map<string, Array<number>>(),
+			plan: 'silent',
 		};
 	}
+
+	selectPlan = (plan: ArmoryPlan) => {
+		this.setState({ plan });
+	};
 
 	handleMapModify = (key: string, index: number, value: number) => {
 		if (key === 'fanCurveChartCPU') {
@@ -92,6 +98,7 @@ export default class FanCurve extends Component<Props, State> {
 				<PageHeader title="Fan Curve Editor">
 					Modify fan speed configuration.
 				</PageHeader>
+				<ArmoryPlanSettings selectPlan={this.selectPlan}></ArmoryPlanSettings>
 				<canvas id="fanCurveChartCPU" className="Charto"></canvas>
 				<canvas id="fanCurveChartGPU" className="Charto"></canvas>
 				<Button onClick={(e) => this.handleSubmitCurves(e)}>Submit</Button>

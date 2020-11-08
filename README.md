@@ -43,15 +43,26 @@ This is just a starting list. I'm sure there is much more to do.
 - Main window styling and suggestions.
 - Allow user to choose temperature polling time.
 - Improved code commenting.
-- FanCurve page front end logic -- the ipcRenderer listener functions under /electron are already built. _In progess_
-- Persistent storage for configuration and runtime events. _In progress_
+- FanCurve page front end logic -- the ipcRenderer listener functions under /electron are already built. \*_In progess_\*
+  - ~~Atrofac command building.~~
+  - ~~Integrating interactive draggable graph nodes on front end for building fan curve.~~
+  - Persistent storage of commonly used fan curves that can be saved / edited / loaded from a configuration file. \*_In progess_\*
+  - Command validation. \*_Mostly finished, but still in progess_\*
+- Persistent storage for configuration and runtime events. \*_In progess_\*
+  - ~~config.json file for configuration loaded into electron process & sent to react renderer process.~~
+  - Saving / Editing / Adding configurations during runtime. \*_In progess_\*
 - Status page design and relevent data to show.
+  - Collect data from WMI & Windows PerformanceCounters such as BIOS version, ram, names of hardware vendors, important software versions, etc...
 - Add settings page for more options such as "exit on window close" vs "run as icon app on window close", etc.
 - Header main page custom exit and minimize buttons, as well as possible dropdown menu (could use this as a 'settings page')
 
   ...
 
 - Eventually add G14Control plans configuration.
+
+#### _dreams_
+
+- Figure out how to directly control fans without needing to use atrofac-cli and preventing fan speed oscillation.
 
 ## License
 

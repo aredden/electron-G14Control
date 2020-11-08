@@ -18,42 +18,59 @@ const testCurveValidity = (curve: string): boolean => {
 	return false;
 };
 
-export const modifyFanCurve = async (cpuCurve: string, gpuCurve: string) => {
-	if (testCurveValidity(cpuCurve) && testCurveValidity(gpuCurve)) {
+const allowedPlans = ['windows', 'silent', 'performance', 'turbo'];
+
+const buildCommand = (gpu?: string, cpu?: string, plan?: string) => {
+	let cmd = `fan`;
+	if (plan && allowedPlans.includes(plan)) {
+		cmd += ` --plan ${plan}`;
+	}
+	if (cpu && testCurveValidity(cpu)) {
+		cmd += ` --cpu ${cpu}`;
+	}
+	if (gpu && testCurveValidity(gpu)) {
+		cmd += ` --gpu ${gpu}`;
+	}
+	return cmd;
+};
+
+export const modifyFanCurve = async (
+	cpuCurve?: string,
+	gpuCurve?: string,
+	plan?: string
+) => {
+	const command = buildCommand(cpuCurve, gpuCurve, plan);
+
+	if (plan || cpuCurve || gpuCurve) {
 		return new Promise<{ cpuCurve: string; gpuCurve: string } | false>(
 			(resolve, reject) => {
-				exec(
-					`${ATRO_LOC} fan --cpu ${cpuCurve} --gpu ${gpuCurve} --plan turbo`,
-					(err, out, stderr) => {
-						if (err || stderr) {
-							if (stderr.indexOf('Success') !== -1) {
-								resolve({ cpuCurve, gpuCurve });
-								LOGGER.info(
-									`Result of atrofac fan curve ${cpuCurve} ${gpuCurve}:\n${JSON.stringify(
-										stderr
-									)}`
-								);
-								resolve({ cpuCurve, gpuCurve });
-							} else {
-								LOGGER.info(
-									`Error setting atrofac fan curve: ${JSON.stringify({
-										err,
-										stderr,
-										cpuCurve,
-									})}`
-								);
-								resolve(false);
-							}
-						} else {
+				exec(`${ATRO_LOC} ${command}`, (err, out, stderr) => {
+					if (err || stderr) {
+						if (stderr.indexOf('Success') !== -1) {
+							resolve({ cpuCurve, gpuCurve });
 							LOGGER.info(
-								`Result of atrofac fan curve ${cpuCurve}:\n${JSON.stringify(
-									out
+								`Result of atrofac fan curve ${cpuCurve} ${gpuCurve}:\n${JSON.stringify(
+									stderr
 								)}`
 							);
 							resolve({ cpuCurve, gpuCurve });
+						} else {
+							LOGGER.info(
+								`Error setting atrofac fan curve: ${JSON.stringify({
+									err,
+									stderr,
+									cpuCurve,
+								})}`
+							);
+							resolve(false);
 						}
+					} else {
+						LOGGER.info(
+							`Result of atrofac fan curve ${cpuCurve}:\n${JSON.stringify(out)}`
+						);
+						resolve({ cpuCurve, gpuCurve });
 					}
-				);
+				});
 			}
 		);
 	} else {
