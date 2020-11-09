@@ -4,11 +4,24 @@ import { ChartConfiguration } from 'chart.js';
 import 'chartjs-plugin-dragdata';
 import { Chart } from 'chart.js';
 
+export const buildDataSet = (values: number[], chartId: string) => {
+	return [
+		{
+			label: chartId === 'fanCurveChartCPU' ? 'CPU Fan Curve' : 'GPU Fan Curve',
+			data: values,
+			fill: false,
+			pointHitRadius: 30,
+			borderColor: 'red',
+		},
+	];
+};
+
 const buildConfiguration = (
 	values: number[],
 	onChange: (key: string, index: number, val: number) => any,
 	chartId: string
 ) => {
+	let set = buildDataSet(values, chartId);
 	const chartConfig: ChartConfiguration = {
 		type: 'line', // or radar, bar, horizontalBar, bubble
 		data: {

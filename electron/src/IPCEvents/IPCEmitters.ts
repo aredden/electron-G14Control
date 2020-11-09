@@ -3,10 +3,8 @@
 import { BrowserWindow, IpcMain } from 'electron';
 import getLogger from '../Logger';
 import { getCoresLoad } from './WMI/CPULoad';
-import { getHighPrecisionTemperature } from './WMI/ThermalZone';
 import cp from 'child_process';
-import _, { isNull, template } from 'lodash';
-let killTempLoop = false;
+import { spawnTypePerfThermalProcess } from './TempPerf/BuildCounter';
 let killLoadLoop = false;
 
 let tempLoop: cp.ChildProcessWithoutNullStreams;
@@ -18,7 +16,6 @@ let loadLoopRunning = false;
 const LOGGER = getLogger('IPCEmitters');
 
 export const killEmitters = () => {
-	killTempLoop = true;
 	killLoadLoop = true;
 	clearTimeout(loadLoop);
 	tempLoop.kill('SIGKILL');
@@ -27,51 +24,20 @@ export const killEmitters = () => {
 };
 
 export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
-	ipc.on('cpuTempRun', (event, run: boolean) => {
+	ipc.on('cpuTempRun', (_event, run: boolean) => {
 		if (run) {
 			if (!tempLoopRunning) {
-				killTempLoop = false;
 				tempLoopRunning = true;
-				tempLoop = cp.spawn(
-					`typeperf "\\Thermal Zone Information(*)\\High Precision Temperature"`,
-					{
-						shell: true,
-						detached: false,
-						windowsHide: true,
-						windowsVerbatimArguments: true,
-						cwd: '',
-					}
-				);
-				tempLoop.stdout.on('readable', () => {
-					let buff = tempLoop.stdout.read() as Buffer;
-					if (!isNull(buff)) {
-						let value = buff.toString();
-						value = value.replaceAll(/"|,/gm, '');
-						let matched = value.match(/[0-9]{4}\.[0-9]{0,5}/);
-						if (!_.isNull(matched)) {
-							window.webContents.send(
-								'cpuTemperature',
-								parseInt(matched[0]) / 10 - 276.15
-							);
-						}
-					}
-				});
-				tempLoop.on('close', () => {
-					LOGGER.info('closed..');
-				});
-				tempLoop.on('message', (message: string) => {
-					LOGGER.info(message);
-				});
+				tempLoop = spawnTypePerfThermalProcess(window);
 				LOGGER.info('cpuTempRun event recieved.. running.');
 			}
 		} else {
-			killTempLoop = true;
 			tempLoopRunning = false;
 			tempLoop.kill('SIGKILL');
 			LOGGER.info('cpuTempRun event recieved.. terminated.');
 		}
 	});
-	ipc.on('cpuLoadRun', (event, run: boolean) => {
+	ipc.on('cpuLoadRun', (_event, run: boolean) => {
 		if (run) {
 			if (!loadLoopRunning) {
 				killLoadLoop = false;

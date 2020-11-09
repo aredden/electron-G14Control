@@ -7,7 +7,7 @@ import {
 	EnhancedStore,
 } from '@reduxjs/toolkit';
 
-let store: EnhancedStore;
+export let store: EnhancedStore;
 
 export const initStore = async (initialState: G14Config) => {
 	store = configureStore({
@@ -17,11 +17,6 @@ export const initStore = async (initialState: G14Config) => {
 	store.subscribe(async () => {
 		let state = store.getState();
 		let result = await window.ipcRenderer.invoke('saveConfig', state);
-		if (result) {
-			alert('neat');
-		} else {
-			alert('frick');
-		}
 	});
 	return store;
 };

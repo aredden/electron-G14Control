@@ -1,36 +1,86 @@
 {
-	"ryzenadj": {
-		"defaults": {
-			"fastLimit": 40,
-			"slowLimit": 35,
-			"stapmLimit": 35,
-			"stapmTime": 5,
-			"slowTime": 30,
-			"tctlTemp": 95
-		}
-	},
-	"loopTimes": {
-		"temp": 1000,
-		"load": 1000
-	},
-	"fanCurves": [
-		{
-			"name": "Silent (low speed fan)",
-			"plan": "silent",
-			"cpu": [0, 0, 0, 0, 31, 49, 56, 56],
-			"gpu": [0, 0, 0, 0, 34, 51, 61, 61]
-		},
-		{
-			"name": "Performance",
-			"plan": "performance",
-			"cpu": [21, 25, 28, 30, 31, 57, 58],
-			"gpu": [20, 23, 28, 34, 51, 61, 61]
-		},
-		{
-			"name": "Gaming",
-			"plan": "turbo",
-			"cpu": [24, 27, 31, 38, 51, 61, 61],
-			"gpu": [20, 23, 35, 39, 51, 61, 61]
-		}
-	]
+  "ryzenadj": {
+    "defaults": {
+      "fastLimit": 40,
+      "slowLimit": 35,
+      "stapmLimit": 35,
+      "stapmTime": 5,
+      "slowTime": 30,
+      "tctlTemp": 95
+    }
+  },
+  "loopTimes": {
+    "temp": 1000,
+    "load": 1000
+  },
+  "fanCurves": [
+    {
+      "name": "Silent (low speed fan)",
+      "plan": "silent",
+      "cpu": [
+        0,
+        0,
+        0,
+        0,
+        31,
+        49,
+        56,
+        56
+      ],
+      "gpu": [
+        0,
+        0,
+        0,
+        0,
+        34,
+        51,
+        61,
+        61
+      ]
+    },
+    {
+      "name": "Performance",
+      "plan": "performance",
+      "cpu": [
+        21,
+        25,
+        28,
+        30,
+        31,
+        57,
+        58
+      ],
+      "gpu": [
+        20,
+        23,
+        28,
+        34,
+        51,
+        61,
+        61
+      ]
+    },
+    {
+      "name": "Gaming",
+      "plan": "turbo",
+      "cpu": [
+        24,
+        27,
+        31,
+        38,
+        51,
+        61,
+        61
+      ],
+      "gpu": [
+        20,
+        23,
+        35,
+        39,
+        51,
+        61,
+        61
+      ]
+    }
+  ]
 }
