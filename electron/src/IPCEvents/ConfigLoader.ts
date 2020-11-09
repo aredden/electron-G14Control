@@ -9,6 +9,7 @@ dotenv.config();
 let LOGGER = getLogger('ConfigLoader');
 
 let location = process.env.CONFIG_LOC;
+
 export const loadConfig = async () => {
 	if (!location) {
 		LOGGER.error('config.json location undefined.' + location);
@@ -29,11 +30,33 @@ export const loadConfig = async () => {
 	});
 };
 
+export const writeConfig = async (config: object) => {
+	return new Promise((resolve) => {
+		fs.writeFile(location, JSON.stringify(config, null, 2), (err) => {
+			LOGGER.error(`Problem writing to config.json file.`);
+			if (err) {
+				resolve(false);
+			} else {
+				resolve(true);
+			}
+		});
+	});
+};
+
 export const buildConfigLoaderListeners = (ipc: IpcMain) => {
 	ipc.handle('loadConfig', async (event, args) => {
 		let config = await loadConfig();
 		if (config) {
 			return (config as Buffer).toString('utf-8');
+		} else {
+			return false;
+		}
+	});
+	ipc.handle('saveConfig', async (event, config: object) => {
+		LOGGER.info('Attempting to save config.');
+		let result = writeConfig(config);
+		if (result) {
+			return true;
 		} else {
 			return false;
 		}
