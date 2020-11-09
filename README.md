@@ -50,7 +50,9 @@ This is just a starting list. I'm sure there is much more to do.
   - Command validation. \*_Mostly finished, but still in progess_\*
 - Persistent storage for configuration and runtime events. \*_In progess_\*
   - ~~config.json file for configuration loaded into electron process & sent to react renderer process.~~
-  - Saving / Editing / Adding configurations during runtime. \*_In progess_\*
+  - ~~Saving / Editing / Adding configurations during runtime. ~~
+  - Give all components the ability to modify redux as necessary.
+- Ability for users to create new, remove, edit configuration options using the implemented redux store. (Fan curve profiles / atrofac profiles / loop speeds / armory crate plans)
 - Status page design and relevent data to show.
   - Collect data from WMI & Windows PerformanceCounters such as BIOS version, ram, names of hardware vendors, important software versions, etc...
 - Add settings page for more options such as "exit on window close" vs "run as icon app on window close", etc.
