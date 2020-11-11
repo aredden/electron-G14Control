@@ -6,7 +6,7 @@ import { Select as AntSelect } from 'antd';
 const { Option } = AntSelect;
 
 interface Props {
-	defaultSelect: FanCurveConfig;
+	defaultSelect: string;
 	selectables: Array<{ name: string }>;
 	handleChange: (e: any) => void;
 }
@@ -23,8 +23,8 @@ export default class Select extends Component<Props, State> {
 		let { selectables, handleChange, defaultSelect } = this.props;
 		return (
 			<AntSelect
-				defaultValue={defaultSelect.name}
-				style={{ width: 170 }}
+				value={defaultSelect}
+				className="selectplan-dropdown"
 				onChange={(val) => handleChange(val)}>
 				{selectables.map((value) => {
 					return <Option value={value.name}>{value.name}</Option>;

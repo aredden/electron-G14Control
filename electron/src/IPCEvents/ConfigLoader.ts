@@ -33,8 +33,10 @@ export const loadConfig = async () => {
 export const writeConfig = async (config: object) => {
 	return new Promise((resolve) => {
 		fs.writeFile(location, JSON.stringify(config, null, 2), (err) => {
-			LOGGER.error(`Problem writing to config.json file.`);
 			if (err) {
+				LOGGER.error(
+					`Problem writing to config.json file. \nError: ${JSON.stringify(err)}`
+				);
 				resolve(false);
 			} else {
 				resolve(true);
