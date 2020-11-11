@@ -15,7 +15,7 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 			detached: false,
 			windowsHide: true,
 			windowsVerbatimArguments: true,
-			cwd: '',
+			cwd: __dirname,
 		}
 	);
 	baby.stdout.on('readable', () => {
@@ -31,6 +31,14 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 				);
 			}
 		}
+	});
+	baby.on('error', (err) => {
+		LOGGER.error('ERROR: ' + err);
+	});
+	baby.on('exit', (code, signal) => {
+		LOGGER.info(
+			`Temp Process exited, code ${code}, signal:\n${signal.toString()}`
+		);
 	});
 	baby.on('close', () => {
 		LOGGER.info('Temperature TypePerf process closed..');

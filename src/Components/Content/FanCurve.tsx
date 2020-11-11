@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
 import { buildDataSet, createChart } from './FanCurve/options';
-import { Button, PageHeader } from 'antd';
+import { Button, Input, Modal, PageHeader } from 'antd';
 import ArmoryPlanSettings from './ArmoryPlan';
-import { store } from '../../Store/ReduxStore';
+import { store, updateFanConfig } from '../../Store/ReduxStore';
 import Select from './Select';
 interface Props {}
 
@@ -22,6 +22,9 @@ interface State {
 		gpu: Chart | undefined;
 	};
 	plan: ArmoryPlan;
+	modalVisible: boolean;
+	modalLoading: boolean;
+	newName: string;
 }
 
 export default class FanCurve extends Component<Props, State> {
@@ -41,8 +44,30 @@ export default class FanCurve extends Component<Props, State> {
 			},
 			fanCurves: currentState.fanCurves,
 			plan: plan,
+			modalVisible: false,
+			modalLoading: false,
+			newName: '',
 		};
 	}
+
+	savePlan = () => {
+		let { currentCurves, plan, fanCurves, newName } = this.state;
+		let { cpu, gpu } = currentCurves;
+		let newFanConfigOption: FanCurveConfig = {
+			name: newName,
+			cpu: cpu,
+			gpu: gpu,
+			plan: plan,
+		};
+		let newFanCurves = [...fanCurves, newFanConfigOption];
+		store.dispatch(updateFanConfig(newFanCurves));
+		this.setState({
+			fanCurves: newFanCurves,
+			newName: '',
+			modalLoading: false,
+			modalVisible: false,
+		});
+	};
 
 	selectPlan = (plan: ArmoryPlan) => {
 		this.setState({ plan });
@@ -119,7 +144,26 @@ export default class FanCurve extends Component<Props, State> {
 		}
 	};
 
+	handleModalOk = () => {
+		this.setState({ modalLoading: true }, () => {
+			this.savePlan();
+		});
+	};
+
+	handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.setState({ newName: e.target.value });
+	};
+
+	handleModalCancel = () => {
+		this.setState({ modalVisible: false });
+	};
+
+	handleSave = (e: any) => {
+		this.setState({ modalVisible: true });
+	};
+
 	render() {
+		let { modalVisible, modalLoading, fanCurves, newName } = this.state;
 		return (
 			<div>
 				<PageHeader
@@ -135,7 +179,8 @@ export default class FanCurve extends Component<Props, State> {
 							justifyContent: 'end',
 						}}>
 						<Select
-							selectables={this.state.fanCurves}
+							defaultSelect={fanCurves[0]}
+							selectables={fanCurves}
 							handleChange={this.chooseFanCurveThing}></Select>
 					</div>
 				</PageHeader>
@@ -146,6 +191,32 @@ export default class FanCurve extends Component<Props, State> {
 				<canvas id="fanCurveChartCPU" className="Charto"></canvas>
 				<canvas id="fanCurveChartGPU" className="Charto"></canvas>
 				<Button onClick={(e) => this.handleSubmitCurves(e)}>Submit</Button>
+				<Button onClick={(e) => this.handleSave(e)}>Save Configuration</Button>
+				<Modal
+					visible={modalVisible}
+					title="Save Fan Configuration"
+					onOk={this.handleModalOk}
+					onCancel={this.handleModalCancel}
+					footer={[
+						<Button key="back" onClick={this.handleModalCancel}>
+							Return
+						</Button>,
+						<Button
+							key="submit"
+							type="primary"
+							loading={modalLoading}
+							onClick={this.handleModalOk}>
+							Submit
+						</Button>,
+					]}>
+					<div>Configuration Name:</div>
+					<Input
+						type="text"
+						title="Configuration Name:"
+						aria-label="Configuration Name"
+						value={newName}
+						onChange={(e) => this.handleChangeName(e)}></Input>
+				</Modal>
 			</div>
 		);
 	}
