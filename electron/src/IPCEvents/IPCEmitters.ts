@@ -18,7 +18,9 @@ const LOGGER = getLogger('IPCEmitters');
 export const killEmitters = () => {
 	killLoadLoop = true;
 	clearTimeout(loadLoop);
-	tempLoop.kill('SIGKILL');
+	if (tempLoop) {
+		tempLoop.kill('SIGKILL');
+	}
 	tempLoopRunning = false;
 	loadLoopRunning = false;
 };
@@ -53,19 +55,6 @@ export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 		}
 	});
 };
-
-// const getTempLoop = (window: BrowserWindow) => {
-// 	tempLoop = setTimeout(async () => {
-// 		if (!killTempLoop) {
-// 			let tempresult = await getHighPrecisionTemperature();
-// 			if (tempresult) {
-// 				let temp = tempresult[0]['HighPrecisionTemperature'] / 10 - 276.15;
-// 				window.webContents.send('cpuTemperature', temp);
-// 			}
-// 			getTempLoop(window);
-// 		}
-// 	}, 700);
-// };
 
 const getLoadLoop = (window: BrowserWindow) => {
 	loadLoop = setTimeout(async () => {

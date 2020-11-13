@@ -127,6 +127,7 @@ export default class FanCurve extends Component<Props, State> {
 	};
 
 	handleSubmitCurves = async (e: any) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		let result = await window.ipcRenderer.invoke(
 			'setFanCurve',
 			this.state.currentCurves

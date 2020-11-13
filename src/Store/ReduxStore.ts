@@ -16,7 +16,7 @@ export const initStore = async (initialState: G14Config) => {
 	});
 	store.subscribe(async () => {
 		let state = store.getState();
-		let result = await window.ipcRenderer.invoke('saveConfig', state);
+		await window.ipcRenderer.invoke('saveConfig', state);
 	});
 	return store;
 };

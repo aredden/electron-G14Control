@@ -6,3 +6,40 @@
 	margin-top: -0.1rem;
 	display: inline-block;
 }
+
+.desc-item-ver-vend {
+	display: block;
+	padding: 0 !important;
+	justify-content: flex-start;
+	br {
+		height: 0;
+		width: 0;
+	}
+}
+
+th {
+	&.desc-item-row {
+		width: 30%;
+	}
+}
+
+td {
+	&.desc-item-row {
+		width: 100%;
+		padding: 0 !important;
+		display: flex;
+		justify-items: self-start;
+		.desc-item-ver-vend {
+			height: 5rem;
+			display: flex;
+			padding-left: 1rem !important;
+			padding-top: 1.7rem !important;
+			justify-content: flex-start;
+			text-align: center;
+			vertical-align: center;
+			align-content: center;
+			border-right: solid 1px #f0f0f0;
+			width: 50%;
+		}
+	}
+}

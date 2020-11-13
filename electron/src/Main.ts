@@ -41,7 +41,9 @@ app.on('window-all-closed', () => {
 	showIconEnabled = true;
 	LOGGER.info('window closed');
 });
-
+app.on('quit', (evt) => {
+	tray.destroy();
+});
 app.on('ready', createWindow);
 app.whenReady().then(() => {
 	// TODO: FIll out full tray app functionality.
@@ -70,9 +72,18 @@ app.whenReady().then(() => {
 			},
 		},
 		{
+			label: 'Reset Renderer',
+			type: 'normal',
+			click: (item) => {
+				killEmitters();
+				browserWindow.reload();
+			},
+		},
+		{
 			label: 'Quit',
 			type: 'normal',
 			click: () => {
+				tray.destroy();
 				app.quit();
 			},
 		},

@@ -21,7 +21,6 @@ const buildConfiguration = (
 	onChange: (key: string, index: number, val: number) => any,
 	chartId: string
 ) => {
-	let set = buildDataSet(values, chartId);
 	const chartConfig: ChartConfiguration = {
 		type: 'line', // or radar, bar, horizontalBar, bubble
 		data: {

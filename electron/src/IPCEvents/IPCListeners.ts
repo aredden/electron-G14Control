@@ -5,6 +5,7 @@ import { buildAtrofacListeners } from './AtrofacListeners';
 import { buildConfigLoaderListeners } from './ConfigLoader';
 import { buildCPUBoostListeners } from './CPUBoostListeners';
 import { buildRyzenADJListeners } from './RyzenADJListener';
+import { buildStatusListeners } from './StatusListeners';
 import { buildWindowsPlanListeners } from './WindowsPlanListeners';
 
 export function buildIpcConnection(ipc: IpcMain, win: BrowserWindow) {
@@ -13,4 +14,5 @@ export function buildIpcConnection(ipc: IpcMain, win: BrowserWindow) {
 	buildRyzenADJListeners(ipc, win);
 	buildAtrofacListeners(ipc, win);
 	buildConfigLoaderListeners(ipc);
+	buildStatusListeners(ipc, win);
 }
