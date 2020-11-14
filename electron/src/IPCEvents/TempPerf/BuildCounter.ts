@@ -4,7 +4,7 @@ import * as cp from 'child_process';
 import { BrowserWindow } from 'electron';
 import { isNull } from 'lodash';
 import getLogger from '../../Logger';
-
+import os from 'os';
 let LOGGER = getLogger('BuildCounter');
 
 export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
@@ -18,6 +18,7 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 			cwd: __dirname,
 		}
 	);
+	os.setPriority(baby.pid, os.constants.priority.PRIORITY_ABOVE_NORMAL);
 	baby.stdout.on('readable', () => {
 		let buff = baby.stdout.read() as Buffer;
 		if (!isNull(buff)) {

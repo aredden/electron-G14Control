@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 
 interface Props {
 	selectPlan: (plan: ArmoryPlan) => void;
+	currentPlan: ArmoryPlan;
 }
 
 interface State {
@@ -16,22 +17,21 @@ export default class ArmoryPlanSettings extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			plan: 'silent',
+			plan: this.props.currentPlan,
 		};
 	}
 
 	handleRadioClick = (value: RadioChangeEvent) => {
 		let option = value.target.value;
-		this.setState({ plan: option });
+		this.props.selectPlan(option);
 	};
 
 	render() {
-		let { plan } = this.state;
-
+		let { currentPlan } = this.props;
 		return (
 			<>
 				<Radio.Group
-					defaultValue={plan}
+					value={currentPlan}
 					onChange={this.handleRadioClick}
 					optionType={'default'}>
 					<Radio value="windows" name="windows">

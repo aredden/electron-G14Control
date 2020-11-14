@@ -5,7 +5,7 @@ import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
 import { buildDataSet, createChart } from './FanCurve/options';
 import { Button, Input, Modal, PageHeader } from 'antd';
-import ArmoryPlanSettings from './ArmoryPlan';
+import ArmoryPlanSettings from './FanCurve/ArmoryPlan';
 import { store, updateFanConfig } from '../../Store/ReduxStore';
 import Select from './Select';
 import './FanCurve.scss';
@@ -98,8 +98,9 @@ export default class FanCurve extends Component<Props, State> {
 		});
 	};
 
-	selectPlan = (plan: ArmoryPlan) => {
-		this.setState({ plan });
+	selectArmoryPlan = (plan: ArmoryPlan) => {
+		console.log(plan);
+		this.setState({ plan: (plan + '') as ArmoryPlan });
 	};
 
 	handleMapModify = (key: string, index: number, value: number) => {
@@ -128,10 +129,10 @@ export default class FanCurve extends Component<Props, State> {
 
 	handleSubmitCurves = async (e: any) => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		let result = await window.ipcRenderer.invoke(
-			'setFanCurve',
-			this.state.currentCurves
-		);
+		let result = await window.ipcRenderer.invoke('setFanCurve', {
+			...this.state.currentCurves,
+			plan: this.state.plan,
+		});
 	};
 
 	componentDidMount() {
@@ -159,7 +160,7 @@ export default class FanCurve extends Component<Props, State> {
 		});
 
 		if (chosen && charts.cpu && charts.gpu) {
-			let { cpu, gpu } = chosen;
+			let { cpu, gpu, plan } = chosen;
 			let cpuc = buildDataSet([...cpu], 'fanCurveChartCPU');
 			let gpuc = buildDataSet([...gpu], 'fanCurveChartGPU');
 			//@ts-ignore
@@ -169,6 +170,7 @@ export default class FanCurve extends Component<Props, State> {
 			charts.cpu.update();
 			charts.gpu.update();
 			this.setState({
+				plan: (plan + '') as ArmoryPlan,
 				currentPlanName: chosen.name,
 				currentCurves: { cpu: [...cpu], gpu: [...gpu] },
 			});
@@ -200,6 +202,7 @@ export default class FanCurve extends Component<Props, State> {
 			fanCurves,
 			newName,
 			currentPlanName,
+			plan,
 		} = this.state;
 		console.log(fanCurves);
 		return (
@@ -224,7 +227,9 @@ export default class FanCurve extends Component<Props, State> {
 					</div>
 				</PageHeader>
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
-					<ArmoryPlanSettings selectPlan={this.selectPlan}></ArmoryPlanSettings>
+					<ArmoryPlanSettings
+						currentPlan={plan}
+						selectPlan={this.selectArmoryPlan}></ArmoryPlanSettings>
 				</div>
 				<div style={{ height: '1rem', width: '100%' }} />
 				<canvas id="fanCurveChartCPU" className="Charto"></canvas>

@@ -95,7 +95,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					<InputNumber
 						min={10}
 						max={90}
-						formatter={(val) => val + 'w'}
+						formatter={(val) => val?.toString().replace(/w|\D/gm, '') + 'w'}
 						defaultValue={35}
 						onChange={(e) => this.onInputChange(e, 'tdp')}
 					/>
@@ -104,7 +104,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					<InputNumber
 						min={10}
 						max={90}
-						formatter={(val) => val + 'w'}
+						formatter={(val) => val?.toString().replace(/w|\D/gm, '') + 'w'}
 						defaultValue={54}
 						onChange={(e) => this.onInputChange(e, 'ftdp')}
 					/>
@@ -113,7 +113,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					<InputNumber
 						min={10}
 						max={90}
-						formatter={(val) => val + 'w'}
+						formatter={(val) => val?.toString().replace(/w|\D/gm, '') + 'w'}
 						defaultValue={45}
 						onChange={(e) => this.onInputChange(e, 'stdp')}
 					/>
@@ -122,7 +122,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					<InputNumber
 						min={1}
 						max={900}
-						formatter={(val) => val + 's'}
+						formatter={(val) => val?.toString().replace(/s|\D/gm, '') + 's'}
 						defaultValue={100}
 						onChange={(e) => this.onInputChange(e, 'ftime')}
 					/>
@@ -131,7 +131,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					<InputNumber
 						min={1}
 						max={900}
-						formatter={(val) => val + 's'}
+						formatter={(val) => val?.toString().replace(/s|\D/gm, '') + 's'}
 						defaultValue={20}
 						onChange={(e) => this.onInputChange(e, 'stime')}
 					/>
@@ -140,7 +140,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					<InputNumber
 						min={20}
 						max={105}
-						formatter={(val) => val + 'c'}
+						formatter={(val) => val?.toString().replace(/c|\D/gm, '') + 'c'}
 						defaultValue={95}
 						onChange={(e) => this.onInputChange(e, 'temp')}
 					/>

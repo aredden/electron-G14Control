@@ -66,7 +66,8 @@ export default class ContentLayout extends Component<Props, State> {
 								{displayPage}
 							</div>
 						</Content>
-						<Footer style={{ textAlign: 'center' }}>
+						<Footer
+							style={{ textAlign: 'center', zIndex: -10, margin: '2rem 1rem' }}>
 							G14ControlR3 ©2020 Created by Zippy
 						</Footer>
 					</div>

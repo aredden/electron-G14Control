@@ -43,11 +43,13 @@ export const buildAtrofacListeners = (ipc: IpcMain, win: BrowserWindow) => {
 				plan?: ArmoryPlan;
 			}
 		) => {
-			let { cpu, gpu } = arrayCurve;
-			LOGGER.info(`Got gpu / gpu curve info: ${JSON.stringify({ cpu, gpu })}`);
+			let { cpu, gpu, plan } = arrayCurve;
+			LOGGER.info(
+				`Got gpu / gpu curve info: ${JSON.stringify({ cpu, gpu, plan })}`
+			);
 			let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
 			let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
-			let result = await modifyFanCurve(cpuCurve, gpuCurve);
+			let result = await modifyFanCurve(cpuCurve, gpuCurve, plan);
 			return result;
 		}
 	);

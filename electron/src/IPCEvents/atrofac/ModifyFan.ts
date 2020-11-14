@@ -66,7 +66,9 @@ export const modifyFanCurve = async (
 						}
 					} else {
 						LOGGER.info(
-							`Result of atrofac fan curve ${cpuCurve}:\n${JSON.stringify(out)}`
+							`Result of atrofac fan curve:\n${cpuCurve}:\n${JSON.stringify(
+								out
+							)}`
 						);
 						resolve({ cpuCurve, gpuCurve });
 					}
