@@ -19,7 +19,7 @@ export const killEmitters = () => {
 	killLoadLoop = true;
 	clearTimeout(loadLoop);
 	if (tempLoop) {
-		tempLoop.kill('SIGKILL');
+		tempLoop.kill();
 	}
 	tempLoopRunning = false;
 	loadLoopRunning = false;
@@ -35,7 +35,7 @@ export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 			}
 		} else {
 			tempLoopRunning = false;
-			tempLoop.kill('SIGKILL');
+			tempLoop.kill('SIGINT');
 			LOGGER.info('cpuTempRun event recieved.. terminated.');
 		}
 	});
@@ -59,7 +59,11 @@ export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 const getLoadLoop = (window: BrowserWindow) => {
 	loadLoop = setTimeout(async () => {
 		if (!killLoadLoop) {
-			let loadResult = await getCoresLoad();
+			let loadResult = await getCoresLoad().catch((err) => {
+				LOGGER.error(
+					'Error: promise rejected in getLoadLoop() / getCoresLoad function.'
+				);
+			});
 			if (loadResult) {
 				window.webContents.send('coresLoad', loadResult);
 			}

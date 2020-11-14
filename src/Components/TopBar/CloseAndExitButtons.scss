@@ -1,0 +1,37 @@
+/** @format */
+
+.close-exit-group {
+	-webkit-user-select: auto !important;
+	-webkit-app-region: normal;
+	background-color: #001529;
+	position: fixed;
+	z-index: 90000;
+	right: 0;
+	top: 0;
+	height: 20px;
+	width: 10%;
+	border-top: #1890ff !important;
+	border: 1px solid darken(#1890ff, 20);
+	pointer-events: all !important;
+	button {
+		height: 20px;
+		width: 50%;
+		border: solid 1px darken(#1890ff, 30);
+		border-top: solid 2px #1890ff;
+		border-radius: 0 !important;
+		background-color: #001529;
+		color: #1890ff;
+		line-height: 0.0001;
+		padding-top: 0rem;
+		&:active {
+			background-color: #001529 !important;
+		}
+		&:focus {
+			background-color: #001529 !important;
+		}
+		&:hover {
+			background-color: #1890ff;
+			color: #001529;
+		}
+	}
+}

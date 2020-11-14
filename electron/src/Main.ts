@@ -11,12 +11,20 @@ let browserWindow: BrowserWindow;
 let showIconEnabled = false;
 let tray: Tray;
 let trayContext: Menu;
+
+export const updateMenuVisible = (minimized: boolean) => {
+	trayContext.getMenuItemById('showapp').enabled = minimized;
+	trayContext.getMenuItemById('hideapp').enabled = !minimized;
+};
+
 function createWindow() {
 	// Create the browser window.
 	browserWindow = new BrowserWindow({
-		width: 800,
+		width: 960,
 		height: 600,
 		resizable: true,
+		maxWidth: 960,
+		minWidth: 960,
 		titleBarStyle: 'hidden',
 		autoHideMenuBar: true,
 		frame: false,
@@ -52,6 +60,7 @@ app.whenReady().then(() => {
 		{
 			label: 'Show App',
 			type: 'normal',
+			id: 'showapp',
 			enabled: showIconEnabled,
 			click: (item) => {
 				browserWindow.show();
@@ -63,6 +72,7 @@ app.whenReady().then(() => {
 		{
 			label: 'Hide App',
 			type: 'normal',
+			id: 'hideapp',
 			enabled: !showIconEnabled,
 			click: (item) => {
 				killEmitters();

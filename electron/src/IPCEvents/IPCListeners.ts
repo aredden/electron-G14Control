@@ -4,6 +4,7 @@ import { BrowserWindow, IpcMain } from 'electron';
 import { buildAtrofacListeners } from './AtrofacListeners';
 import { buildConfigLoaderListeners } from './ConfigLoader';
 import { buildCPUBoostListeners } from './CPUBoostListeners';
+import { buildElectronListeners } from './ElectronConfigListeners';
 import { buildGPUListeners } from './GpuEventListeners';
 import { buildRyzenADJListeners } from './RyzenADJListener';
 import { buildStatusListeners } from './StatusListeners';
@@ -17,4 +18,5 @@ export function buildIpcConnection(ipc: IpcMain, win: BrowserWindow) {
 	buildConfigLoaderListeners(ipc);
 	buildStatusListeners(ipc, win);
 	buildGPUListeners(ipc, win);
+	buildElectronListeners(ipc, win);
 }

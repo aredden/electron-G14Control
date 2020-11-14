@@ -7,6 +7,7 @@ import AppLayout from './Components/Layout';
 import { Spin } from 'antd';
 import { initStore, updateLoopTimes } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
+import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
 declare global {
 	interface Window {
 		require: any;
@@ -43,20 +44,25 @@ export default class App extends Component<Props, State> {
 	componentDidMount() {
 		this.loadConfig();
 	}
+
 	render() {
 		let { config } = this.state;
 		if (config) {
 			return (
-				<div className="scrollbehavior">
-					<div
-						id="topDrag"
-						className="topDrag"
-						style={{
-							width: '100%',
-							height: '20px',
-						}}></div>
-					<AppLayout></AppLayout>
-				</div>
+				<>
+					<CloseAndExitButtons />
+					<div className="scrollbehavior">
+						<div
+							id="topDrag"
+							className="topDrag"
+							style={{
+								width: '90%',
+								height: '20px',
+							}}></div>
+
+						<AppLayout></AppLayout>
+					</div>
+				</>
 			);
 		} else {
 			return (

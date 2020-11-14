@@ -1,6 +1,6 @@
 /** @format */
 
-import { Descriptions } from 'antd';
+import { Descriptions, Spin } from 'antd';
 import React, { Component } from 'react';
 import './Status.scss';
 
@@ -76,6 +76,10 @@ export default class Status extends Component<Props, State> {
 				);
 				descriptionBiosItems.push(descitem);
 			});
+		} else {
+			descriptionBiosItems.push(
+				<Spin tip="Loading CPU & BIOS info..." size="large" />
+			);
 		}
 		if (softwaremap) {
 			Array.from(softwaremap).forEach(([keyo, mapo], key) => {
@@ -96,6 +100,10 @@ export default class Status extends Component<Props, State> {
 					descriptionSoftwareItems.push(descitem);
 				}
 			});
+		} else {
+			descriptionSoftwareItems.push(
+				<Spin tip="Loading Software info..." size="large" />
+			);
 		}
 
 		return (

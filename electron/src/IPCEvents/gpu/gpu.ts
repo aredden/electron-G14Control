@@ -1,9 +1,9 @@
 /** @format */
-import { create } from 'lodash';
 import Shell from 'node-powershell';
 import createLogger from '../../Logger';
-
 const LOGGER = createLogger('GPUScripts');
+
+let screenrefloc = process.env.SCREEN_REF_LOC;
 
 const ps = new Shell({
 	executionPolicy: 'Bypass',
@@ -26,6 +26,19 @@ export const resetGPU = async () => {
 			.catch((err) => {
 				resolve(false);
 				LOGGER.info('Error recieved after running command:\n' + err.toString());
+			});
+	});
+};
+
+export const getDisplays = async () => {
+	return new Promise((resolve) => {
+		ps.addCommand(`${screenrefloc} /l`);
+		ps.invoke()
+			.then((result) => {
+				LOGGER.info(result);
+			})
+			.catch((err) => {
+				LOGGER.info('error ' + err);
 			});
 	});
 };
