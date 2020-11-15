@@ -1,7 +1,8 @@
 /** @format */
 
 import { BrowserWindow, IpcMain } from 'electron';
-import { getDisplays, resetGPU } from './gpu/gpu';
+import { getDisplays, setDisplayConfig } from './gpu/DisplayConfig';
+import { resetGPU } from './gpu/gpu';
 
 export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('resetGPU', async () => {
@@ -11,5 +12,20 @@ export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 		} else {
 			return false;
 		}
+	});
+
+	ipc.handle('getDisplayOptions', async () => {
+		let opts = await getDisplays();
+		return opts;
+	});
+
+	ipc.handle('setDisplayOptions', async (evt, opts: DisplayOptions) => {
+		let result = await setDisplayConfig(
+			opts.display,
+			opts.refresh,
+			opts.width,
+			opts.height
+		);
+		return result;
 	});
 };

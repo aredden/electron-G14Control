@@ -9,4 +9,38 @@ declare type RyzenadjConfig = {
 	tctlTemp?: number;
 };
 
+declare type DisplayOptions = {
+	refresh?: number;
+	display?: number;
+	width?: number;
+	height?: number;
+};
+
+declare type CpuBiosMapValues = {
+	processorData: {
+		Name: string;
+		Process: string;
+		NumberOfCores: string;
+		NumberOfEnabledCore: string;
+		ThreadCount: string;
+		NumberOfLogicalProcessors: string;
+		L2CacheSize: string;
+		L3CacheSize: string;
+		Status: string;
+		Description: string;
+		MaxClockSpeed: string;
+	};
+	computerSystem: {
+		SystemFamily: string;
+		TotalPhysicalMemory: string;
+		Manufacturer: string;
+		Model: string;
+	};
+	biosData: {
+		SMBIOSBIOSVersion: string;
+		ReleaseDate: string;
+		SerialNumber: string;
+	};
+};
+
 declare type ArmoryPlan = 'windows' | 'silent' | 'performance' | 'turbo';

@@ -29,16 +29,3 @@ export const resetGPU = async () => {
 			});
 	});
 };
-
-export const getDisplays = async () => {
-	return new Promise((resolve) => {
-		ps.addCommand(`${screenrefloc} /l`);
-		ps.invoke()
-			.then((result) => {
-				LOGGER.info(result);
-			})
-			.catch((err) => {
-				LOGGER.info('error ' + err);
-			});
-	});
-};

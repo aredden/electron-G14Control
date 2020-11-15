@@ -20,6 +20,7 @@
 	"devDependencies": {
 		"@types/lodash": "^4.14.164",
 		"@types/node-powershell": "^3.1.1",
-		"nodemon": "^2.0.5"
+		"nodemon": "^2.0.5",
+		"ts-node": "^9.0.0"
 	}
 }
