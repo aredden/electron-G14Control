@@ -73,3 +73,24 @@ declare type FanCurveConfig = {
 };
 
 declare type FanCurveArray = Array<FanCurveConfig>;
+
+declare type DisplayOptionData = {
+	resolution: {
+		width: number;
+		height: number;
+	};
+	bits: number;
+	refresh: number;
+	format: string;
+};
+
+/** @format */
+
+declare type DisplayOptions = {
+	refresh?: number;
+	display?: number;
+	width?: number;
+	height?: number;
+};
+
+declare module 'wmi-client';

@@ -4,7 +4,7 @@
 		"module": "commonjs",
 		"lib": ["ESNext", "DOM"],
 		"allowJs": true,
-		"outDir": "build",
+		"outDir": "../public",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true
 	},

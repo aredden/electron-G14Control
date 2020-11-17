@@ -44,3 +44,13 @@ declare type CpuBiosMapValues = {
 };
 
 declare type ArmoryPlan = 'windows' | 'silent' | 'performance' | 'turbo';
+
+declare type DisplayOptionData = {
+	resolution: {
+		width: number;
+		height: number;
+	};
+	bits: number;
+	refresh: number;
+	format: string;
+};

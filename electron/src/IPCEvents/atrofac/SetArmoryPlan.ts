@@ -3,8 +3,16 @@
 import { exec } from 'child_process';
 import getLogger from '../../Logger';
 import dotenv from 'dotenv';
+import is_dev from 'electron-is-dev';
+import path from 'path';
+import { app } from 'electron';
 dotenv.config();
-const ATRO_LOC = process.env.ATRO_LOC;
+
+//@ts-ignore
+// eslint-ignore-next-line
+const ATRO_LOC = is_dev
+	? (process.env.ATRO_LOC as string)
+	: path.join(app.getPath('exe'), 'resources', 'extraResources', 'atrofac.exe');
 
 const LOGGER = getLogger('SetArmoryPlan');
 

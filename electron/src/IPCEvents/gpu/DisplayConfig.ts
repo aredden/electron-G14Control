@@ -2,10 +2,23 @@
 import Shell from 'node-powershell';
 import getLogger from '../../Logger';
 import dotenv from 'dotenv';
+import is_dev from 'electron-is-dev';
+import path from 'path';
+import { app } from 'electron';
 dotenv.config();
-const screenrefloc =
-	process.env.SCREEN_REF_LOC ||
-	'../../../screen-resolution/ChangeScreenResolution.exe';
+
+//@ts-ignore
+// eslint-ignore-next-line
+const screenrefloc = is_dev
+	? (process.env.SCREEN_REF_LOC as string)
+	: path.join(
+			app.getPath('exe'),
+			'../',
+			'resources',
+			'extraResources',
+			'ChangeScreenResolution.exe'
+	  );
+
 const LOGGER = getLogger('DisplayConfig');
 
 const ps = new Shell({
@@ -81,16 +94,10 @@ export const parseDisplayOptions = (stringOpts: string) => {
 	opts.shift();
 	let d0 = opts[0].replace(/\r| {2,10}/gm, '');
 	let d0arr = d0.split(`\n`).filter((el) => el !== '');
-	let results: Array<{
-		resolution: {
-			width: number;
-			height: number;
-		};
-		bits: number;
-		refresh: number;
-		format: string;
-	}> = d0arr.map((result) => {
-		let resString = result.match(/[0-9]{3,4}x[0-9]{3,4}/gm)[0] || '1920x1080';
+	let results: Array<DisplayOptionData> = d0arr.map((result) => {
+		let resString =
+			//@ts-ignore
+			(result && result.match(/[0-9]{3,4}x[0-9]{3,4}/gm)[0]) || '1920x1080';
 		let resArr = resString.split('x');
 		let resolution = {
 			width: 1920,
@@ -130,7 +137,7 @@ export const parseDisplayOptions = (stringOpts: string) => {
 		} else {
 			LOGGER.info(`Trouble parsing format for ${result}`);
 		}
-		let option = {
+		let option: DisplayOptionData = {
 			resolution,
 			bits,
 			refresh,

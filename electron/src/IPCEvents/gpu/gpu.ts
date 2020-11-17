@@ -3,8 +3,6 @@ import Shell from 'node-powershell';
 import createLogger from '../../Logger';
 const LOGGER = createLogger('GPUScripts');
 
-let screenrefloc = process.env.SCREEN_REF_LOC;
-
 const ps = new Shell({
 	executionPolicy: 'Bypass',
 	noProfile: true,

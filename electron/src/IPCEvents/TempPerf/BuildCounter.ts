@@ -24,7 +24,7 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 			let buff = baby.stdout.read() as Buffer;
 			if (!isNull(buff)) {
 				let value = buff.toString();
-				value = value.replaceAll(/"|,/gm, '');
+				value = value.replace(/"|,/gm, '');
 				let matched = value.match(/[0-9]{4}\.[0-9]{0,5}/);
 				if (!isNull(matched)) {
 					window.webContents.send(
@@ -53,7 +53,9 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 	baby.on('exit', (code, signal) => {
 		baby.kill();
 		LOGGER.info(
-			`Temp Process exited, code ${code}, signal:\n${signal.toString()}`
+			`Temp Process exited, code ${code}, signal:\n${
+				signal ? signal.toString() : 'Signal is undefined.'
+			}`
 		);
 		baby.removeAllListeners();
 	});

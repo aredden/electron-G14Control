@@ -3,8 +3,22 @@
 import { exec } from 'child_process';
 import getLogger from '../../Logger';
 import dotenv from 'dotenv';
+import is_dev from 'electron-is-dev';
+import path from 'path';
+import { app } from 'electron';
 dotenv.config();
-const ATRO_LOC = process.env.ATRO_LOC;
+
+//@ts-ignore
+// eslint-ignore-next-line
+const ATRO_LOC = is_dev
+	? (process.env.ATRO_LOC as string)
+	: path.join(
+			app.getPath('exe'),
+			'../',
+			'resources',
+			'extraResources',
+			'atrofac-cli.exe'
+	  );
 
 const LOGGER = getLogger('ModifyFans');
 
@@ -47,12 +61,13 @@ export const modifyFanCurve = async (
 				exec(`${ATRO_LOC} ${command}`, (err, out, stderr) => {
 					if (err || stderr) {
 						if (stderr.indexOf('Success') !== -1) {
-							resolve({ cpuCurve, gpuCurve });
+							//@ts-ignore
 							LOGGER.info(
 								`Result of atrofac fan curve ${cpuCurve} ${gpuCurve}:\n${JSON.stringify(
 									stderr
 								)}`
 							);
+							//@ts-ignore
 							resolve({ cpuCurve, gpuCurve });
 						} else {
 							LOGGER.info(
@@ -70,6 +85,7 @@ export const modifyFanCurve = async (
 								out
 							)}`
 						);
+						//@ts-ignore
 						resolve({ cpuCurve, gpuCurve });
 					}
 				});

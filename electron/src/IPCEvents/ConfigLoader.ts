@@ -3,12 +3,24 @@
 import dotenv from 'dotenv';
 import { IpcMain } from 'electron';
 import fs from 'fs';
+import is_dev from 'electron-is-dev';
 import getLogger from '../Logger';
+import path from 'path';
+import { app } from 'electron';
 dotenv.config();
 
+//@ts-ignore
+// eslint-ignore-next-line
+const location = is_dev
+	? (process.env.CONFIG_LOC as string)
+	: path.join(
+			app.getPath('exe'),
+			'../',
+			'resources',
+			'extraResources',
+			'config.json'
+	  );
 let LOGGER = getLogger('ConfigLoader');
-
-let location = process.env.CONFIG_LOC;
 
 export const loadConfig = async () => {
 	if (!location) {

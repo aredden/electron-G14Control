@@ -11,9 +11,12 @@ electron/node_modules
 
 # production
 /build
+/dist
 electron/build
-
+/public
 .env
+
+/logs
 
 # misc
 .DS_Store

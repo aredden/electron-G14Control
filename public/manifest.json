@@ -3,17 +3,17 @@
 	"name": "G14Control Desktop Application",
 	"icons": [
 		{
-			"src": "favicon.ico",
+			"src": "C:/Users/alexa/Documents/G14UI/g14ui/electron/src/assets/icon.ic",
 			"sizes": "64x64 32x32 24x24 16x16",
 			"type": "image/x-icon"
 		},
 		{
-			"src": "logo192.png",
+			"src": "C:/Users/alexa/Documents/G14UI/g14ui/electron/src/assets/icon.ic",
 			"type": "image/png",
 			"sizes": "192x192"
 		},
 		{
-			"src": "logo512.png",
+			"src": "C:/Users/alexa/Documents/G14UI/g14ui/electron/src/assets/icon.ic",
 			"type": "image/png",
 			"sizes": "512x512"
 		}
@@ -21,5 +21,5 @@
 	"start_url": ".",
 	"display": "standalone",
 	"theme_color": "#000000",
-	"background_color": "#ffffff"
+	"background_color": "#282C34"
 }

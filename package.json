@@ -1,23 +1,26 @@
 {
 	"name": "g14ui",
 	"version": "0.1.0",
-	"private": true,
+	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
 		"url": "https://github.com/aredden"
 	},
+	"repository": "https://github.com/aredden/electron-G14Control",
+	"homepage": "./",
+	"main": "build/electron.js",
 	"dependencies": {
 		"@reduxjs/toolkit": "^1.4.0",
-		"@testing-library/jest-dom": "^4.2.4",
-		"@testing-library/react": "^9.3.2",
-		"@testing-library/user-event": "^7.1.2",
 		"antd": "^4.7.0",
 		"chalk": "^4.1.0",
 		"chart.js": "^2.9.4",
 		"chartjs-plugin-annotation": "^0.5.7",
 		"chartjs-plugin-dragdata": "^1.1.3",
 		"dotenv": "^8.2.0",
+		"electron-is-dev": "^1.2.0",
+		"electron-root-path": "^1.0.16",
 		"lodash": "^4.17.20",
+		"node-powershell": "^4.0.0",
 		"node-sass": "^4.14.1",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
@@ -29,23 +32,55 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
+		"tsc": "tsc",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"electron-start": "electron ./public/Main.js",
+		"electron-start": "electron ./build/electron.js",
 		"preelectron-pack": "npm run build",
-		"electron-pack": "build --win -c.extraMetadata.main=electron/build/Main.js",
+		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
-		"dist": "electron-builder"
+		"dist": "electron-builder",
+		"postinstall": "electron-builder install-app-deps"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
 	},
 	"build": {
-		"appId": "g14control",
+		"appId": "g14control.main",
 		"win": {
-			"target": "portable",
-			"icon": "build/icon.ico",
-			"requestedExecutionLevel": "requireAdministrator"
+			"target": "nsis",
+			"icon": "C:/Users/alexa/Documents/G14UI/g14ui/electron/src/assets/icon.ico",
+			"requestedExecutionLevel": "requireAdministrator",
+			"extraResources": [
+				{
+					"from": "./electron/src/config",
+					"to": "extraResources",
+					"filter": [
+						"**/*"
+					]
+				},
+				{
+					"from": "./electron/screen-resolution",
+					"to": "extraResources",
+					"filter": [
+						"**/*"
+					]
+				},
+				{
+					"from": "./electron/atrofac-cli",
+					"to": "extraResources",
+					"filter": [
+						"**/*"
+					]
+				},
+				{
+					"from": "./electron/ryzenadj",
+					"to": "extraResources",
+					"filter": [
+						"**/*"
+					]
+				}
+			]
 		}
 	},
 	"jest": {
@@ -74,6 +109,9 @@
 		"@types/react": "^16.9.0",
 		"@types/react-dom": "^16.9.0",
 		"electron": "^10.1.3",
-		"electron-builder": "^22.9.1"
+		"electron-builder": "^22.9.1",
+		"@testing-library/jest-dom": "^4.2.4",
+		"@testing-library/react": "^9.3.2",
+		"@testing-library/user-event": "^7.1.2"
 	}
 }

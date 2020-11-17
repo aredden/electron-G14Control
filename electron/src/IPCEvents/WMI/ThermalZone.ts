@@ -1,7 +1,6 @@
 /** @format */
 import WmiClient from 'wmi-client';
 import getLogger from '../../Logger';
-import cp from 'child_process';
 const LOGGER = getLogger('WMI');
 
 export const getHighPrecisionTemperature = async () => {
@@ -9,7 +8,7 @@ export const getHighPrecisionTemperature = async () => {
 		let wmic = new WmiClient();
 		wmic.query(
 			'Select HighPrecisionTemperature from Win32_PerfFormattedData_Counters_ThermalZoneInformation',
-			function (err, result) {
+			function (err: any, result: any) {
 				if (err) {
 					LOGGER.info(
 						`Error getting temperature from WmiClient:\n${JSON.stringify(

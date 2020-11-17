@@ -21,6 +21,8 @@ const parseBoost = (rawBoost: string) => {
 
 	//check that parsed single line boost strings exist~~
 	if (
+		acboost &&
+		dcboost &&
 		acboost.length > 0 &&
 		acboost[0].length > 0 &&
 		dcboost.length > 0 &&

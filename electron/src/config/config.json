@@ -1,0 +1,234 @@
+{
+  "ryzenadj": {
+    "defaults": {
+      "fastLimit": 40,
+      "slowLimit": 35,
+      "stapmLimit": 35,
+      "stapmTime": 5,
+      "slowTime": 30,
+      "tctlTemp": 95
+    }
+  },
+  "loopTimes": {
+    "temp": 1000,
+    "load": 1000
+  },
+  "fanCurves": [
+    {
+      "name": "Silent (low speed fan)",
+      "plan": "silent",
+      "cpu": [
+        0,
+        0,
+        0,
+        0,
+        31,
+        49,
+        56,
+        56
+      ],
+      "gpu": [
+        0,
+        0,
+        0,
+        0,
+        34,
+        51,
+        61,
+        61
+      ]
+    },
+    {
+      "name": "Performance",
+      "plan": "performance",
+      "cpu": [
+        21,
+        25,
+        28,
+        30,
+        31,
+        57,
+        58,
+        61
+      ],
+      "gpu": [
+        20,
+        23,
+        28,
+        34,
+        51,
+        61,
+        61,
+        69
+      ]
+    },
+    {
+      "name": "Gaming",
+      "plan": "turbo",
+      "cpu": [
+        24,
+        27,
+        31,
+        38,
+        51,
+        61,
+        62,
+        63
+      ],
+      "gpu": [
+        20,
+        23,
+        35,
+        39,
+        51,
+        63,
+        65,
+        69
+      ]
+    },
+    {
+      "name": "Medium Fan Performance",
+      "cpu": [
+        28,
+        30,
+        32,
+        36,
+        42,
+        49,
+        60,
+        62
+      ],
+      "gpu": [
+        21,
+        23,
+        24,
+        28,
+        34,
+        51,
+        61,
+        61
+      ],
+      "plan": "performance"
+    },
+    {
+      "name": "Performance Programming",
+      "cpu": [
+        33,
+        38,
+        43,
+        46,
+        51,
+        61,
+        62,
+        63
+      ],
+      "gpu": [
+        28,
+        32,
+        35,
+        39,
+        51,
+        63,
+        65,
+        69
+      ],
+      "plan": "performance"
+    },
+    {
+      "name": "Benchmarking",
+      "cpu": [
+        44,
+        46,
+        49,
+        54,
+        61,
+        64,
+        76,
+        79
+      ],
+      "gpu": [
+        20,
+        23,
+        35,
+        39,
+        51,
+        63,
+        65,
+        69
+      ],
+      "plan": "turbo"
+    },
+    {
+      "name": "Super Benchmarking",
+      "cpu": [
+        45,
+        51,
+        63,
+        69,
+        76,
+        80,
+        85,
+        86
+      ],
+      "gpu": [
+        20,
+        23,
+        35,
+        39,
+        51,
+        63,
+        65,
+        69
+      ],
+      "plan": "turbo"
+    },
+    {
+      "name": "Test",
+      "cpu": [
+        33,
+        41,
+        43,
+        46,
+        51,
+        61,
+        62,
+        63
+      ],
+      "gpu": [
+        35,
+        38,
+        44,
+        47,
+        51,
+        63,
+        65,
+        69
+      ],
+      "plan": "turbo"
+    },
+    {
+      "name": "Faster - Performance",
+      "cpu": [
+        33,
+        41,
+        43,
+        46,
+        51,
+        61,
+        62,
+        63
+      ],
+      "gpu": [
+        35,
+        38,
+        44,
+        47,
+        51,
+        63,
+        65,
+        69
+      ],
+      "plan": "performance"
+    }
+  ]
+}

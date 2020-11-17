@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import './App.scss';
+import 'antd';
 import 'antd/dist/antd.css';
 import AppLayout from './Components/Layout';
 import { Spin } from 'antd';

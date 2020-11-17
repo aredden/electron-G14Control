@@ -73,7 +73,7 @@ export const setWindowsPlan = async (guid: string): Promise<boolean> => {
 export const getCPUBoostRawResult = async (
 	guid?: string
 ): Promise<string | false> => {
-	let activeGuid: string = guid;
+	let activeGuid: string = guid as string;
 	if (!guid) {
 		let plan = await getActivePlan();
 		if (!plan) {
@@ -109,7 +109,7 @@ export const getCPUBoostRawResult = async (
 };
 
 export const setBoost = async (value: string | number, guid?: string) => {
-	let activeGuid: string = guid;
+	let activeGuid: string = guid as string;
 	if (!guid) {
 		let plan = await getActivePlan();
 		if (!plan) {

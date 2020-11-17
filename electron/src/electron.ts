@@ -4,6 +4,9 @@ import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
 import getLogger from './Logger';
+import path from 'path';
+import url from 'url';
+import is_dev from 'electron-is-dev';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
@@ -23,7 +26,7 @@ function createWindow() {
 		width: 960,
 		height: 600,
 		resizable: true,
-		maxWidth: 960,
+		maxWidth: 1300,
 		minWidth: 960,
 		titleBarStyle: 'hidden',
 		autoHideMenuBar: true,
@@ -40,8 +43,21 @@ function createWindow() {
 	buildIpcConnection(ipc, browserWindow);
 	buildEmitters(ipc, browserWindow);
 	// and load the index.html of the app.
-	browserWindow.loadURL('http://localhost:3000/');
+	let loadurl = 'http://localhost:3000/';
+	if (!is_dev) {
+		browserWindow.loadURL(
+			url.format({
+				pathname: path.join(__dirname, './index.html'),
+				protocol: 'file:',
+				slashes: true,
+			})
+		);
+	} else {
+		browserWindow.loadURL(loadurl);
+	}
 }
+
+export default app;
 
 app.on('window-all-closed', () => {
 	// TODO: stop timeout looping from IPCEmitters.

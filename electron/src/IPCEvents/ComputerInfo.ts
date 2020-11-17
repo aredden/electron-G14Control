@@ -1,9 +1,3 @@
-/**
- *
- *
- * @format
- */
-
 /** @format */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 import { spawn } from 'child_process';
@@ -27,9 +21,10 @@ const buildMap = (datas: Array<string>) => {
 		);
 		return null;
 	});
+
 	cpubiosMap = mapmap;
 };
-let powershellResultArray = [];
+let powershellResultArray: any[] = [];
 let softwareString = '';
 const checkIfPrint = () => {
 	count = count - 1;

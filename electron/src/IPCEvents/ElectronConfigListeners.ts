@@ -1,7 +1,7 @@
 /** @format */
 
 import { IpcMain, BrowserWindow } from 'electron';
-import { updateMenuVisible } from '../Main';
+import { updateMenuVisible } from '../electron';
 import { killEmitters } from './IPCEmitters';
 
 export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
