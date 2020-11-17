@@ -77,7 +77,9 @@ export const getCPUBoostRawResult = async (
 	if (!guid) {
 		let plan = await getActivePlan();
 		if (!plan) {
-			LOGGER.info('getCPUBoostRawResult active plan GUID could not be parsed.');
+			LOGGER.error(
+				'getCPUBoostRawResult active plan GUID could not be parsed.'
+			);
 			return false;
 		}
 		activeGuid = (plan as { name: string; guid: string }).guid;

@@ -23,6 +23,13 @@ th {
 	}
 }
 
+ul.ant-skeleton-paragraph {
+	/* padding-top: .5rem; */
+	padding: 0 !important;
+	padding-top: 0.5rem !important;
+	margin-bottom: 0.5rem !important;
+}
+
 td {
 	&.desc-item-row {
 		width: 100%;

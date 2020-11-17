@@ -102,17 +102,18 @@ export default class DiscreteGPU extends Component<Props, State> {
 	};
 
 	componentDidMount() {
-		this.getDisplayData();
+		this.getDisplayData().then(() => {
+			console.log('Got display data.');
+		});
 	}
 
 	render() {
 		let { displayDataList, isLoading } = this.state;
 		return (
 			<div>
-				<Space style={{ padding: '2rem' }}>
-					<Button onClick={this.handleClick}>
-						Reset GPU (or are you too scared? LOL noob)
-					</Button>
+				<PageHeader title="Discrete GPU Tools"></PageHeader>
+				<Space style={{ padding: '1rem' }}>
+					<Button onClick={this.handleClick}>Reset GPU</Button>
 				</Space>
 				<PageHeader title="Display Options"></PageHeader>
 				<Table<DisplayOptionListType>

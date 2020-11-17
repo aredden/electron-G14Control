@@ -24,8 +24,7 @@ const LOGGER = getLogger('ModifyFans');
 
 const testCurveValidity = (curve: string): boolean => {
 	let reg = new RegExp(/[1]?[0-9]{1}0c:[1]?[0-9]{1,2}%,?/, 'gm');
-	let matches = Array.from(curve.matchAll(reg));
-	LOGGER.info(JSON.stringify(matches));
+	let matches = Array.from(curve.match(reg));
 	if (matches && matches.length === 8) {
 		return true;
 	}
@@ -62,7 +61,7 @@ export const modifyFanCurve = async (
 					if (err || stderr) {
 						if (stderr.indexOf('Success') !== -1) {
 							//@ts-ignore
-							LOGGER.info(
+							LOGGER.error(
 								`Result of atrofac fan curve ${cpuCurve} ${gpuCurve}:\n${JSON.stringify(
 									stderr
 								)}`
@@ -70,7 +69,7 @@ export const modifyFanCurve = async (
 							//@ts-ignore
 							resolve({ cpuCurve, gpuCurve });
 						} else {
-							LOGGER.info(
+							LOGGER.error(
 								`Error setting atrofac fan curve: ${JSON.stringify({
 									err,
 									stderr,
@@ -92,7 +91,7 @@ export const modifyFanCurve = async (
 			}
 		);
 	} else {
-		LOGGER.info(
+		LOGGER.error(
 			`Fan curves: ${JSON.stringify({
 				cpuCurve,
 				gpuCurve,

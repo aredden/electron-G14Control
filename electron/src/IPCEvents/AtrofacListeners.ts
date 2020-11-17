@@ -19,8 +19,8 @@ const parseArrayCurve = (arrCurve: Array<number>) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const reverseParse = (curve: string) => {
 	let reg = new RegExp(/([1]?[0-9]{1}0)c:([1]?[0-9]{1,2})%,?/, 'gm');
-	let matches = Array.from(curve.matchAll(reg));
-	LOGGER.info(JSON.stringify(matches));
+	let matches = Array.from(curve.match(reg));
+	return Array.from(matches);
 };
 
 export const buildAtrofacListeners = (ipc: IpcMain, win: BrowserWindow) => {
@@ -45,7 +45,11 @@ export const buildAtrofacListeners = (ipc: IpcMain, win: BrowserWindow) => {
 		) => {
 			let { cpu, gpu, plan } = arrayCurve;
 			LOGGER.info(
-				`Got gpu / gpu curve info: ${JSON.stringify({ cpu, gpu, plan })}`
+				`Got gpu / gpu curve info: ${JSON.stringify(
+					{ cpu, gpu, plan },
+					null,
+					2
+				)}`
 			);
 			let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
 			let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;

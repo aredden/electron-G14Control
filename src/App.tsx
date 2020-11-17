@@ -35,9 +35,7 @@ export default class App extends Component<Props, State> {
 		let config = await window.ipcRenderer.invoke('loadConfig');
 		if (config) {
 			let parsedConfig: G14Config = JSON.parse(config);
-			console.log(parsedConfig);
 			let store = await initStore(parsedConfig);
-			store.dispatch(updateLoopTimes({ temp: 1000, load: 1000 }));
 			this.setState({ config: config, store });
 		}
 	};
@@ -73,7 +71,7 @@ export default class App extends Component<Props, State> {
 					style={{
 						display: 'flex',
 						justifyContent: 'center',
-						marginTop: '40%',
+						marginTop: '20%',
 						alignContent: 'center',
 					}}></Spin>
 			);

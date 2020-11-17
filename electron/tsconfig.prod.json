@@ -6,8 +6,9 @@
 		"allowJs": true,
 		"outDir": "../public",
 		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true
 	},
 	"include": ["."],
-	"exclude": ["build"]
+	"exclude": ["build", "node_modules"]
 }

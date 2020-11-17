@@ -68,7 +68,7 @@ export const setDisplayConfig = async (
 				resolve(result);
 			})
 			.catch((err) => {
-				LOGGER.info(
+				LOGGER.error(
 					`Error with ChangeScreenResolution.exe command:\n${JSON.stringify({
 						display,
 						refresh,

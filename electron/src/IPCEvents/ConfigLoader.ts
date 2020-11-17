@@ -59,7 +59,9 @@ export const writeConfig = async (config: object) => {
 
 export const buildConfigLoaderListeners = (ipc: IpcMain) => {
 	ipc.handle('loadConfig', async (event, args) => {
-		let config = await loadConfig();
+		let config = await loadConfig().catch((err) => {
+			LOGGER.info(`Error loading config:\n${err}`);
+		});
 		if (config) {
 			return (config as Buffer).toString('utf-8');
 		} else {

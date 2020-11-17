@@ -20,7 +20,7 @@ export const modifyArmoryCratePlan = async (plan: ArmoryPlan) => {
 	return new Promise<ArmoryPlan | false>((resolve, reject) => {
 		exec(`${ATRO_LOC} --plan ${plan}`, (err, out, stderr) => {
 			if (err || stderr) {
-				LOGGER.info(
+				LOGGER.error(
 					`Error setting atrofac armory crate plan: ${JSON.stringify({
 						err,
 						stderr,

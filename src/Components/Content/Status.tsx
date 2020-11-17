@@ -1,6 +1,6 @@
 /** @format */
 
-import { Descriptions, Spin } from 'antd';
+import { Descriptions, Skeleton } from 'antd';
 import React, { Component } from 'react';
 import './Status.scss';
 
@@ -13,6 +13,7 @@ interface State {
 	loadValues: Array<{ Name: string; PercentProcessorTime: number }>;
 	cpubiosmap: CpuBiosMap | undefined;
 	softwaremap: SoftwareMap | undefined;
+	loading: boolean;
 }
 
 export default class Status extends Component<Props, State> {
@@ -22,18 +23,19 @@ export default class Status extends Component<Props, State> {
 			loadValues: [],
 			cpubiosmap: undefined,
 			softwaremap: undefined,
+			loading: true,
 		};
 	}
 
-	coreLoadListener = (
-		_event: any,
-		loadvalues: Array<{ Name: string; PercentProcessorTime: number }>
-	) => {
-		let newloadValues = loadvalues.sort((a, b) => {
-			return parseFloat(a.Name) - parseFloat(b.Name);
-		});
-		this.setState({ loadValues: newloadValues });
-	};
+	// coreLoadListener = (
+	// 	_event: any,
+	// 	loadvalues: Array<{ Name: string; PercentProcessorTime: number }>
+	// ) => {
+	// 	let newloadValues = loadvalues.sort((a, b) => {
+	// 		return parseFloat(a.Name) - parseFloat(b.Name);
+	// 	});
+	// 	this.setState({ loadValues: newloadValues });
+	// };
 
 	getInfo = async () => {
 		let info: Promise<CpuBiosMap> = window.ipcRenderer.invoke('getCpuBiosInfo');
@@ -42,27 +44,31 @@ export default class Status extends Component<Props, State> {
 		);
 
 		Promise.all([info, software]).then(([cpubios, softmap]) => {
-			this.setState({ cpubiosmap: cpubios, softwaremap: softmap });
+			this.setState({
+				cpubiosmap: cpubios,
+				softwaremap: softmap,
+				loading: false,
+			});
 		});
 	};
 
 	componentDidMount() {
 		window.ipcRenderer.send('cpuLoadRun', true);
-		window.ipcRenderer.on('coresLoad', this.coreLoadListener);
+		// window.ipcRenderer.on('coresLoad', this.coreLoadListener);
 		this.getInfo();
 	}
 
 	componentWillUnmount() {
 		window.ipcRenderer.send('cpuLoadRun', false);
-		window.ipcRenderer.off('coresLoad', this.coreLoadListener);
+		// window.ipcRenderer.off('coresLoad', this.coreLoadListener);
 	}
 
 	render() {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		let { loadValues, cpubiosmap, softwaremap } = this.state;
+		let { loadValues, cpubiosmap, softwaremap, loading } = this.state;
 		let descriptionBiosItems: Array<JSX.Element> = [];
 		let descriptionSoftwareItems: Array<JSX.Element> = [];
-		if (cpubiosmap) {
+		if (cpubiosmap && !loading) {
 			Array.from(cpubiosmap).forEach((val, key) => {
 				if (!val) {
 					return;
@@ -77,11 +83,29 @@ export default class Status extends Component<Props, State> {
 				descriptionBiosItems.push(descitem);
 			});
 		} else {
-			descriptionBiosItems.push(
-				<Spin tip="Loading CPU & BIOS info..." size="large" />
-			);
+			for (let x = 0; x < 10; x++) {
+				descriptionBiosItems.push(
+					<Descriptions.Item
+						span={5}
+						style={{ paddingTop: '1rem !important' }}
+						key={'skel' + x}
+						label={
+							<Skeleton
+								title={false}
+								active={true}
+								paragraph={{ width: Math.random() * 150 + 50, rows: 1 }}
+							/>
+						}>
+						<Skeleton
+							title={false}
+							active={true}
+							paragraph={{ width: Math.random() * 100 + 100, rows: 1 }}
+						/>
+					</Descriptions.Item>
+				);
+			}
 		}
-		if (softwaremap) {
+		if (softwaremap && !loading) {
 			Array.from(softwaremap).forEach(([keyo, mapo], key) => {
 				if (mapo) {
 					let descitem = (
@@ -101,17 +125,48 @@ export default class Status extends Component<Props, State> {
 				}
 			});
 		} else {
-			descriptionSoftwareItems.push(
-				<Spin tip="Loading Software info..." size="large" />
-			);
+			for (let x = 0; x < 6; x++) {
+				descriptionSoftwareItems.push(
+					<Descriptions.Item
+						className="desc-item-row"
+						span={5}
+						key={'skeleton' + x}
+						label={
+							<Skeleton
+								title={false}
+								active={true}
+								paragraph={{ width: Math.random() * 125 + 100, rows: 1 }}
+							/>
+						}>
+						<div className="desc-item-ver-vend">
+							<Skeleton
+								title={false}
+								active={true}
+								paragraph={{ width: Math.random() * 100 + 50, rows: 1 }}
+							/>
+						</div>
+
+						<div className="desc-item-ver-vend">
+							<Skeleton
+								title={false}
+								active={true}
+								paragraph={{ width: Math.random() * 100 + 50, rows: 1 }}
+							/>
+						</div>
+					</Descriptions.Item>
+				);
+			}
 		}
 
 		return (
 			<>
-				<Descriptions title="Cpu Info" bordered>
+				<Descriptions title="Cpu Info" size="small" bordered>
 					{descriptionBiosItems}
 				</Descriptions>
-				<Descriptions bordered style={{ maxWidth: '100%' }}></Descriptions>
+				<Descriptions
+					bordered
+					size="small"
+					style={{ maxWidth: '100%' }}></Descriptions>
 				<br></br>
 				<Descriptions
 					title="ASUS & AMD Software Info"

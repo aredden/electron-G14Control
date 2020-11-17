@@ -11,18 +11,20 @@ let tempLoop: cp.ChildProcessWithoutNullStreams;
 let loadLoop: NodeJS.Timeout;
 
 let tempLoopRunning = false;
-let loadLoopRunning = false;
+// let loadLoopRunning = false;
 
 const LOGGER = getLogger('IPCEmitters');
 
 export const killEmitters = () => {
 	killLoadLoop = true;
-	clearTimeout(loadLoop);
+	if (loadLoop) {
+		clearTimeout(loadLoop);
+	}
 	if (tempLoop) {
 		tempLoop.kill();
 	}
 	tempLoopRunning = false;
-	loadLoopRunning = false;
+	// loadLoopRunning = false;
 };
 
 export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
@@ -39,35 +41,35 @@ export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 			LOGGER.info('cpuTempRun event recieved.. terminated.');
 		}
 	});
-	ipc.on('cpuLoadRun', (_event, run: boolean) => {
-		if (run) {
-			if (!loadLoopRunning) {
-				killLoadLoop = false;
-				loadLoopRunning = true;
-				getLoadLoop(window);
-				LOGGER.info('cpuLoadRun event recieved.. running.');
-			}
-		} else {
-			killLoadLoop = true;
-			loadLoopRunning = false;
-			clearTimeout(loadLoop);
-			LOGGER.info('cpuLoadRun event recieved.. terminated.');
-		}
-	});
+	// ipc.on('cpuLoadRun', (_event, run: boolean) => {
+	// 	if (run) {
+	// 		if (!loadLoopRunning) {
+	// 			killLoadLoop = false;
+	// 			loadLoopRunning = true;
+	// 			getLoadLoop(window);
+	// 			LOGGER.info('cpuLoadRun event recieved.. running.');
+	// 		}
+	// 	} else {
+	// 		killLoadLoop = true;
+	// 		loadLoopRunning = false;
+	// 		clearTimeout(loadLoop);
+	// 		LOGGER.info('cpuLoadRun event recieved.. terminated.');
+	// 	}
+	// });
 };
 
-const getLoadLoop = (window: BrowserWindow) => {
-	loadLoop = setTimeout(async () => {
-		if (!killLoadLoop) {
-			let loadResult = await getCoresLoad().catch((err) => {
-				LOGGER.error(
-					'Error: promise rejected in getLoadLoop() / getCoresLoad function.'
-				);
-			});
-			if (loadResult) {
-				window.webContents.send('coresLoad', loadResult);
-			}
-			getLoadLoop(window);
-		}
-	}, 2000);
-};
+// const getLoadLoop = (window: BrowserWindow) => {
+// 	loadLoop = setTimeout(async () => {
+// 		if (!killLoadLoop) {
+// 			let loadResult = await getCoresLoad().catch((err) => {
+// 				LOGGER.error(
+// 					`Error: promise rejected in getLoadLoop() / getCoresLoad function.\n${err}`
+// 				);
+// 			});
+// 			if (loadResult) {
+// 				window.webContents.send('coresLoad', loadResult);
+// 			}
+// 			getLoadLoop(window);
+// 		}
+// 	}, 2000);
+// };

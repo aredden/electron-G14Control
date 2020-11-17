@@ -41,10 +41,10 @@ const buildSoftwareList = () => {
 		softwareString = softwareString + data.toString();
 	});
 	softchild.stderr.on('data', (err) => {
-		LOGGER.info(err.toString());
+		LOGGER.error(err.toString());
 	});
 	softchild.on('error', (err) => {
-		LOGGER.info(err.toString());
+		LOGGER.error(err.toString());
 	});
 	softchild.on('exit', () => {
 		let form = formatGetWmiobject(softwareString);
@@ -57,6 +57,12 @@ const buildSoftwareList = () => {
 const buildPsSpawn = (args: string) => {
 	count = count + 1;
 	let childo = spawn('powershell.exe', [args]);
+
+	childo.stderr.on('error', (err) => {
+		LOGGER.error(
+			`Powershell Spawn (from ComputerInfo.tsx resulted in error:\n${err}`
+		);
+	});
 
 	childo.stdout.on('data', (data) => {
 		powershellResultArray.push(...formatGetWmiobject(data));
