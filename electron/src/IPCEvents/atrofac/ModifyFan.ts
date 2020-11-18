@@ -33,7 +33,7 @@ const testCurveValidity = (curve: string): boolean => {
 
 const allowedPlans = ['windows', 'silent', 'performance', 'turbo'];
 
-const buildCommand = (gpu?: string, cpu?: string, plan?: string) => {
+const buildCommand = (cpu?: string, gpu?: string, plan?: string) => {
 	let cmd = `fan`;
 	if (plan && allowedPlans.includes(plan)) {
 		cmd += ` --plan ${plan}`;

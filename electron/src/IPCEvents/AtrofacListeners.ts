@@ -46,7 +46,7 @@ export const buildAtrofacListeners = (ipc: IpcMain, win: BrowserWindow) => {
 			let { cpu, gpu, plan } = arrayCurve;
 			LOGGER.info(
 				`Got gpu / gpu curve info: ${JSON.stringify(
-					{ cpu, gpu, plan },
+					{ cpu: cpu.toString(), gpu: gpu.toString(), plan },
 					null,
 					2
 				)}`

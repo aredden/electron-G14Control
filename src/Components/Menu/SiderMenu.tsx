@@ -66,6 +66,13 @@ export default class SiderMenu extends Component<Props, State> {
 					onClick={this.handleClick}>
 					Windows Power Plans
 				</Menu.Item>
+
+				<Menu.Item
+					key="5"
+					icon={<SettingOutlined />}
+					onClick={this.handleClick}>
+					CPU Tuning
+				</Menu.Item>
 				<Menu.Item
 					key="4"
 					icon={<UserOutlined />}
@@ -73,12 +80,6 @@ export default class SiderMenu extends Component<Props, State> {
 					title="Not yet implemented."
 					onClick={this.handleClick}>
 					Auto Power Switching
-				</Menu.Item>
-				<Menu.Item
-					key="5"
-					icon={<SettingOutlined />}
-					onClick={this.handleClick}>
-					CPU Tuning
 				</Menu.Item>
 				<TempView />
 			</Menu>
