@@ -69,7 +69,7 @@ This is just a starting list. I'm sure there is much more to do.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/aredden/electron-G14Control/blob/main/LICENSE)
 
 ## Major Contributors
 
