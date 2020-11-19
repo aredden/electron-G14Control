@@ -6,7 +6,7 @@ import 'antd';
 import 'antd/dist/antd.css';
 import AppLayout from './Components/Layout';
 import { Spin } from 'antd';
-import { initStore, updateLoopTimes } from './Store/ReduxStore';
+import { initStore } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
 declare global {

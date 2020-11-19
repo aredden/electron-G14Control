@@ -37,7 +37,7 @@ const buildCommandString = (
 		command = command + ` /f=${refresh}`;
 	}
 	if (width && height) {
-		command = command = ` /w=${width} /h=${height}`;
+		command = command + ` /w=${width} /h=${height}`;
 	}
 	return command;
 };
@@ -81,79 +81,82 @@ export const setDisplayConfig = async (
 };
 
 export const parseDisplayOptions = (stringOpts: string) => {
-	let opts = stringOpts.split(
-		/ {0,2}Display modes for \\\\\.\\DISPLAY[0-9]{1,2}:/gm
-	);
-	if (!opts || opts.length < 2) {
-		return [];
-	}
-	let defaultRefresh: number = 120;
-	if (stringOpts.indexOf('@120Hz') === -1) {
-		defaultRefresh = 60;
-	}
-	opts.shift();
-	let d0 = opts[0].replace(/\r| {2,10}/gm, '');
-	let d0arr = d0.split(`\n`).filter((el) => el !== '');
-	let results: Array<DisplayOptionData> = d0arr.map((result) => {
-		let resString =
-			//@ts-ignore
-			(result && result.match(/[0-9]{3,4}x[0-9]{3,4}/gm)[0]) || '1920x1080';
-		let resArr = resString.split('x');
-		let resolution = {
-			width: 1920,
-			height: 1080,
-		};
-		if (resArr && resArr.length === 2) {
-			let width = resArr[0];
-			let height = resArr[1];
-			resolution = {
-				width: parseInt(width),
-				height: parseInt(height),
+	return new Promise((resolve) => {
+		let opts = stringOpts.split(
+			/ {0,2}Display modes for \\\\\.\\DISPLAY[0-9]{1,2}:/gm
+		);
+		if (!opts || opts.length < 2) {
+			return [];
+		}
+		let defaultRefresh: number = 120;
+		if (stringOpts.indexOf('@120Hz') === -1) {
+			defaultRefresh = 60;
+		}
+		opts.shift();
+		let d0 = opts[0].replace(/\r| {2,10}/gm, '');
+		let d0arr = d0.split(`\n`).filter((el) => el !== '');
+		let results: Array<DisplayOptionData> = d0arr.map((result) => {
+			let resString =
+				//@ts-ignore
+				(result && result.match(/[0-9]{3,4}x[0-9]{3,4}/gm)[0]) || '1920x1080';
+			let resArr = resString.split('x');
+			let resolution = {
+				width: 1920,
+				height: 1080,
 			};
-		} else {
-			LOGGER.info(`Trouble parsing width & height for line ${result}`);
-		}
+			if (resArr && resArr.length === 2) {
+				let width = resArr[0];
+				let height = resArr[1];
+				resolution = {
+					width: parseInt(width),
+					height: parseInt(height),
+				};
+			} else {
+				LOGGER.info(`Trouble parsing width & height for line ${result}`);
+			}
 
-		let bitString = result.match(/[0-9]{1,2}bit/);
-		let bits = 32;
-		if (bitString && bitString.length === 1) {
-			bits = parseInt(bitString[0].replace('bit', ''));
-		} else {
-			LOGGER.info(`Trouble parsing bit color for line ${result}`);
-		}
+			let bitString = result.match(/[0-9]{1,2}bit/);
+			let bits = 32;
+			if (bitString && bitString.length === 1) {
+				bits = parseInt(bitString[0].replace('bit', ''));
+			} else {
+				LOGGER.info(`Trouble parsing bit color for line ${result}`);
+			}
 
-		let refresh = defaultRefresh;
-		let refreshString = result.match(/@[0-9]{2,3}Hz/gm);
-		if (refreshString && refreshString.length === 1) {
-			refresh = parseInt(refreshString[0].replace(/@|[a-zA-Z]/gm, ''));
-		} else {
-			LOGGER.info(`Trouble parsing refresh rate for ${result}`);
-		}
+			let refresh = defaultRefresh;
+			let refreshString = result.match(/@[0-9]{2,3}Hz/gm);
+			if (refreshString && refreshString.length === 1) {
+				refresh = parseInt(refreshString[0].replace(/@|[a-zA-Z]/gm, ''));
+			} else {
+				LOGGER.info(`Trouble parsing refresh rate for ${result}`);
+			}
 
-		let format = 'default';
-		let formatStr = result.match(/(centered|stretched|default)$/gm);
-		if (formatStr && formatStr.length === 1) {
-			format = formatStr[0];
-		} else {
-			LOGGER.info(`Trouble parsing format for ${result}`);
-		}
-		let option: DisplayOptionData = {
-			resolution,
-			bits,
-			refresh,
-			format,
-		};
-		return option;
+			let format = 'default';
+			let formatStr = result.match(/(centered|stretched|default)$/gm);
+			if (formatStr && formatStr.length === 1) {
+				format = formatStr[0];
+			} else {
+				LOGGER.info(`Trouble parsing format for ${result}`);
+			}
+			let option: DisplayOptionData = {
+				resolution,
+				bits,
+				refresh,
+				format,
+			};
+			return option;
+		});
+		resolve(results);
 	});
-	return results;
 };
 
 export const getDisplays = async () => {
 	return new Promise((resolve) => {
 		ps.addCommand(`${screenrefloc} /m`);
 		ps.invoke()
-			.then((result) => {
-				resolve(parseDisplayOptions(result));
+			.then(async (result) => {
+				let displays = await parseDisplayOptions(result);
+				resolve(displays);
 			})
 			.catch((err) => {
 				LOGGER.info('Error parsing display options:\n' + err);

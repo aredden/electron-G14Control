@@ -40,6 +40,12 @@ export const updateRyzenadjConfig = createAction(
 	}
 );
 
+export const updateDisplayOptions = createAction(
+	'UPDATE_DISPLAY_OPTIONS',
+	(value: DisplayOptionData[]) => {
+		return { payload: value };
+	}
+);
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -86,7 +92,23 @@ const createRootReducer = (initialState: G14Config) => {
 						stapmLimit: stapmLimit as number,
 						stapmTime: stapmTime as number,
 					},
+					limits: {},
+					options: [],
 				},
+				displayOptions: state.displayOptions,
+			};
+			state = newState;
+			return state;
+		});
+
+		reducer.addCase(updateDisplayOptions, (state, action) => {
+			let { payload } = action;
+			let { ryzenadj, fanCurves, loopTimes } = state;
+			let newState = {
+				ryzenadj,
+				fanCurves,
+				loopTimes,
+				displayOptions: payload,
 			};
 			state = newState;
 			return state;

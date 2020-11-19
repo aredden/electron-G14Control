@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --project ./tsconfig.prod.json",
 		"start": "electron .",
-		"watch": "nodemon -e ts --ignore /build --ignore /node_modules --exec \"tsc --project ./tsconfig.dev.json && electron .\""
+		"watch": "nodemon -e ts --ignore /build --ignore /node_modules --exec \"tsc --project ./tsconfig.dev.json && electron --inspect=5858 .\""
 	},
 	"author": "",
 	"license": "ISC",
@@ -19,8 +19,10 @@
 		"wmi-client": "^0.5.0"
 	},
 	"devDependencies": {
+		"@types/electron-devtools-installer": "^2.2.0",
 		"@types/lodash": "^4.14.164",
 		"@types/node-powershell": "^3.1.1",
+		"electron-devtools-installer": "^3.1.1",
 		"nodemon": "^2.0.5",
 		"ts-node": "^9.0.0"
 	}

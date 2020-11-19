@@ -44,14 +44,9 @@ declare type CpuBiosMapValues = {
 
 declare type G14Config = {
 	ryzenadj: {
-		defaults: {
-			fastLimit: number;
-			slowLimit: number;
-			stapmLimit: number;
-			stapmTime: number;
-			slowTime: number;
-			tctlTemp: number;
-		};
+		defaults: RyzenadjConfig;
+		limits: RyzenadjConfig;
+		options: RyzenadjConfig[];
 	};
 	loopTimes: {
 		temp: number;
@@ -63,6 +58,7 @@ declare type G14Config = {
 		cpu: number[];
 		gpu: number[];
 	}>;
+	displayOptions: DisplayOptionData[];
 };
 
 declare type FanCurveConfig = {

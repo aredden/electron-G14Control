@@ -1,14 +1,18 @@
 /** @format */
 
-import { Button, PageHeader, Space, Table } from 'antd';
+import { Button, message, PageHeader, Space, Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
-
+import { CheckSquareOutlined } from '@ant-design/icons';
+import { store, updateDisplayOptions } from '../../Store/ReduxStore';
+import { result } from 'lodash';
 interface Props {}
 
 interface State {
 	displayDataList: Array<DisplayOptionData>;
-	isLoading: boolean;
+	columns: ColumnsType<DisplayOptionListType>;
+	popconfirm: boolean;
+	targetDisplay: DisplayOptions;
 }
 
 type SortOrder = 'ascend' | 'descend' | undefined | null;
@@ -44,91 +48,163 @@ const calcRefreshSort = (
 	return (b.refresh as number) - (a.refresh as number);
 };
 
-const columns: ColumnsType<DisplayOptionListType> = [
-	{
-		title: 'Refresh Rate',
-		key: 'refresh',
-		dataIndex: 'refresh',
-		sorter: {
-			compare: calcRefreshSort,
-			multiple: 2,
-		},
-	},
-	{
-		title: 'Resolution',
-		key: 'resolution',
-		dataIndex: 'resolution',
-		sorter: {
-			compare: calcResolutionSort,
-			multiple: 2,
-		},
-		defaultSortOrder: 'descend' as SortOrder,
-	},
-	{
-		title: 'Color Bits',
-		key: 'bits',
-		dataIndex: 'bits',
-	},
-	{
-		title: 'Format',
-		key: 'format',
-		dataIndex: 'format',
-	},
-];
-
 export default class DiscreteGPU extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			displayDataList: [],
-			isLoading: true,
+			columns: [],
+			popconfirm: false,
+			targetDisplay: {
+				refresh: 0,
+				width: 1920,
+				height: 1080,
+				display: 0,
+			},
 		};
 	}
 
+	buildListOptions = () => {
+		const columns: ColumnsType<DisplayOptionListType> = [
+			{
+				title: 'Refresh Rate',
+				key: 'refresh',
+				dataIndex: 'refresh',
+				sorter: {
+					compare: calcRefreshSort,
+					multiple: 2,
+				},
+			},
+			{
+				title: 'Resolution',
+				key: 'resolution',
+				dataIndex: 'resolution',
+				sorter: {
+					compare: calcResolutionSort,
+					multiple: 2,
+				},
+				defaultSortOrder: 'descend' as SortOrder,
+			},
+			{
+				title: 'Color Bits',
+				key: 'bits',
+				dataIndex: 'bits',
+			},
+			{
+				title: 'Format',
+				key: 'format',
+				dataIndex: 'format',
+			},
+			{
+				title: 'Select',
+				key: 'select',
+				render: (val, record) => {
+					return (
+						<button
+							color="#6C2626"
+							onClick={() => this.handleCellClick(val, record)}>
+							<CheckSquareOutlined />
+						</button>
+					);
+				},
+			},
+		];
+		return columns;
+	};
+
+	handleCellClick = (e: any, data: DisplayOptionListType) => {
+		let [width, height] = data.resolution.split('x');
+		let raw = {
+			width: parseInt(width),
+			height: parseInt(height),
+			refresh: data.refresh,
+			mode: data.format,
+			display: 0,
+		};
+
+		this.setState({ targetDisplay: raw, popconfirm: true }, () => {
+			this.handleConfirmChangeDisplay();
+		});
+	};
+
 	handleClick = async () => {
-		let result = await window.ipcRenderer.invoke('resetGPU');
-		if (result) {
-			alert('hmm');
-		} else {
-			alert('frick');
-		}
+		message.loading('Resetting GPU device.');
+		window.ipcRenderer.invoke('resetGPU').then((result: any) => {
+			if (result) {
+				message.success('GPU reset successfully!');
+			} else {
+				message.error('GPU could not be reset.');
+			}
+		});
 	};
 
 	getDisplayData = async () => {
-		let displayData = await window.ipcRenderer.invoke('getDisplayOptions');
-		if (displayData) {
-			this.setState({ displayDataList: displayData, isLoading: false });
+		let storeState = store.getState() as G14Config;
+		if (storeState.displayOptions && storeState.displayOptions.length > 0) {
+			let columns = this.buildListOptions();
+			this.setState({
+				displayDataList: [...storeState.displayOptions],
+				columns,
+			});
+		} else {
+			window.ipcRenderer.invoke('getDisplayOptions').then((result: any) => {
+				if (result) {
+					let columns = this.buildListOptions();
+					store.dispatch(updateDisplayOptions(result));
+					this.setState({ displayDataList: result, columns });
+				}
+			});
 		}
 	};
 
+	handleConfirmChangeDisplay = async () => {
+		message.loading('Modifying display settings.');
+		window.ipcRenderer
+			.invoke('setDisplayOptions', this.state.targetDisplay)
+			.then((result: any) => {
+				if (result) {
+					message.success('Display settings successfully changed.');
+				} else {
+					message.error('Display settings change failed.');
+				}
+			})
+			.catch((err: string) => {
+				alert('SHIP' + err);
+			});
+	};
+
 	componentDidMount() {
-		this.getDisplayData().then(() => {
-			console.log('Got display data.');
-		});
+		this.getDisplayData();
 	}
 
 	render() {
-		let { displayDataList, isLoading } = this.state;
+		let { displayDataList, columns } = this.state;
+		let datalist = displayDataList.map((val) => {
+			return {
+				bits: val.bits,
+				refresh: val.refresh,
+				format: val.format,
+				resolution: val.resolution.width + 'x' + val.resolution.height,
+			};
+		});
 		return (
 			<div>
 				<PageHeader title="Discrete GPU Tools"></PageHeader>
+
 				<Space style={{ padding: '1rem' }}>
 					<Button onClick={this.handleClick}>Reset GPU</Button>
 				</Space>
 				<PageHeader title="Display Options"></PageHeader>
-				<Table<DisplayOptionListType>
-					showSorterTooltip={true}
-					loading={isLoading}
-					size="small"
-					dataSource={displayDataList.map((val) => {
-						return {
-							bits: val.bits,
-							refresh: val.refresh,
-							format: val.format,
-							resolution: val.resolution.width + 'x' + val.resolution.height,
-						};
-					})}
-					columns={columns}></Table>
+				{datalist.length === 0 ? (
+					''
+				) : (
+					<Table<DisplayOptionListType>
+						showSorterTooltip={true}
+						loading={datalist.length === 0}
+						size="small"
+						dataSource={datalist}
+						columns={columns}></Table>
+				)}
 			</div>
 		);
 	}

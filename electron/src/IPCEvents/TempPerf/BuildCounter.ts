@@ -20,12 +20,19 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 		}
 	);
 	if (baby.pid) {
-		os.setPriority(baby.pid, 2);
-		if (os.getPriority(baby.pid) === 2) {
-			LOGGER.info(`Was able to set higher priority for ${baby.pid}`);
-		} else {
-			LOGGER.error(`Was not able to set higher priority for ${baby.pid}`);
-		}
+		os.setPriority(baby.pid, os.constants.priority.PRIORITY_ABOVE_NORMAL);
+		setTimeout(() => {
+			let priority = os.getPriority(baby.pid);
+			if (priority === os.constants.priority.PRIORITY_ABOVE_NORMAL) {
+				LOGGER.info(
+					`Was able to set higher priority for ${baby.pid}, has priority:${priority}`
+				);
+			} else {
+				LOGGER.error(
+					`Was not able to set higher priority for ${baby.pid}, has priority:${priority}`
+				);
+			}
+		}, 4000);
 	} else {
 		LOGGER.error(
 			`TypePerf spwn does not have pid (possible cwd issue): pid:${baby.pid}`

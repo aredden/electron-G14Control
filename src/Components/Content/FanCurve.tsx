@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
 import { buildDataSet, createChart } from './FanCurve/options';
-import { Button, Input, Modal, PageHeader } from 'antd';
+import { Button, Input, message, Modal, PageHeader } from 'antd';
 import ArmoryPlanSettings from './FanCurve/ArmoryPlan';
 import { store, updateFanConfig } from '../../Store/ReduxStore';
 import Select from './Select';
@@ -128,11 +128,23 @@ export default class FanCurve extends Component<Props, State> {
 	};
 
 	handleSubmitCurves = async (e: any) => {
+		message.loading('Setting fan curve.', 1);
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		let result = await window.ipcRenderer.invoke('setFanCurve', {
-			...this.state.currentCurves,
-			plan: this.state.plan,
-		});
+		window.ipcRenderer
+			.invoke('setFanCurve', {
+				...this.state.currentCurves,
+				plan: this.state.plan,
+			})
+			.then((result: any) => {
+				if (result) {
+					message.success('Sucessfully set fan curve.');
+				} else {
+					message.success('Failed to set fan curve.');
+				}
+			})
+			.catch((error: any) => {
+				message.error('Failed to set fan curves because of error.');
+			});
 	};
 
 	componentDidMount() {

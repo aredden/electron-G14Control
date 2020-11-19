@@ -3,6 +3,9 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
+import installExtension, {
+	REACT_DEVELOPER_TOOLS,
+} from 'electron-devtools-installer';
 import getLogger from './Logger';
 import path from 'path';
 import url from 'url';
@@ -14,7 +17,6 @@ let browserWindow: BrowserWindow;
 let showIconEnabled = false;
 let tray: Tray;
 let trayContext: Menu;
-
 export const updateMenuVisible = (minimized: boolean) => {
 	trayContext.getMenuItemById('showapp').enabled = minimized;
 	trayContext.getMenuItemById('hideapp').enabled = !minimized;
@@ -22,11 +24,12 @@ export const updateMenuVisible = (minimized: boolean) => {
 
 function createWindow() {
 	// Create the browser window.
+
 	browserWindow = new BrowserWindow({
 		width: 960,
 		height: 600,
 		resizable: true,
-		maxWidth: 1300,
+		maxWidth: is_dev ? 1920 : 1300,
 		minWidth: 960,
 		titleBarStyle: 'hidden',
 		autoHideMenuBar: true,
@@ -39,7 +42,13 @@ function createWindow() {
 		},
 		darkTheme: true,
 	});
+	if (is_dev) {
+		installExtension(REACT_DEVELOPER_TOOLS)
+			.then((name) => console.log(`Added Extension:  ${name}`))
+			.catch((err) => console.log('An error occurred adding devtools: ', err));
+	}
 	const ipc = ipcMain;
+	ipc.setMaxListeners(35);
 	buildIpcConnection(ipc, browserWindow);
 	buildEmitters(ipc, browserWindow);
 	// and load the index.html of the app.
@@ -66,7 +75,9 @@ app.on('window-all-closed', () => {
 	LOGGER.info('window closed');
 });
 app.on('quit', (evt) => {
+	killEmitters();
 	tray.destroy();
+	process.exit(0);
 });
 app.on('ready', createWindow);
 app.whenReady().then(() => {

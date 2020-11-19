@@ -9,6 +9,7 @@
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
 		"sourceMap": true,
+		"sourceRoot": "src",
 		"module": "esnext",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
