@@ -74,11 +74,9 @@ export default class Status extends Component<Props, State> {
 					return;
 				}
 				let descitem = (
-					<>
-						<Descriptions.Item span={5} key={key} label={val[0]}>
-							{val[1]}
-						</Descriptions.Item>
-					</>
+					<Descriptions.Item span={5} key={val[0] + key} label={val[0]}>
+						{val[1]}
+					</Descriptions.Item>
 				);
 				descriptionBiosItems.push(descitem);
 			});
@@ -88,15 +86,17 @@ export default class Status extends Component<Props, State> {
 					<Descriptions.Item
 						span={5}
 						style={{ paddingTop: '1rem !important' }}
-						key={'skel' + x}
+						key={'skeloitem' + x}
 						label={
 							<Skeleton
 								title={false}
 								active={true}
+								key={'skellabel' + x}
 								paragraph={{ width: Math.random() * 150 + 50, rows: 1 }}
 							/>
 						}>
 						<Skeleton
+							key={'skeldata' + x}
 							title={false}
 							active={true}
 							paragraph={{ width: Math.random() * 100 + 100, rows: 1 }}
@@ -113,11 +113,15 @@ export default class Status extends Component<Props, State> {
 							<Descriptions.Item
 								className="desc-item-row"
 								span={5}
-								key={key}
+								key={key + keyo + 'descSoft'}
 								label={keyo}>
-								<div className="desc-item-ver-vend">{mapo.get('Version')}</div>
+								<div key={key + keyo + 'vers'} className="desc-item-ver-vend">
+									{mapo.get('Version')}
+								</div>
 
-								<div className="desc-item-ver-vend">{mapo.get('Vendor')}</div>
+								<div key={key + keyo + 'vend'} className="desc-item-ver-vend">
+									{mapo.get('Vendor')}
+								</div>
 							</Descriptions.Item>
 						</>
 					);
@@ -133,21 +137,24 @@ export default class Status extends Component<Props, State> {
 						key={'skeleton' + x}
 						label={
 							<Skeleton
+								key={'sekelLabel' + x}
 								title={false}
 								active={true}
 								paragraph={{ width: Math.random() * 125 + 100, rows: 1 }}
 							/>
 						}>
-						<div className="desc-item-ver-vend">
+						<div key={'sekelcontain' + x} className="desc-item-ver-vend">
 							<Skeleton
+								key={'sekelval' + x}
 								title={false}
 								active={true}
 								paragraph={{ width: Math.random() * 100 + 50, rows: 1 }}
 							/>
 						</div>
 
-						<div className="desc-item-ver-vend">
+						<div key={'sekelcontainver' + x} className="desc-item-ver-vend">
 							<Skeleton
+								key={'sekelver' + x}
 								title={false}
 								active={true}
 								paragraph={{ width: Math.random() * 100 + 50, rows: 1 }}

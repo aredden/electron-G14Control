@@ -4,10 +4,30 @@
 			"fastLimit": 40,
 			"slowLimit": 35,
 			"stapmLimit": 35,
-			"stapmTime": 5,
-			"slowTime": 30,
+			"stapmTime": 167,
+			"slowTime": 5,
 			"tctlTemp": 95
-		}
+		},
+		"options": [
+			{
+				"name": "Performance",
+				"fastLimit": 65,
+				"slowLimit": 54,
+				"stapmLimit": 35,
+				"stapmTime": 100,
+				"slowTime": 5,
+				"tctlTemp": 95
+			},
+			{
+				"name": "Power saver",
+				"fastLimit": 50,
+				"slowLimit": 35,
+				"stapmLimit": 25,
+				"stapmTime": 100,
+				"slowTime": 5,
+				"tctlTemp": 85
+			}
+		]
 	},
 	"fanCurves": [
 		{

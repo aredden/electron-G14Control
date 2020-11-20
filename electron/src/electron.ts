@@ -1,6 +1,13 @@
 /** @format */
 
-import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
+import {
+	app,
+	BrowserWindow,
+	ipcMain,
+	Menu,
+	Tray,
+	Notification,
+} from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
 import installExtension, {
@@ -10,6 +17,7 @@ import getLogger from './Logger';
 import path from 'path';
 import url from 'url';
 import is_dev from 'electron-is-dev';
+import { resetGPU } from './IPCEvents/gpu/gpu';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
@@ -17,9 +25,14 @@ let browserWindow: BrowserWindow;
 let showIconEnabled = false;
 let tray: Tray;
 let trayContext: Menu;
-export const updateMenuVisible = (minimized: boolean) => {
-	trayContext.getMenuItemById('showapp').enabled = minimized;
-	trayContext.getMenuItemById('hideapp').enabled = !minimized;
+export const updateMenuVisible = (minimized?: boolean) => {
+	if (browserWindow.isMinimized) {
+		trayContext.getMenuItemById('showapp').enabled = true;
+		trayContext.getMenuItemById('hideapp').enabled = false;
+	} else {
+		trayContext.getMenuItemById('showapp').enabled = false;
+		trayContext.getMenuItemById('hideapp').enabled = true;
+	}
 };
 
 function createWindow() {
@@ -34,8 +47,10 @@ function createWindow() {
 		titleBarStyle: 'hidden',
 		autoHideMenuBar: true,
 		frame: false,
-		icon: 'assets/icon.ico',
+		icon: './assets/icon.ico',
 		webPreferences: {
+			allowRunningInsecureContent: false,
+			worldSafeExecuteJavaScript: true,
 			nodeIntegration: true,
 			accessibleTitle: 'G14ControlR4',
 			preload: __dirname + '/Preload.js',
@@ -72,17 +87,24 @@ app.on('window-all-closed', () => {
 	// TODO: stop timeout looping from IPCEmitters.
 	killEmitters();
 	showIconEnabled = true;
+	updateMenuVisible();
 	LOGGER.info('window closed');
 });
+
 app.on('quit', (evt) => {
 	killEmitters();
 	tray.destroy();
 	process.exit(0);
 });
+
 app.on('ready', createWindow);
+
 app.whenReady().then(() => {
 	// TODO: FIll out full tray app functionality.
 	tray = new Tray('C:\\temp\\icon_light.png');
+	tray.on('click', (ev, bounds) => {
+		browserWindow.show();
+	});
 	trayContext = Menu.buildFromTemplate([
 		{
 			label: 'Show App',
@@ -109,6 +131,24 @@ app.whenReady().then(() => {
 			},
 		},
 		{
+			type: 'separator',
+		},
+		{
+			label: 'Reset GPU',
+			type: 'normal',
+			click: () => {
+				resetGPU().then((value) => {
+					new Notification({
+						title: 'G14Control',
+						body: 'GPU Successfully Reset.',
+					}).show();
+				});
+			},
+		},
+		{
+			type: 'separator',
+		},
+		{
 			label: 'Reset Renderer',
 			type: 'normal',
 			click: (item) => {
@@ -120,11 +160,12 @@ app.whenReady().then(() => {
 			label: 'Quit',
 			type: 'normal',
 			click: () => {
+				tray.closeContextMenu();
 				tray.destroy();
 				app.quit();
 			},
 		},
 	]);
-	tray.setToolTip('This is my application.');
+	tray.setToolTip('G14Control');
 	tray.setContextMenu(trayContext);
 });

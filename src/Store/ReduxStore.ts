@@ -92,8 +92,8 @@ const createRootReducer = (initialState: G14Config) => {
 						stapmLimit: stapmLimit as number,
 						stapmTime: stapmTime as number,
 					},
-					limits: {},
-					options: [],
+					options: state.ryzenadj.options,
+					limits: state.ryzenadj.limits,
 				},
 				displayOptions: state.displayOptions,
 			};

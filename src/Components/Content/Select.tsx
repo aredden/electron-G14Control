@@ -26,8 +26,12 @@ export default class Select extends Component<Props, State> {
 				value={defaultSelect}
 				className="selectplan-dropdown"
 				onChange={(val) => handleChange(val)}>
-				{selectables.map((value) => {
-					return <Option value={value.name}>{value.name}</Option>;
+				{selectables.map((value, idx) => {
+					return (
+						<Option key={value.name + idx} value={value.name}>
+							{value.name}
+						</Option>
+					);
 				})}
 			</AntSelect>
 		);
