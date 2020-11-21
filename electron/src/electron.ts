@@ -9,7 +9,12 @@ import {
 	Notification,
 } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
+import {
+	buildEmitters,
+	killEmitters,
+	loopsAreRunning,
+	runLoop,
+} from './IPCEvents/IPCEmitters';
 import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
@@ -104,6 +109,9 @@ app.whenReady().then(() => {
 	tray = new Tray('C:\\temp\\icon_light.png');
 	tray.on('click', (ev, bounds) => {
 		browserWindow.show();
+		if (!loopsAreRunning()) {
+			runLoop(browserWindow);
+		}
 	});
 	trayContext = Menu.buildFromTemplate([
 		{

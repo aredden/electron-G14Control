@@ -2,10 +2,8 @@
 
 import { BrowserWindow, IpcMain } from 'electron';
 import getLogger from '../Logger';
-import { getCoresLoad } from './WMI/CPULoad';
 import cp from 'child_process';
 import { spawnTypePerfThermalProcess } from './TempPerf/BuildCounter';
-let killLoadLoop = false;
 
 let tempLoop: cp.ChildProcessWithoutNullStreams;
 let loadLoop: NodeJS.Timeout;
@@ -13,10 +11,13 @@ let loadLoop: NodeJS.Timeout;
 let tempLoopRunning = false;
 // let loadLoopRunning = false;
 
+export const loopsAreRunning = () => {
+	return tempLoop && !tempLoop.killed;
+};
+
 const LOGGER = getLogger('IPCEmitters');
 
 export const killEmitters = () => {
-	killLoadLoop = true;
 	if (loadLoop) {
 		clearTimeout(loadLoop);
 	}
@@ -25,6 +26,14 @@ export const killEmitters = () => {
 	}
 	tempLoopRunning = false;
 	// loadLoopRunning = false;
+};
+
+export const runLoop = (window: BrowserWindow) => {
+	if (!tempLoopRunning) {
+		tempLoopRunning = true;
+		tempLoop = spawnTypePerfThermalProcess(window);
+		LOGGER.info('cpuTempRun event recieved.. running.');
+	}
 };
 
 export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
