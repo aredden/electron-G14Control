@@ -10,13 +10,22 @@
 		},
 		"options": [
 			{
+				"name": "Default",
+				"fastLimit": 65,
+				"slowLimit": 54,
+				"stapmLimit": 35,
+				"stapmTime": 275,
+				"slowTime": 2,
+				"tctlTemp": 97
+			},
+			{
 				"name": "Performance",
 				"fastLimit": 65,
 				"slowLimit": 54,
 				"stapmLimit": 35,
 				"stapmTime": 100,
 				"slowTime": 5,
-				"tctlTemp": 95
+				"tctlTemp": 97
 			},
 			{
 				"name": "Power saver",
@@ -24,7 +33,7 @@
 				"slowLimit": 35,
 				"stapmLimit": 25,
 				"stapmTime": 100,
-				"slowTime": 5,
+				"slowTime": 2,
 				"tctlTemp": 85
 			}
 		]

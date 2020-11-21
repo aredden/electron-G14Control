@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { message, Select } from 'antd';
+import { message, Select, Space } from 'antd';
 import { store } from '../../../Store/ReduxStore';
 import RyzenForm from './RyzenForm';
 interface Props {}
@@ -100,8 +100,8 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 export default class RyzenADJ extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		let { defaults, options } = (store.getState() as G14Config).ryzenadj;
-		let startRyzenDefaults = Object.assign({}, defaults);
+		let { options } = (store.getState() as G14Config).ryzenadj;
+		let startRyzenDefaults = Object.assign({}, options[0]);
 		this.state = {
 			ryzenadjConfig: startRyzenDefaults,
 			options: [...options],
@@ -223,29 +223,39 @@ export default class RyzenADJ extends Component<Props, State> {
 
 	render() {
 		let { options, radjFormTimes } = this.state;
-		// let {
-		// 	stapmLimit,
-		// 	stapmTime,
-		// 	slowLimit,
-		// 	slowTime,
-		// 	fastLimit,
-		// 	tctlTemp,
-		// } = ryzenadjConfig;
 
 		return (
 			<>
-				<Select
-					defaultValue="default"
-					style={{ width: 120 }}
-					onSelect={this.handleSelectChange}>
-					{options.map((val, idx) => {
-						return (
-							<Select.Option key={'selectRADJ' + idx} value={val.name}>
-								{val.name}
-							</Select.Option>
-						);
-					})}
-				</Select>
+				<div
+					style={{
+						position: 'absolute',
+						right: '55px',
+						width: '300px',
+						height: '260px',
+						top: '199px',
+						backgroundColor: '#F0F2F5',
+						padding: '.5rem 1rem 1rem 1rem',
+					}}>
+					{' '}
+					<Space direction="vertical">
+						<h4 style={{ margin: '.4rem' }}>CPU Presets:</h4>
+						<Select
+							defaultValue="Default"
+							style={{
+								marginLeft: '.4rem',
+								width: 120,
+							}}
+							onSelect={this.handleSelectChange}>
+							{options.map((val, idx) => {
+								return (
+									<Select.Option key={'selectRADJ' + idx} value={val.name}>
+										{val.name}
+									</Select.Option>
+								);
+							})}
+						</Select>
+					</Space>
+				</div>
 				<RyzenForm
 					submit={this.onSubmit}
 					formItems={radjFormTimes}

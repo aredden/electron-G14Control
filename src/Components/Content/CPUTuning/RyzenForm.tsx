@@ -29,7 +29,16 @@ interface ItemProps {
 function RyzenFormItem(itemProps: ItemProps) {
 	let { onInputChange, formLabel, min, max, caseKey, value } = itemProps;
 	return (
-		<Form.Item key={caseKey + '-radjFormItem'} label={formLabel}>
+		<Form.Item
+			key={caseKey + '-radjFormItem'}
+			label={formLabel}
+			style={{
+				width: '50%',
+				backgroundColor: '#F0F2F5',
+				margin: '0rem',
+				padding: '.3rem',
+				border: '1px solid #D7D9DB',
+			}}>
 			<InputNumber
 				key={caseKey + '-radjFormItemInput'}
 				min={min}
@@ -51,7 +60,8 @@ export function RyzenForm(props: Props) {
 				subTitle="Modify CPU performance limits."></PageHeader>
 			<Form
 				title="CPU Tuning"
-				labelCol={{ span: 12 }}
+				labelAlign="right"
+				labelCol={{ span: 17, pull: 0 }}
 				wrapperCol={{ flex: 'inline', span: 10 }}>
 				{props.formItems.map((value, idx) => {
 					let formitemprops = {
@@ -64,7 +74,11 @@ export function RyzenForm(props: Props) {
 							{...formitemprops}></RyzenFormItem>
 					);
 				})}
-				<button onClick={props.submit}>Apply</button>
+				<button
+					style={{ position: 'absolute', right: '279px', top: '25rem' }}
+					onClick={props.submit}>
+					Apply
+				</button>
 			</Form>
 			<Card
 				style={{

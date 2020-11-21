@@ -1,20 +1,8 @@
 /** @format */
 
-import {
-	app,
-	BrowserWindow,
-	ipcMain,
-	Menu,
-	Tray,
-	Notification,
-} from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import {
-	buildEmitters,
-	killEmitters,
-	loopsAreRunning,
-	runLoop,
-} from './IPCEvents/IPCEmitters';
+import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
 import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
@@ -22,7 +10,6 @@ import getLogger from './Logger';
 import path from 'path';
 import url from 'url';
 import is_dev from 'electron-is-dev';
-import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
 import { buildTrayIcon } from './TrayIcon';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

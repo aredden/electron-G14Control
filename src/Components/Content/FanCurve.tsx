@@ -7,7 +7,7 @@ import { buildDataSet, createChart } from './FanCurve/FanCurveChartConfig';
 import { Button, Input, message, Modal, PageHeader } from 'antd';
 import ArmoryPlanSettings from './FanCurve/ArmoryPlan';
 import { store, updateFanConfig } from '../../Store/ReduxStore';
-import Select from './Select';
+import Select from './FanCurve/Select';
 import './FanCurve.scss';
 interface Props {}
 
@@ -275,6 +275,7 @@ export default class FanCurve extends Component<Props, State> {
 						</Button>,
 					]}>
 					<div>Configuration Name:</div>
+
 					<Input
 						type="text"
 						title="Configuration Name:"

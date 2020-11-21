@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "commonjs",
-		"lib": ["ESNext", "DOM"],
+		"lib": ["ESNext", "DOM", "ES2020.String"],
 		"allowJs": true,
 		"outDir": "build",
 		"esModuleInterop": true,
