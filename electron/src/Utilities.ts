@@ -7,6 +7,7 @@ const LOGGER = getLogger('Utilities');
 
 export const parsePlans = (plans: string) => {
 	const r = new RegExp(/([0-9a-f-]{36}) *\((.*)\) *?\n*/, 'gm');
+	//@ts-ignore
 	const regexpResult = [...plans.matchAll(r)];
 	const result = regexpResult.map((val) => {
 		return {

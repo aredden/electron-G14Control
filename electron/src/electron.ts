@@ -1,6 +1,13 @@
 /** @format */
 
-import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
+import {
+	app,
+	BrowserWindow,
+	ipcMain,
+	Menu,
+	Tray,
+	Notification,
+} from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
 import installExtension, {
@@ -11,6 +18,23 @@ import path from 'path';
 import url from 'url';
 import is_dev from 'electron-is-dev';
 import { buildTrayIcon } from './TrayIcon';
+
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+	app.quit();
+} else {
+	app.on('second-instance', () => {
+		new Notification({
+			title: 'G14Control',
+			body: 'Only one instance of G14Control can be run at a time!',
+		}).show();
+		if (browserWindow) {
+			if (browserWindow.isMinimized()) browserWindow.restore();
+			browserWindow.focus();
+		}
+	});
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
