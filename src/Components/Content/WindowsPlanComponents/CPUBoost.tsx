@@ -3,7 +3,7 @@
 import { Radio } from 'antd';
 import React, { Component } from 'react';
 import { RadioChangeEvent } from 'antd/lib/radio';
-import getLogger from '../../Logger';
+import getLogger from '../../../Logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('CPUBoost');

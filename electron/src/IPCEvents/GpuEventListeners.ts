@@ -2,7 +2,7 @@
 
 import { BrowserWindow, IpcMain } from 'electron';
 import { getDisplays, setDisplayConfig } from './gpu/DisplayConfig';
-import { resetGPU } from './gpu/gpu';
+import { resetGPU } from './gpu/DiscreteGPU';
 
 export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('resetGPU', async () => {

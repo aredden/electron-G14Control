@@ -5,7 +5,6 @@ import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
 import { CheckSquareOutlined } from '@ant-design/icons';
 import { store, updateDisplayOptions } from '../../Store/ReduxStore';
-import { result } from 'lodash';
 interface Props {}
 
 interface State {
@@ -16,13 +15,6 @@ interface State {
 }
 
 type SortOrder = 'ascend' | 'descend' | undefined | null;
-
-type DisplayOptionListType = {
-	bits: number;
-	refresh: number;
-	format: string;
-	resolution: string;
-};
 
 const calcResolutionSort = (
 	a: DisplayOptionListType,

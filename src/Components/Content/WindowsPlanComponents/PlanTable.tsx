@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Button, Collapse, Tag } from 'antd';
 import createLogger from '../../../Logger';
 import { CaretRightFilled } from '@ant-design/icons';
-import CPUBoost from '../CPUBoost';
+import CPUBoost from './CPUBoost';
 
 const { Panel } = Collapse;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

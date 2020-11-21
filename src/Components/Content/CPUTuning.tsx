@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react';
-import RyzenADJ from './RyzenADJ';
+import RyzenADJ from './CPUTuning/RyzenADJ';
 interface Props {}
 
 interface State {}

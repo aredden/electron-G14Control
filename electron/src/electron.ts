@@ -22,14 +22,16 @@ import getLogger from './Logger';
 import path from 'path';
 import url from 'url';
 import is_dev from 'electron-is-dev';
-import { resetGPU } from './IPCEvents/gpu/gpu';
+import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
+import { buildTrayIcon } from './TrayIcon';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
 let browserWindow: BrowserWindow;
-let showIconEnabled = false;
+export let showIconEnabled = false;
 let tray: Tray;
 let trayContext: Menu;
+
 export const updateMenuVisible = (minimized?: boolean) => {
 	if (browserWindow.isMinimized) {
 		trayContext.getMenuItemById('showapp').enabled = true;
@@ -105,75 +107,5 @@ app.on('quit', (evt) => {
 app.on('ready', createWindow);
 
 app.whenReady().then(() => {
-	// TODO: FIll out full tray app functionality.
-	tray = new Tray('C:\\temp\\icon_light.png');
-	tray.on('click', (ev, bounds) => {
-		browserWindow.show();
-		if (!loopsAreRunning()) {
-			runLoop(browserWindow);
-		}
-	});
-	trayContext = Menu.buildFromTemplate([
-		{
-			label: 'Show App',
-			type: 'normal',
-			id: 'showapp',
-			enabled: showIconEnabled,
-			click: (item) => {
-				browserWindow.show();
-				browserWindow.webContents.reload();
-				item.enabled = !item.enabled;
-				item.menu.items[1].enabled = !item.enabled;
-			},
-		},
-		{
-			label: 'Hide App',
-			type: 'normal',
-			id: 'hideapp',
-			enabled: !showIconEnabled,
-			click: (item) => {
-				killEmitters();
-				browserWindow.hide();
-				item.enabled = !item.enabled;
-				item.menu.items[0].enabled = !item.enabled;
-			},
-		},
-		{
-			type: 'separator',
-		},
-		{
-			label: 'Reset GPU',
-			type: 'normal',
-			click: () => {
-				resetGPU().then((value) => {
-					new Notification({
-						title: 'G14Control',
-						body: 'GPU Successfully Reset.',
-					}).show();
-				});
-			},
-		},
-		{
-			type: 'separator',
-		},
-		{
-			label: 'Reset Renderer',
-			type: 'normal',
-			click: (item) => {
-				killEmitters();
-				browserWindow.reload();
-			},
-		},
-		{
-			label: 'Quit',
-			type: 'normal',
-			click: () => {
-				tray.closeContextMenu();
-				tray.destroy();
-				app.quit();
-			},
-		},
-	]);
-	tray.setToolTip('G14Control');
-	tray.setContextMenu(trayContext);
+	buildTrayIcon(tray, trayContext, browserWindow);
 });

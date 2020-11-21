@@ -97,6 +97,13 @@ declare type DisplayOptionData = {
 	format: string;
 };
 
+declare type DisplayOptionListType = {
+	bits: number;
+	refresh: number;
+	format: string;
+	resolution: string;
+};
+
 /** @format */
 
 declare type DisplayOptions = {

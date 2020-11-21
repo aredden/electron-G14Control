@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
-import { buildDataSet, createChart } from './FanCurve/options';
+import { buildDataSet, createChart } from './FanCurve/FanCurveChartConfig';
 import { Button, Input, message, Modal, PageHeader } from 'antd';
 import ArmoryPlanSettings from './FanCurve/ArmoryPlan';
 import { store, updateFanConfig } from '../../Store/ReduxStore';
