@@ -2,11 +2,11 @@
 	"name": "electronthread",
 	"version": "1.0.0",
 	"description": "",
-	"main": "build/electron.js",
+	"main": "./build/electron.js",
 	"scripts": {
 		"build": "tsc --project ./tsconfig.prod.json",
 		"start": "electron .",
-		"watch": "nodemon -e ts --ignore /build --ignore /node_modules --exec \"tsc --project ./tsconfig.dev.json && electron --inspect=5858 .\""
+		"watch": "nodemon -e ts --ignore /build --ignore /node_modules --exec \"tsc --project ./tsconfig.dev.json && electron .\""
 	},
 	"author": "",
 	"license": "ISC",

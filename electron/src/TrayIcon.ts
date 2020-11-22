@@ -16,7 +16,7 @@ export const buildTrayIcon = (
 ) => {
 	tray = new Tray('C:\\temp\\icon_light.png');
 	tray.on('click', (ev, bounds) => {
-		browserWindow.show();
+		browserWindow.focus();
 		if (!loopsAreRunning()) {
 			runLoop(browserWindow);
 		}
@@ -76,8 +76,6 @@ export const buildTrayIcon = (
 			label: 'Quit',
 			type: 'normal',
 			click: () => {
-				tray.closeContextMenu();
-				tray.destroy();
 				app.quit();
 			},
 		},

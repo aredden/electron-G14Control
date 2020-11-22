@@ -4,12 +4,14 @@ import { BrowserWindow, IpcMain } from 'electron';
 import getLogger from '../Logger';
 import cp from 'child_process';
 import { spawnTypePerfThermalProcess } from './TempPerf/BuildCounter';
-
+import fkill from 'fkill';
 let tempLoop: cp.ChildProcessWithoutNullStreams;
 let loadLoop: NodeJS.Timeout;
 
 let tempLoopRunning = false;
 // let loadLoopRunning = false;
+
+let killing = false;
 
 export const loopsAreRunning = () => {
 	return tempLoop && !tempLoop.killed;
@@ -17,14 +19,33 @@ export const loopsAreRunning = () => {
 
 const LOGGER = getLogger('IPCEmitters');
 
-export const killEmitters = () => {
+const forceBrutalMurder = async (pid: number) => {
+	if (!killing) {
+		killing = true;
+		LOGGER.info('thing to kill:' + pid + ' our pid: ' + process.pid);
+		try {
+			await fkill(pid, { tree: true, force: true }).catch((err) => {
+				LOGGER.info(err);
+			});
+		} catch (err) {
+			LOGGER.info("Error killing process, (probably doesn't exist)");
+		}
+
+		killing = false;
+	}
+};
+
+export const killEmitters = async () => {
 	if (loadLoop) {
 		clearTimeout(loadLoop);
 	}
 	if (tempLoop) {
-		tempLoop.kill();
+		LOGGER.info('I am really really trying to kill this time...');
+		tempLoop.stdout.pause();
+		await forceBrutalMurder(tempLoop.pid);
+		tempLoopRunning = false;
 	}
-	tempLoopRunning = false;
+
 	// loadLoopRunning = false;
 };
 
@@ -46,39 +67,8 @@ export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 			}
 		} else {
 			tempLoopRunning = false;
-			tempLoop.kill('SIGINT');
+			forceBrutalMurder(tempLoop.pid);
 			LOGGER.info('cpuTempRun event recieved.. terminated.');
 		}
 	});
-	// ipc.on('cpuLoadRun', (_event, run: boolean) => {
-	// 	if (run) {
-	// 		if (!loadLoopRunning) {
-	// 			killLoadLoop = false;
-	// 			loadLoopRunning = true;
-	// 			getLoadLoop(window);
-	// 			LOGGER.info('cpuLoadRun event recieved.. running.');
-	// 		}
-	// 	} else {
-	// 		killLoadLoop = true;
-	// 		loadLoopRunning = false;
-	// 		clearTimeout(loadLoop);
-	// 		LOGGER.info('cpuLoadRun event recieved.. terminated.');
-	// 	}
-	// });
 };
-
-// const getLoadLoop = (window: BrowserWindow) => {
-// 	loadLoop = setTimeout(async () => {
-// 		if (!killLoadLoop) {
-// 			let loadResult = await getCoresLoad().catch((err) => {
-// 				LOGGER.error(
-// 					`Error: promise rejected in getLoadLoop() / getCoresLoad function.\n${err}`
-// 				);
-// 			});
-// 			if (loadResult) {
-// 				window.webContents.send('coresLoad', loadResult);
-// 			}
-// 			getLoadLoop(window);
-// 		}
-// 	}, 2000);
-// };

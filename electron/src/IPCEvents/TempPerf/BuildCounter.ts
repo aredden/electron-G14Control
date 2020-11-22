@@ -38,7 +38,6 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 			`TypePerf spwn does not have pid (possible cwd issue): pid:${baby.pid}`
 		);
 	}
-
 	baby.stdout.on('readable', () => {
 		try {
 			let buff = baby.stdout.read() as Buffer;
@@ -57,29 +56,9 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 			LOGGER.error('Error reading from stdout.' + JSON.stringify({ err }));
 		}
 	});
-	baby.on('exit', (e, signal) => {
-		if (signal === 'SIGINT') {
-			baby.kill('SIGINT');
-			baby.kill('SIGINT');
-			baby.kill('SIGINT');
-			baby.stdout.removeAllListeners();
-			baby.removeAllListeners();
-		}
-		LOGGER.info('Trying to quit.');
-	});
-	baby.on('error', (err) => {
-		LOGGER.error('ERROR: ' + err);
-	});
-	baby.stderr.on('error', (args) => {
+
+	baby.stderr.on('message', (args) => {
 		LOGGER.error('TypePerf ERROR: ' + args);
-	});
-	baby.on('exit', (code, signal) => {
-		baby.kill();
-		LOGGER.info(
-			`Temp Process exited, code ${code}, signal:\n${
-				signal ? signal.toString() : 'Signal is undefined.'
-			}`
-		);
 	});
 	return baby;
 };

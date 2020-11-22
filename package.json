@@ -1,6 +1,6 @@
 {
 	"name": "g14ui",
-	"version": "0.1.0",
+	"version": "0.1.2",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
@@ -20,6 +20,7 @@
 		"dotenv": "^8.2.0",
 		"electron-devtools-installer": "^3.1.1",
 		"electron-is-dev": "^1.2.0",
+		"fkill": "^7.0.1",
 		"lodash": "^4.17.20",
 		"node-powershell": "^4.0.0",
 		"node-sass": "^4.14.1",
@@ -51,6 +52,13 @@
 			"icon": "C:/Users/alexa/Documents/G14UI/g14ui/electron/src/assets/icon.ico",
 			"requestedExecutionLevel": "requireAdministrator",
 			"extraResources": [
+				{
+					"from": "./electron/src/Registry",
+					"to": "extraResources",
+					"filter": [
+						"*.exe"
+					]
+				},
 				{
 					"from": "./electron/restartgpu",
 					"to": "extraResources",

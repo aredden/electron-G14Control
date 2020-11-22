@@ -18,6 +18,7 @@ import path from 'path';
 import url from 'url';
 import is_dev from 'electron-is-dev';
 import { buildTrayIcon } from './TrayIcon';
+import { checkBoostVisibility } from './Registry/BoostVisibility';
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -40,8 +41,8 @@ if (!gotTheLock) {
 const LOGGER = getLogger('Main');
 let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
-let tray: Tray;
-let trayContext: Menu;
+export let tray: Tray;
+export let trayContext: Menu;
 
 export const updateMenuVisible = (minimized?: boolean) => {
 	if (browserWindow.isMinimized) {
@@ -97,13 +98,14 @@ function createWindow() {
 	} else {
 		browserWindow.loadURL(loadurl);
 	}
+	checkBoostVisibility();
 }
 
 export default app;
 
 app.on('window-all-closed', () => {
 	// TODO: stop timeout looping from IPCEmitters.
-	killEmitters();
+	//killEmitters();
 	showIconEnabled = true;
 	updateMenuVisible();
 	LOGGER.info('window closed');
@@ -111,12 +113,15 @@ app.on('window-all-closed', () => {
 
 app.on('quit', (evt) => {
 	killEmitters();
-	tray.destroy();
+	// tray.destroy();
 	process.exit(0);
 });
 
 app.on('ready', createWindow);
 
 app.whenReady().then(() => {
-	buildTrayIcon(tray, trayContext, browserWindow);
+	let results = buildTrayIcon(tray, trayContext, browserWindow);
+	tray = results.tray;
+	trayContext = results.trayContext;
+	browserWindow = results.browserWindow;
 });
