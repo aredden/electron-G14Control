@@ -2,14 +2,15 @@
 
 import React, { Component } from 'react';
 import { message, Select, Space } from 'antd';
-import { store } from '../../../Store/ReduxStore';
+import { store, updateCurrentConfig } from '../../../Store/ReduxStore';
 import RyzenForm from './RyzenForm';
 interface Props {}
 
 interface State {
 	ryzenadjConfig: RyzenadjConfig;
 	options: RyzenadjConfigNamed[];
-	radjFormTimes: RyzenFormItem[];
+	radjFormItems: RyzenFormItem[];
+	radjName: string;
 }
 
 type RADJReactConfig = 'tdp' | 'ftdp' | 'stdp' | 'ftime' | 'stime' | 'temp';
@@ -38,7 +39,7 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 	[
 		'stapmLimit',
 		{
-			min: 3,
+			min: 5,
 			max: 120,
 			caseKey: 'tdp',
 			formLabel: 'CPU TDP',
@@ -48,7 +49,7 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 	[
 		'fastLimit',
 		{
-			min: 3,
+			min: 5,
 			max: 120,
 			caseKey: 'ftdp',
 			formLabel: 'Fastest Boost TDP',
@@ -58,7 +59,7 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 	[
 		'slowLimit',
 		{
-			min: 3,
+			min: 5,
 			max: 120,
 			caseKey: 'stdp',
 			formLabel: 'Post-Boost TDP',
@@ -69,7 +70,7 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 		'slowTime',
 		{
 			min: 1,
-			max: 30,
+			max: 60,
 			caseKey: 'ftime',
 			formLabel: 'Fastest Boost TDP Duration',
 			value: 0,
@@ -100,17 +101,23 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 export default class RyzenADJ extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		let { options } = (store.getState() as G14Config).ryzenadj;
-		let startRyzenDefaults = Object.assign({}, options[0]);
+		let { ryzenadj, current } = store.getState() as G14Config;
+		let startPlan = current.ryzenadj;
+		let start = ryzenadj.options.find((plan) => {
+			return plan.name === startPlan;
+		}) as RyzenadjConfigNamed;
+		let startRyzenDefaults = Object.assign({}, start);
 		this.state = {
 			ryzenadjConfig: startRyzenDefaults,
-			options: [...options],
-			radjFormTimes: this.buildRyzenFormItems(startRyzenDefaults),
+			options: [...ryzenadj.options],
+			radjName: startPlan,
+			radjFormItems: this.buildRyzenFormItems(startRyzenDefaults),
 		};
 	}
 
 	onSubmit = async () => {
-		let { ryzenadjConfig } = this.state;
+		let { ryzenadjConfig, radjName } = this.state;
+		let state = store.getState() as G14Config;
 		message.loading(
 			{
 				content: 'Applying settings...',
@@ -119,6 +126,12 @@ export default class RyzenADJ extends Component<Props, State> {
 		);
 		let result = await window.ipcRenderer.invoke('setRyzenadj', ryzenadjConfig);
 		if (result) {
+			store.dispatch(
+				updateCurrentConfig({
+					ryzenadj: radjName,
+					fanCurve: state.current.fanCurve,
+				})
+			);
 			//@ts-ignore
 			message.success('Successfully applied cpu settings!');
 		} else {
@@ -132,16 +145,16 @@ export default class RyzenADJ extends Component<Props, State> {
 		caseKey: RADJReactConfig,
 		radjkey: RyzenFormTypes
 	) => {
-		let { ryzenadjConfig, radjFormTimes } = this.state;
+		let { ryzenadjConfig, radjFormItems } = this.state;
 		let newFormItems: RyzenFormItem[] = [];
 		ryzenadjConfig[radjkey] = newValue;
-		newFormItems = radjFormTimes.map((val) => {
+		newFormItems = radjFormItems.map((val) => {
 			if (val.caseKey === caseKey) {
 				val.value = newValue;
 			}
 			return val;
 		});
-		this.setState({ ryzenadjConfig, radjFormTimes: newFormItems });
+		this.setState({ ryzenadjConfig, radjFormItems: newFormItems });
 	};
 
 	onInputChange = (
@@ -182,7 +195,8 @@ export default class RyzenADJ extends Component<Props, State> {
 
 		this.setState({
 			ryzenadjConfig: newChoice,
-			radjFormTimes: formItems,
+			radjFormItems: formItems,
+			radjName: name,
 		});
 	};
 
@@ -222,7 +236,7 @@ export default class RyzenADJ extends Component<Props, State> {
 	}
 
 	render() {
-		let { options, radjFormTimes } = this.state;
+		let { options, radjFormItems, radjName } = this.state;
 
 		return (
 			<>
@@ -240,7 +254,7 @@ export default class RyzenADJ extends Component<Props, State> {
 					<Space direction="vertical">
 						<h4 style={{ margin: '.4rem' }}>CPU Presets:</h4>
 						<Select
-							defaultValue="Default"
+							defaultValue={radjName}
 							style={{
 								marginLeft: '.4rem',
 								width: 120,
@@ -258,7 +272,7 @@ export default class RyzenADJ extends Component<Props, State> {
 				</div>
 				<RyzenForm
 					submit={this.onSubmit}
-					formItems={radjFormTimes}
+					formItems={radjFormItems}
 					onInputChange={this.onInputChange}
 				/>
 			</>

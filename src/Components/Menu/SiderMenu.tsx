@@ -55,11 +55,12 @@ export default class SiderMenu extends Component<Props, State> {
 					Fan Curve Editor
 				</Menu.Item>
 				<Menu.Item
-					key="2"
-					icon={<PictureOutlined />}
+					key="5"
+					icon={<SettingOutlined />}
 					onClick={this.handleClick}>
-					Discrete GPU
+					CPU Tuning
 				</Menu.Item>
+
 				<Menu.Item
 					key="3"
 					icon={<WindowsOutlined />}
@@ -68,10 +69,10 @@ export default class SiderMenu extends Component<Props, State> {
 				</Menu.Item>
 
 				<Menu.Item
-					key="5"
-					icon={<SettingOutlined />}
+					key="2"
+					icon={<PictureOutlined />}
 					onClick={this.handleClick}>
-					CPU Tuning
+					Discrete GPU
 				</Menu.Item>
 				<Menu.Item
 					key="4"

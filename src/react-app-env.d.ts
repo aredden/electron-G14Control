@@ -60,6 +60,13 @@ declare type CpuBiosMapValues = {
 };
 
 declare type G14Config = {
+	startup: {
+		checkBoostVisibility: boolean;
+	};
+	current: {
+		ryzenadj: string;
+		fanCurve: string;
+	};
 	ryzenadj: {
 		defaults: RyzenadjConfig;
 		limits: RyzenadjConfig;

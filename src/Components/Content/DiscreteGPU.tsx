@@ -181,12 +181,19 @@ export default class DiscreteGPU extends Component<Props, State> {
 		});
 		return (
 			<div>
-				<PageHeader title="Discrete GPU Tools"></PageHeader>
+				<PageHeader
+					title="Discrete GPU Tools"
+					subTitle="Tools & Display Options"></PageHeader>
 
-				<Space style={{ padding: '1rem' }}>
+				<Space
+					style={{
+						paddingTop: '0rem',
+						position: 'absolute',
+						right: '7rem',
+						top: '9rem',
+					}}>
 					<Button onClick={this.handleClick}>Reset GPU</Button>
 				</Space>
-				<PageHeader title="Display Options"></PageHeader>
 				{datalist.length === 0 ? (
 					''
 				) : (

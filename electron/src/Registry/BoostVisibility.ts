@@ -20,12 +20,12 @@ const BOOST_VIS_CHG = is_dev
 			'RegistryChecker.exe'
 	  );
 
-export const checkBoostVisibility = async () => {
+export const checkBoostVisibility = async (): Promise<boolean> => {
 	return new Promise((resolve, reject) => {
 		let proc = exec(`${BOOST_VIS_CHG} check`);
 		proc.stdout.on('data', (data) => {
 			LOGGER.info(`RegistryChecker result: ${data}`);
-			if (data && data === 'True') {
+			if (data && data.indexOf('True') !== -1) {
 				resolve(true);
 			} else {
 				resolve(false);

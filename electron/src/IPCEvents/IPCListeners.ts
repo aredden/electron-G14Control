@@ -7,6 +7,7 @@ import { buildCPUBoostListeners } from './CPUBoostListeners';
 import { buildElectronListeners } from './ElectronConfigListeners';
 import { buildGPUListeners } from './GpuEventListeners';
 import { buildRyzenADJListeners } from './RyzenADJListener';
+import { buildStartupListeners } from './StartupChecks';
 import { buildStatusListeners } from './StatusListeners';
 import { buildWindowsPlanListeners } from './WindowsPlanListeners';
 
@@ -19,4 +20,5 @@ export function buildIpcConnection(ipc: IpcMain, win: BrowserWindow) {
 	buildStatusListeners(ipc, win);
 	buildGPUListeners(ipc, win);
 	buildElectronListeners(ipc, win);
+	buildStartupListeners(ipc);
 }

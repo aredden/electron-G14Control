@@ -1,9 +1,9 @@
 /** @format */
 
-import { Descriptions, Skeleton } from 'antd';
+import { Descriptions, PageHeader, Skeleton, Space, Table } from 'antd';
 import React, { Component } from 'react';
 import './Status.scss';
-
+import { store } from '../../Store/ReduxStore';
 type SoftwareMap = Map<string, Map<string, string>>;
 type CpuBiosMap = Map<string, string>;
 
@@ -14,28 +14,28 @@ interface State {
 	cpubiosmap: CpuBiosMap | undefined;
 	softwaremap: SoftwareMap | undefined;
 	loading: boolean;
+	currentConfig: {
+		ryzenadj: string;
+		fanCurve: string;
+	};
 }
 
 export default class Status extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+		let { current } = store.getState() as G14Config;
+
 		this.state = {
+			currentConfig: {
+				ryzenadj: current.ryzenadj,
+				fanCurve: current.fanCurve,
+			},
 			loadValues: [],
 			cpubiosmap: undefined,
 			softwaremap: undefined,
 			loading: true,
 		};
 	}
-
-	// coreLoadListener = (
-	// 	_event: any,
-	// 	loadvalues: Array<{ Name: string; PercentProcessorTime: number }>
-	// ) => {
-	// 	let newloadValues = loadvalues.sort((a, b) => {
-	// 		return parseFloat(a.Name) - parseFloat(b.Name);
-	// 	});
-	// 	this.setState({ loadValues: newloadValues });
-	// };
 
 	getInfo = async () => {
 		let info: Promise<CpuBiosMap> = window.ipcRenderer.invoke('getCpuBiosInfo');
@@ -53,15 +53,10 @@ export default class Status extends Component<Props, State> {
 	};
 
 	componentDidMount() {
-		window.ipcRenderer.send('cpuLoadRun', true);
-		// window.ipcRenderer.on('coresLoad', this.coreLoadListener);
 		this.getInfo();
 	}
 
-	componentWillUnmount() {
-		window.ipcRenderer.send('cpuLoadRun', false);
-		// window.ipcRenderer.off('coresLoad', this.coreLoadListener);
-	}
+	componentWillUnmount() {}
 
 	render() {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -165,36 +160,77 @@ export default class Status extends Component<Props, State> {
 			}
 		}
 
+		let { currentConfig } = this.state;
+		let tableColumns = [
+			{
+				dataIndex: 'name',
+				title: 'Setting Type',
+			},
+			{
+				dataIndex: 'value',
+				title: 'Chosen Setting',
+			},
+		];
+
 		return (
 			<>
-				<Descriptions title="Cpu Info" size="small" bordered>
-					{descriptionBiosItems}
-				</Descriptions>
-				<Descriptions
-					bordered
-					size="small"
-					style={{ maxWidth: '100%' }}></Descriptions>
-				<br></br>
-				<Descriptions
-					title="ASUS & AMD Software Info"
-					style={{ maxWidth: '100%' }}
-					bordered>
-					<Descriptions.Item className="desc-item-row" span={5} label="Name">
-						<div
-							style={{ padding: '2rem', backgroundColor: '#FAFAFA' }}
-							className="desc-item-ver-vend">
-							Version
-						</div>
+				<Space
+					size="middle"
+					direction="vertical"
+					style={{ width: '90%', marginLeft: '5%' }}>
+					<PageHeader
+						style={{
+							fontWeight: 'bold',
+							marginBottom: '0rem',
+							paddingBottom: '.3rem',
+						}}
+						title={<div style={{ fontWeight: 'bold' }}>G14Control Status</div>}
+						subTitle="Current configuration & laptop details"></PageHeader>
+					<Table
+						size="small"
+						showHeader
+						columns={tableColumns}
+						pagination={false}
+						bordered
+						dataSource={[
+							{ name: 'CPU Tuning', value: currentConfig.ryzenadj },
+							{ name: 'Fan Curve', value: currentConfig.fanCurve },
+						]}></Table>
+					<Descriptions
+						title={
+							<div style={{ marginLeft: '5%', fontWeight: 'bold' }}>
+								Laptop Hardware Information
+							</div>
+						}
+						size="small"
+						bordered>
+						{descriptionBiosItems}
+					</Descriptions>
+					<Descriptions
+						title={
+							<div style={{ marginLeft: '5%', fontWeight: 'bold' }}>
+								AMD & ASUS Software Information
+							</div>
+						}
+						style={{ maxWidth: '100%' }}
+						bordered>
+						<Descriptions.Item className="desc-item-row" span={5} label="Name">
+							<div
+								style={{ padding: '2rem', backgroundColor: '#FAFAFA' }}
+								className="desc-item-ver-vend">
+								Version
+							</div>
 
-						<div
-							style={{ padding: '2rem', backgroundColor: '#FAFAFA' }}
-							className="desc-item-ver-vend">
-							Vendor
-						</div>
-					</Descriptions.Item>
+							<div
+								style={{ padding: '2rem', backgroundColor: '#FAFAFA' }}
+								className="desc-item-ver-vend">
+								Vendor
+							</div>
+						</Descriptions.Item>
 
-					{descriptionSoftwareItems}
-				</Descriptions>
+						{descriptionSoftwareItems}
+					</Descriptions>
+				</Space>
 			</>
 		);
 	}

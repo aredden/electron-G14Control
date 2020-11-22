@@ -19,7 +19,7 @@ export const loopsAreRunning = () => {
 
 const LOGGER = getLogger('IPCEmitters');
 
-const forceBrutalMurder = async (pid: number) => {
+const killProcess = async (pid: number) => {
 	if (!killing) {
 		killing = true;
 		LOGGER.info('thing to kill:' + pid + ' our pid: ' + process.pid);
@@ -42,8 +42,10 @@ export const killEmitters = async () => {
 	if (tempLoop) {
 		LOGGER.info('I am really really trying to kill this time...');
 		tempLoop.stdout.pause();
-		await forceBrutalMurder(tempLoop.pid);
-		tempLoopRunning = false;
+		killProcess(tempLoop.pid).then((result) => {
+			tempLoop = undefined;
+			tempLoopRunning = false;
+		});
 	}
 
 	// loadLoopRunning = false;
@@ -66,9 +68,10 @@ export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 				LOGGER.info('cpuTempRun event recieved.. running.');
 			}
 		} else {
-			tempLoopRunning = false;
-			forceBrutalMurder(tempLoop.pid);
-			LOGGER.info('cpuTempRun event recieved.. terminated.');
+			killProcess(tempLoop.pid).then((value) => {
+				tempLoopRunning = false;
+				LOGGER.info('cpuTempRun event recieved.. terminated.');
+			});
 		}
 	});
 };

@@ -5,10 +5,11 @@ import './App.scss';
 import 'antd';
 import 'antd/dist/antd.css';
 import AppLayout from './Components/Layout';
-import { Spin } from 'antd';
+import { message, Spin } from 'antd';
 import { initStore } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
+
 declare global {
 	interface Window {
 		require: any;
@@ -36,6 +37,21 @@ export default class App extends Component<Props, State> {
 		if (config) {
 			let parsedConfig: G14Config = JSON.parse(config);
 			let store = await initStore(parsedConfig);
+			//@ts-ignore
+			if (parsedConfig.startup.checkBoostVisibility) {
+				let result = await window.ipcRenderer.invoke('checkBoostVisibility');
+				if (result !== 'error') {
+					if (result) {
+						message.success('Boost is visible on this machine.');
+					} else {
+						message.info({
+							body: "Boost isn't visible on this machine. Click me to enable.",
+						});
+					}
+				} else {
+					message.info('Boost registry check resulted in error. (non-fatal)');
+				}
+			}
 			this.setState({ config: config, store });
 		}
 	};

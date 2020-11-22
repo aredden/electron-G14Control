@@ -21,6 +21,13 @@ export const initStore = async (initialState: G14Config) => {
 	return store;
 };
 
+export const updateCurrentConfig = createAction(
+	'UPDATE_CURRENT_CONFIG',
+	(value: { ryzenadj: string; fanCurve: string }) => {
+		return { payload: value };
+	}
+);
+
 export const updateLoopTimes = createAction(
 	'UPDATE_LOOPTIMES',
 	(value: { temp: number; load: number }) => {
@@ -81,6 +88,8 @@ const createRootReducer = (initialState: G14Config) => {
 				stapmTime,
 			} = action.payload;
 			let newState = {
+				current: state.current,
+				startup: state.startup,
 				loopTimes: state.loopTimes,
 				fanCurves: state.fanCurves,
 				ryzenadj: {
@@ -105,10 +114,27 @@ const createRootReducer = (initialState: G14Config) => {
 			let { payload } = action;
 			let { ryzenadj, fanCurves, loopTimes } = state;
 			let newState = {
+				current: state.current,
+				startup: state.startup,
 				ryzenadj,
 				fanCurves,
 				loopTimes,
 				displayOptions: payload,
+			};
+			state = newState;
+			return state;
+		});
+
+		reducer.addCase(updateCurrentConfig, (state, action) => {
+			let { payload } = action;
+			let { ryzenadj, fanCurves, loopTimes, startup, displayOptions } = state;
+			let newState = {
+				current: payload,
+				startup,
+				ryzenadj,
+				fanCurves,
+				loopTimes,
+				displayOptions,
 			};
 			state = newState;
 			return state;

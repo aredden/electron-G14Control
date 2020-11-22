@@ -18,7 +18,6 @@ import path from 'path';
 import url from 'url';
 import is_dev from 'electron-is-dev';
 import { buildTrayIcon } from './TrayIcon';
-import { checkBoostVisibility } from './Registry/BoostVisibility';
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -98,7 +97,6 @@ function createWindow() {
 	} else {
 		browserWindow.loadURL(loadurl);
 	}
-	checkBoostVisibility();
 }
 
 export default app;

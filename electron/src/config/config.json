@@ -1,4 +1,6 @@
 {
+	"current": { "ryzenadj": "Power saver", "fanCurve": "Performance" },
+	"startup": { "checkBoostVisibility": true },
 	"ryzenadj": {
 		"defaults": {
 			"fastLimit": 65,

@@ -43,13 +43,12 @@ export const spawnTypePerfThermalProcess = (window: BrowserWindow) => {
 			let buff = baby.stdout.read() as Buffer;
 			if (!isNull(buff)) {
 				let value = buff.toString();
+
 				value = value.replace(/"|,/gm, '');
 				let matched = value.match(/[0-9]{4}\.[0-9]{0,5}/);
 				if (!isNull(matched)) {
-					window.webContents.send(
-						'cpuTemperature',
-						parseInt(matched[0]) / 10 - 276.15
-					);
+					let parsedTemp = parseFloat(matched[0]) / 10.0 - 276.15;
+					window.webContents.send('cpuTemperature', parsedTemp);
 				}
 			}
 		} catch (err) {

@@ -4,9 +4,13 @@ import React, { Component } from 'react';
 import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
 import { buildDataSet, createChart } from './FanCurve/FanCurveChartConfig';
-import { Button, Input, message, Modal, PageHeader } from 'antd';
+import { Button, Card, Input, message, Modal, PageHeader } from 'antd';
 import ArmoryPlanSettings from './FanCurve/ArmoryPlan';
-import { store, updateFanConfig } from '../../Store/ReduxStore';
+import {
+	store,
+	updateCurrentConfig,
+	updateFanConfig,
+} from '../../Store/ReduxStore';
 import Select from './FanCurve/Select';
 import './FanCurve.scss';
 interface Props {}
@@ -33,7 +37,9 @@ export default class FanCurve extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		let currentState = store.getState() as G14Config;
-		let { cpu, gpu, plan, name } = currentState.fanCurves[0];
+		let { cpu, gpu, plan, name } = currentState.fanCurves.find((value) => {
+			return value.name === currentState.current.fanCurve;
+		}) as { name: string; plan: ArmoryPlan; cpu: number[]; gpu: number[] };
 		this.state = {
 			currentPlanName: name,
 			chart: undefined,
@@ -137,6 +143,13 @@ export default class FanCurve extends Component<Props, State> {
 			})
 			.then((result: any) => {
 				if (result) {
+					let state = store.getState() as G14Config;
+					store.dispatch(
+						updateCurrentConfig({
+							ryzenadj: state.current.ryzenadj,
+							fanCurve: this.state.currentPlanName,
+						})
+					);
 					message.success('Sucessfully set fan curve.');
 				} else {
 					message.success('Failed to set fan curve.');
@@ -216,13 +229,12 @@ export default class FanCurve extends Component<Props, State> {
 			currentPlanName,
 			plan,
 		} = this.state;
-		console.log(fanCurves);
 		return (
 			<div>
 				<PageHeader
 					title="Fan Curve Editor"
-					style={{ width: '100%', height: '8rem' }}>
-					Modify fan speed configuration.
+					subTitle="Modify fan speed configuration."
+					style={{ width: '100%', height: '6rem' }}>
 					<div className="curveplan-container">
 						<Select
 							defaultSelect={currentPlanName}
@@ -231,32 +243,53 @@ export default class FanCurve extends Component<Props, State> {
 						<Button
 							className="deleteplan-button"
 							style={{ display: 'block' }}
-							danger={true}
 							title="Will delete the currently selected plan."
 							onClick={this.deletePlan}>
 							Delete Plan
 						</Button>
+						<Button
+							style={{
+								display: 'block',
+								position: 'absolute',
+								right: 0,
+								marginTop: '8rem',
+							}}
+							onClick={(e) => this.handleSubmitCurves(e)}>
+							Apply
+						</Button>
+						<Button
+							style={{
+								right: 0,
+								position: 'absolute',
+								marginTop: '10.8rem',
+								display: 'block',
+							}}
+							onClick={(e) => this.handleSave(e)}>
+							Save Configuration
+						</Button>
 					</div>
 				</PageHeader>
-				<div style={{ display: 'flex', justifyContent: 'center' }}>
-					<ArmoryPlanSettings
-						currentPlan={plan}
-						selectPlan={this.selectArmoryPlan}></ArmoryPlanSettings>
-				</div>
+				<Card
+					bordered
+					headStyle={{ backgroundColor: '#FAFAFA' }}
+					title="Armory Crate Plans"
+					style={{ width: '70%' }}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'start',
+							paddingLeft: '2rem',
+						}}>
+						<ArmoryPlanSettings
+							currentPlan={plan}
+							selectPlan={this.selectArmoryPlan}></ArmoryPlanSettings>
+					</div>
+				</Card>
+
 				<div style={{ height: '1rem', width: '100%' }} />
 				<canvas id="fanCurveChartCPU" className="Charto"></canvas>
 				<canvas id="fanCurveChartGPU" className="Charto"></canvas>
-				<div style={{ margin: '1rem' }}>
-					<Button
-						style={{ marginRight: '1rem' }}
-						onClick={(e) => this.handleSubmitCurves(e)}>
-						Apply
-					</Button>
-					<Button onClick={(e) => this.handleSave(e)}>
-						Save Configuration
-					</Button>
-				</div>
-
+				<div style={{ margin: '1rem' }}></div>
 				<Modal
 					visible={modalVisible}
 					title="Save Fan Configuration"
