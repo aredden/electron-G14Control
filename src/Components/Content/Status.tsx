@@ -1,9 +1,9 @@
 /** @format */
 
-import { Descriptions, PageHeader, Skeleton, Space, Table } from 'antd';
+import { Descriptions, PageHeader, Skeleton, Space } from 'antd';
 import React, { Component } from 'react';
 import './Status.scss';
-import { store } from '../../Store/ReduxStore';
+import CurrentConfiguration from './Status/CurrentConfiguration';
 type SoftwareMap = Map<string, Map<string, string>>;
 type CpuBiosMap = Map<string, string>;
 
@@ -14,22 +14,12 @@ interface State {
 	cpubiosmap: CpuBiosMap | undefined;
 	softwaremap: SoftwareMap | undefined;
 	loading: boolean;
-	currentConfig: {
-		ryzenadj: string;
-		fanCurve: string;
-	};
 }
 
 export default class Status extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		let { current } = store.getState() as G14Config;
-
 		this.state = {
-			currentConfig: {
-				ryzenadj: current.ryzenadj,
-				fanCurve: current.fanCurve,
-			},
 			loadValues: [],
 			cpubiosmap: undefined,
 			softwaremap: undefined,
@@ -60,7 +50,7 @@ export default class Status extends Component<Props, State> {
 
 	render() {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		let { loadValues, cpubiosmap, softwaremap, loading } = this.state;
+		let { cpubiosmap, softwaremap, loading } = this.state;
 		let descriptionBiosItems: Array<JSX.Element> = [];
 		let descriptionSoftwareItems: Array<JSX.Element> = [];
 		if (cpubiosmap && !loading) {
@@ -160,18 +150,6 @@ export default class Status extends Component<Props, State> {
 			}
 		}
 
-		let { currentConfig } = this.state;
-		let tableColumns = [
-			{
-				dataIndex: 'name',
-				title: 'Setting Type',
-			},
-			{
-				dataIndex: 'value',
-				title: 'Chosen Setting',
-			},
-		];
-
 		return (
 			<>
 				<Space
@@ -186,16 +164,7 @@ export default class Status extends Component<Props, State> {
 						}}
 						title={<div style={{ fontWeight: 'bold' }}>G14Control Status</div>}
 						subTitle="Current configuration & laptop details"></PageHeader>
-					<Table
-						size="small"
-						showHeader
-						columns={tableColumns}
-						pagination={false}
-						bordered
-						dataSource={[
-							{ name: 'CPU Tuning', value: currentConfig.ryzenadj },
-							{ name: 'Fan Curve', value: currentConfig.fanCurve },
-						]}></Table>
+					<CurrentConfiguration></CurrentConfiguration>
 					<Descriptions
 						title={
 							<div style={{ marginLeft: '5%', fontWeight: 'bold' }}>

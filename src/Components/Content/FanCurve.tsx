@@ -61,26 +61,33 @@ export default class FanCurve extends Component<Props, State> {
 
 	deletePlan = () => {
 		let { currentCurves, plan, fanCurves, currentPlanName } = this.state;
-
-		let newFanCurves = fanCurves.filter((curveConfig) => {
-			return curveConfig.name !== currentPlanName;
-		});
-		if (newFanCurves.length > 0) {
-			currentCurves.cpu = [...newFanCurves[0].cpu];
-			currentCurves.gpu = [...newFanCurves[0].gpu];
-			plan = newFanCurves[0].plan;
-			currentPlanName = newFanCurves[0].name;
-			store.dispatch(updateFanConfig(newFanCurves));
-			this.setState(
-				{
-					fanCurves: newFanCurves,
-					plan: plan,
-					currentPlanName: currentPlanName,
-				},
-				() => {
-					this.chooseFanCurveThing(currentPlanName);
-				}
+		let reduxState = store.getState() as G14Config;
+		if (reduxState.current.fanCurve === currentPlanName) {
+			message.error(
+				"Don't murder the plan you're currently using ya' dum dum."
 			);
+			return;
+		} else {
+			let newFanCurves = fanCurves.filter((curveConfig) => {
+				return curveConfig.name !== currentPlanName;
+			});
+			if (newFanCurves.length > 0) {
+				currentCurves.cpu = [...newFanCurves[0].cpu];
+				currentCurves.gpu = [...newFanCurves[0].gpu];
+				plan = newFanCurves[0].plan;
+				currentPlanName = newFanCurves[0].name;
+				store.dispatch(updateFanConfig(newFanCurves));
+				this.setState(
+					{
+						fanCurves: newFanCurves,
+						plan: plan,
+						currentPlanName: currentPlanName,
+					},
+					() => {
+						this.chooseFanCurveThing(currentPlanName);
+					}
+				);
+			}
 		}
 	};
 

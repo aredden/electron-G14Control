@@ -1,13 +1,9 @@
 /** @format */
 
 import { app, BrowserWindow, Menu, Tray, Notification } from 'electron';
-import { showIconEnabled } from './electron';
+import { showIconEnabled, updateMenuVisible } from './electron';
 import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
-import {
-	killEmitters,
-	loopsAreRunning,
-	runLoop,
-} from './IPCEvents/IPCEmitters';
+import { killEmitters, runLoop } from './IPCEvents/IPCEmitters';
 
 export const buildTrayIcon = (
 	tray: Tray,
@@ -16,9 +12,18 @@ export const buildTrayIcon = (
 ) => {
 	tray = new Tray('C:\\temp\\icon_light.png');
 	tray.on('click', (ev, bounds) => {
-		browserWindow.focus();
-		if (!loopsAreRunning()) {
-			runLoop(browserWindow);
+		if (browserWindow.isMinimized() || !browserWindow.isFocused()) {
+			if (browserWindow.isMinimized()) {
+				browserWindow.restore();
+				runLoop(browserWindow);
+				updateMenuVisible();
+			} else {
+				browserWindow.show();
+			}
+		} else {
+			killEmitters();
+			browserWindow.minimize();
+			updateMenuVisible();
 		}
 	});
 	trayContext = Menu.buildFromTemplate([

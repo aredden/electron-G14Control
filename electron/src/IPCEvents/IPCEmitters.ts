@@ -20,6 +20,9 @@ export const loopsAreRunning = () => {
 const LOGGER = getLogger('IPCEmitters');
 
 const killProcess = async (pid: number) => {
+	if (tempLoop) {
+		tempLoop.stdout.pause();
+	}
 	if (!killing) {
 		killing = true;
 		LOGGER.info('thing to kill:' + pid + ' our pid: ' + process.pid);
@@ -51,8 +54,12 @@ export const killEmitters = async () => {
 	// loadLoopRunning = false;
 };
 
+export const isAliveCheck = () => {
+	return tempLoop && !tempLoop.killed;
+};
+
 export const runLoop = (window: BrowserWindow) => {
-	if (!tempLoopRunning) {
+	if (!tempLoopRunning || !isAliveCheck()) {
 		tempLoopRunning = true;
 		tempLoop = spawnTypePerfThermalProcess(window);
 		LOGGER.info('cpuTempRun event recieved.. running.');

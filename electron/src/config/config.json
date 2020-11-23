@@ -1,5 +1,5 @@
 {
-	"current": { "ryzenadj": "Power saver", "fanCurve": "Performance" },
+	"current": { "ryzenadj": "Default", "fanCurve": "Performance" },
 	"startup": { "checkBoostVisibility": true },
 	"ryzenadj": {
 		"defaults": {
@@ -13,8 +13,8 @@
 		"options": [
 			{
 				"name": "Default",
-				"fastLimit": 65,
-				"slowLimit": 54,
+				"fastLimit": 50,
+				"slowLimit": 40,
 				"stapmLimit": 35,
 				"stapmTime": 275,
 				"slowTime": 2,
@@ -31,10 +31,10 @@
 			},
 			{
 				"name": "Power saver",
-				"fastLimit": 50,
+				"fastLimit": 40,
 				"slowLimit": 35,
 				"stapmLimit": 25,
-				"stapmTime": 100,
+				"stapmTime": 275,
 				"slowTime": 2,
 				"tctlTemp": 85
 			}
@@ -81,12 +81,6 @@
 			"name": "Super Benchmarking",
 			"cpu": [45, 51, 63, 69, 76, 80, 85, 86],
 			"gpu": [20, 23, 35, 39, 51, 63, 65, 69],
-			"plan": "turbo"
-		},
-		{
-			"name": "Test",
-			"cpu": [33, 41, 43, 46, 51, 61, 62, 63],
-			"gpu": [35, 38, 44, 47, 51, 63, 65, 69],
 			"plan": "turbo"
 		},
 		{

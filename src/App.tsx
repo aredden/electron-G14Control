@@ -1,11 +1,11 @@
 /** @format */
 
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import './App.scss';
 import 'antd';
 import 'antd/dist/antd.css';
 import AppLayout from './Components/Layout';
-import { message, Spin } from 'antd';
+import { message, Modal, Spin } from 'antd';
 import { initStore } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
@@ -21,6 +21,8 @@ interface Props {}
 interface State {
 	config: G14Config | undefined;
 	store: EnhancedStore<G14Config> | undefined;
+	boostVisible: boolean;
+	showModal: boolean;
 }
 
 export default class App extends Component<Props, State> {
@@ -29,11 +31,14 @@ export default class App extends Component<Props, State> {
 		this.state = {
 			config: undefined,
 			store: undefined,
+			boostVisible: true,
+			showModal: false,
 		};
 	}
 
 	loadConfig = async () => {
 		let config = await window.ipcRenderer.invoke('loadConfig');
+		let { boostVisible } = this.state;
 		if (config) {
 			let parsedConfig: G14Config = JSON.parse(config);
 			let store = await initStore(parsedConfig);
@@ -44,15 +49,19 @@ export default class App extends Component<Props, State> {
 					if (result) {
 						message.success('Boost is visible on this machine.');
 					} else {
-						message.info({
-							body: "Boost isn't visible on this machine. Click me to enable.",
-						});
+						message.error("Boost isn't visible on this machine.");
+						boostVisible = false;
 					}
 				} else {
 					message.info('Boost registry check resulted in error. (non-fatal)');
 				}
 			}
-			this.setState({ config: config, store });
+			this.setState({
+				config: config,
+				store,
+				boostVisible,
+				showModal: !boostVisible,
+			});
 		}
 	};
 
@@ -61,7 +70,7 @@ export default class App extends Component<Props, State> {
 	}
 
 	render() {
-		let { config } = this.state;
+		let { config, boostVisible, showModal } = this.state;
 		if (config) {
 			return (
 				<>
@@ -77,6 +86,7 @@ export default class App extends Component<Props, State> {
 
 						<AppLayout></AppLayout>
 					</div>
+					<BoostEnable {...{ boostVisible, show: showModal }}></BoostEnable>
 				</>
 			);
 		} else {
@@ -94,3 +104,59 @@ export default class App extends Component<Props, State> {
 		}
 	}
 }
+
+const BoostEnable = (props: { boostVisible: boolean; show: boolean }) => {
+	const [visible, setVisible] = React.useState(false);
+	const [boostVisibleInternal, setBoostVisible] = React.useState(false);
+	const [confirmLoading, setConfirmLoading] = React.useState(false);
+	const [modalText, setModalText] = React.useState(
+		'Would you like to enable boost visibility in registry?'
+	);
+
+	const handleOk = () => {
+		setModalText('Enabling boost...');
+		setConfirmLoading(true);
+		window.ipcRenderer
+			.invoke('enableBoostVisibility')
+			.then((result: boolean) => {
+				if (result) {
+					message.success('Boost visibility successfully enabled!');
+				} else {
+					message.error('Failed to enable boost visibility :(');
+				}
+				setBoostVisible(true);
+				setConfirmLoading(false);
+				setVisible(false);
+			});
+	};
+
+	const handleCancel = () => {
+		setVisible(false);
+		setBoostVisible(true);
+	};
+
+	const handleOpen = () => {
+		if (!boostVisibleInternal) {
+			setVisible(true);
+		}
+	};
+
+	useEffect(() => {
+		if (visible !== props.show) {
+			handleOpen();
+		}
+	});
+
+	return (
+		<>
+			<Modal
+				title="Enable Boost Visibility"
+				visible={visible}
+				onOk={handleOk}
+				confirmLoading={confirmLoading}
+				onCancel={handleCancel}>
+				<p>{modalText}</p>
+			</Modal>
+		</>
+	);
+};

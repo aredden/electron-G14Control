@@ -11,8 +11,8 @@ export const buildDataSet = (values: number[], chartId: string) => {
 			data: values,
 			fill: false,
 			pointHitRadius: 30,
-			borderColor: '#001529',
-			color: '#1890FF',
+			borderColor: '#1890FF',
+			pointBorderColor: '#001529',
 		},
 	];
 };
