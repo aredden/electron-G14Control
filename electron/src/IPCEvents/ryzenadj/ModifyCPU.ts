@@ -42,7 +42,7 @@ export const setRyzenadj = (config: RyzenadjConfig) => {
 				);
 				resolve(false);
 			} else {
-				LOGGER.info(`Result of ryzenADJ command:\n${JSON.stringify(out)}`);
+				LOGGER.info(`Result of ryzenADJ command:\n${out}`);
 				resolve(config);
 			}
 		});

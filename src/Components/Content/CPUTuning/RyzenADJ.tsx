@@ -268,6 +268,10 @@ export default class RyzenADJ extends Component<Props, State> {
 								);
 							})}
 						</Select>
+						<div style={{ marginLeft: '.4rem' }}>
+							Ryzenadj settings will occasionally take several tries before
+							being successfully applied.
+						</div>
 					</Space>
 				</div>
 				<RyzenForm

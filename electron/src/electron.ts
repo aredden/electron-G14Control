@@ -44,7 +44,7 @@ export let tray: Tray;
 export let trayContext: Menu;
 
 export const updateMenuVisible = (minimized?: boolean) => {
-	if (browserWindow.isMinimized) {
+	if (browserWindow.isMinimized()) {
 		trayContext.getMenuItemById('showapp').enabled = true;
 		trayContext.getMenuItemById('hideapp').enabled = false;
 	} else {
@@ -102,7 +102,6 @@ function createWindow() {
 export default app;
 
 app.on('window-all-closed', () => {
-	// TODO: stop timeout looping from IPCEmitters.
 	//killEmitters();
 	showIconEnabled = true;
 	updateMenuVisible();

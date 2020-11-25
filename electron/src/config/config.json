@@ -1,5 +1,5 @@
 {
-	"current": { "ryzenadj": "Default", "fanCurve": "Performance" },
+	"current": { "ryzenadj": "Performance", "fanCurve": "Performance" },
 	"startup": { "checkBoostVisibility": true },
 	"ryzenadj": {
 		"defaults": {

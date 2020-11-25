@@ -2,7 +2,11 @@
 
 import { BrowserWindow, IpcMain } from 'electron';
 import { getDisplays, setDisplayConfig } from './gpu/DisplayConfig';
-import { resetGPU } from './gpu/DiscreteGPU';
+import {
+	getSwitchableDynamicGraphicsSettings,
+	resetGPU,
+	setSwitchableDynamicGraphicsSettings,
+} from './gpu/DiscreteGPU';
 
 export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('resetGPU', async () => {
@@ -12,6 +16,16 @@ export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 		} else {
 			return false;
 		}
+	});
+
+	ipc.handle('getSwitchableDynamicGraphics', async () => {
+		let result = await getSwitchableDynamicGraphicsSettings();
+		return result;
+	});
+
+	ipc.handle('setSwitchableDynamicGraphics', async (event, value: number) => {
+		let result = await setSwitchableDynamicGraphicsSettings(value);
+		return result;
 	});
 
 	ipc.handle('getDisplayOptions', async () => {

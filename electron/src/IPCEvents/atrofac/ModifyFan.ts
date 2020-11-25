@@ -8,8 +8,6 @@ import path from 'path';
 import { app } from 'electron';
 dotenv.config();
 
-//@ts-ignore
-// eslint-ignore-next-line
 const ATRO_LOC = is_dev
 	? (process.env.ATRO_LOC as string)
 	: path.join(
@@ -35,14 +33,14 @@ const allowedPlans = ['windows', 'silent', 'performance', 'turbo'];
 
 const buildCommand = (cpu?: string, gpu?: string, plan?: string) => {
 	let cmd = `fan`;
-	if (plan && allowedPlans.includes(plan)) {
-		cmd += ` --plan ${plan}`;
-	}
 	if (cpu && testCurveValidity(cpu)) {
 		cmd += ` --cpu ${cpu}`;
 	}
 	if (gpu && testCurveValidity(gpu)) {
 		cmd += ` --gpu ${gpu}`;
+	}
+	if (plan && allowedPlans.includes(plan)) {
+		cmd += ` plan ${plan}`;
 	}
 	return cmd;
 };

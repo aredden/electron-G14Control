@@ -24,13 +24,9 @@ const reverseParse = (curve: string) => {
 };
 
 export const buildAtrofacListeners = (ipc: IpcMain, win: BrowserWindow) => {
-	ipc.on('setArmoryPlan', async (event, plan: ArmoryPlan) => {
+	ipc.handle('setArmoryPlan', async (event, plan: ArmoryPlan) => {
 		let resultOfArmoryPlan = await modifyArmoryCratePlan(plan);
-		if (resultOfArmoryPlan) {
-			win.webContents.send('setArmoryPlanResult', plan);
-		} else {
-			win.webContents.send('setArmoryPlanResult', false);
-		}
+		return resultOfArmoryPlan;
 	});
 
 	ipc.handle(
@@ -43,17 +39,17 @@ export const buildAtrofacListeners = (ipc: IpcMain, win: BrowserWindow) => {
 				plan?: ArmoryPlan;
 			}
 		) => {
-			let { cpu, gpu, plan } = arrayCurve;
+			let { cpu, gpu } = arrayCurve;
 			LOGGER.info(
 				`Got gpu / gpu curve info: ${JSON.stringify(
-					{ cpu: cpu.toString(), gpu: gpu.toString(), plan },
+					{ cpu: cpu.toString(), gpu: gpu.toString() },
 					null,
 					2
 				)}`
 			);
 			let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
 			let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
-			let result = await modifyFanCurve(cpuCurve, gpuCurve, plan);
+			let result = await modifyFanCurve(cpuCurve, gpuCurve);
 			return result;
 		}
 	);

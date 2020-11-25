@@ -1,6 +1,6 @@
 /** @format */
 
-import { Radio } from 'antd';
+import { message, Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import React, { Component } from 'react';
 
@@ -22,8 +22,17 @@ export default class ArmoryPlanSettings extends Component<Props, State> {
 	}
 
 	handleRadioClick = (value: RadioChangeEvent) => {
-		let option = value.target.value;
-		this.props.selectPlan(option);
+		let option = value.target.value as ArmoryPlan;
+		window.ipcRenderer
+			.invoke('setArmoryPlan', option)
+			.then((result: ArmoryPlan | false) => {
+				if (result) {
+					message.success(`Successfully set Armory Crate plan to: ${result}`);
+				} else {
+					message.error(`Could not set Armory Crate default plan.`);
+				}
+				this.props.selectPlan(option);
+			});
 	};
 
 	render() {

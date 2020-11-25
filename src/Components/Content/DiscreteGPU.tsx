@@ -5,6 +5,7 @@ import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
 import { CheckSquareOutlined } from '@ant-design/icons';
 import { store, updateDisplayOptions } from '../../Store/ReduxStore';
+import GraphicsSettings from './DiscreteGPU/GraphicsSettings';
 interface Props {}
 
 interface State {
@@ -194,6 +195,7 @@ export default class DiscreteGPU extends Component<Props, State> {
 					}}>
 					<Button onClick={this.handleClick}>Reset GPU</Button>
 				</Space>
+				<GraphicsSettings></GraphicsSettings>
 				{datalist.length === 0 ? (
 					''
 				) : (
