@@ -1,5 +1,6 @@
 /** @format */
 
+import { PageHeader } from 'antd';
 import React, { Component } from 'react';
 import PlanTable from './WindowsPlanComponents/PlanTable';
 
@@ -84,6 +85,14 @@ export default class WindowsPowerPlan extends Component<Props, State> {
 
 	render() {
 		let { plans, active } = this.state;
-		return <div>{plans ? <PlanTable active={active} data={plans} /> : ''}</div>;
+		return (
+			<div>
+				<PageHeader
+					title="Windows Power Plans"
+					subTitle="Switch plans & modify processor performance boost setting"
+					style={{ marginBottom: '1rem' }}></PageHeader>
+				{plans ? <PlanTable active={active} data={plans} /> : ''}
+			</div>
+		);
 	}
 }

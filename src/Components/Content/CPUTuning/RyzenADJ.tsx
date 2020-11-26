@@ -147,13 +147,65 @@ export default class RyzenADJ extends Component<Props, State> {
 	) => {
 		let { ryzenadjConfig, radjFormItems } = this.state;
 		let newFormItems: RyzenFormItem[] = [];
-		ryzenadjConfig[radjkey] = newValue;
-		newFormItems = radjFormItems.map((val) => {
-			if (val.caseKey === caseKey) {
-				val.value = newValue;
-			}
-			return val;
-		});
+
+		let { stapmLimit, fastLimit, slowLimit } = ryzenadjConfig;
+		// check for valid ryzenadj configuration
+		switch (caseKey) {
+			case 'ftdp':
+				fastLimit = newValue;
+				if (fastLimit < slowLimit) {
+					slowLimit = fastLimit;
+				}
+				if (fastLimit < stapmLimit) {
+					stapmLimit = fastLimit;
+				}
+				break;
+			case 'stdp':
+				slowLimit = newValue;
+				if (slowLimit > fastLimit) {
+					fastLimit = slowLimit;
+				}
+				if (slowLimit < stapmLimit) {
+					stapmLimit = slowLimit;
+				}
+				break;
+			case 'tdp':
+				stapmLimit = newValue;
+				if (stapmLimit > slowLimit) {
+					slowLimit = stapmLimit;
+				}
+				if (stapmLimit > fastLimit) {
+					fastLimit = stapmLimit;
+				}
+				break;
+		}
+
+		if (caseKey === 'stdp' || caseKey === 'ftdp' || caseKey === 'tdp') {
+			ryzenadjConfig.fastLimit = fastLimit;
+			ryzenadjConfig.slowLimit = slowLimit;
+			ryzenadjConfig.stapmLimit = stapmLimit;
+			newFormItems = radjFormItems.map((val) => {
+				if (val.caseKey === 'ftdp') {
+					val.value = fastLimit;
+				}
+				if (val.caseKey === 'stdp') {
+					val.value = slowLimit;
+				}
+				if (val.caseKey === 'tdp') {
+					val.value = stapmLimit;
+				}
+				return val;
+			});
+		} else {
+			ryzenadjConfig[radjkey] = newValue;
+			newFormItems = radjFormItems.map((val) => {
+				if (val.caseKey === caseKey) {
+					val.value = newValue;
+				}
+				return val;
+			});
+		}
+
 		this.setState({ ryzenadjConfig, radjFormItems: newFormItems });
 	};
 
