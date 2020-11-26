@@ -31,6 +31,7 @@ export default class SiderMenu extends Component<Props, State> {
 
 	handleClick = (e: MenuInfo) => {
 		const { onChooseSubmenu } = this.props;
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 		onChooseSubmenu(e);
 		this.setState({ selection: e.key.toString() });
 	};

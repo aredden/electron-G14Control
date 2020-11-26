@@ -6,6 +6,10 @@ import React, { Component } from 'react';
 import { CheckSquareOutlined } from '@ant-design/icons';
 import { store, updateDisplayOptions } from '../../Store/ReduxStore';
 import GraphicsSettings from './DiscreteGPU/GraphicsSettings';
+import {
+	calcRefreshSort,
+	calcResolutionSort,
+} from './DiscreteGPU/ResolutionSortingFunctions';
 interface Props {}
 
 interface State {
@@ -16,30 +20,6 @@ interface State {
 }
 
 type SortOrder = 'ascend' | 'descend' | undefined | null;
-
-const calcResolutionSort = (
-	a: DisplayOptionListType,
-	b: DisplayOptionListType
-) => {
-	let numaarr = a.resolution.toString().match(/\d*x/) as RegExpMatchArray;
-	let numbarr = b.resolution.toString().match(/\d*x/) as RegExpMatchArray;
-	if (numaarr && numbarr) {
-		return (
-			-parseInt(numbarr[0].replace('x', '')) +
-			parseInt(numaarr[0].replace('x', ''))
-		);
-	} else {
-		return -1000;
-	}
-};
-
-const calcRefreshSort = (
-	a: DisplayOptionListType,
-	b: DisplayOptionListType
-) => {
-	console.log(a, b);
-	return (b.refresh as number) - (a.refresh as number);
-};
 
 export default class DiscreteGPU extends Component<Props, State> {
 	constructor(props: Props) {
@@ -180,32 +160,46 @@ export default class DiscreteGPU extends Component<Props, State> {
 				resolution: val.resolution.width + 'x' + val.resolution.height,
 			};
 		});
+
+		const headerStyles: React.CSSProperties = {
+			marginLeft: 0,
+			paddingLeft: '.8rem',
+		};
+
+		const tableStyles: React.CSSProperties = {
+			width: '90%',
+			marginLeft: '5%',
+			marginTop: '2rem',
+		};
+
 		return (
 			<div>
 				<PageHeader
+					style={headerStyles}
 					title="Discrete GPU Tools"
 					subTitle="Tools & Display Options"></PageHeader>
-
-				<Space
-					style={{
-						paddingTop: '0rem',
-						position: 'absolute',
-						right: '7rem',
-						top: '9rem',
-					}}>
+				<GraphicsSettings></GraphicsSettings>
+				<Space direction="horizontal">
+					<PageHeader style={headerStyles} title="Tools" />
 					<Button onClick={this.handleClick}>Reset GPU</Button>
 				</Space>
-				<GraphicsSettings></GraphicsSettings>
-				{datalist.length === 0 ? (
-					''
-				) : (
-					<Table<DisplayOptionListType>
-						showSorterTooltip={true}
-						loading={datalist.length === 0}
-						size="small"
-						dataSource={datalist}
-						columns={columns}></Table>
-				)}
+				<br style={{ height: '3rem' }}></br>
+				<Space direction="vertical" style={tableStyles}>
+					<PageHeader
+						style={headerStyles}
+						title="Display Options"
+						subTitle="Modify refresh rate And resolution"></PageHeader>
+					{datalist.length === 0 ? (
+						''
+					) : (
+						<Table<DisplayOptionListType>
+							showSorterTooltip={true}
+							loading={datalist.length === 0}
+							size="small"
+							dataSource={datalist}
+							columns={columns}></Table>
+					)}
+				</Space>
 			</div>
 		);
 	}

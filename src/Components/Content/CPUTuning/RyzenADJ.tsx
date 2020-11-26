@@ -70,7 +70,7 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 		'slowTime',
 		{
 			min: 1,
-			max: 60,
+			max: 120,
 			caseKey: 'ftime',
 			formLabel: 'Fastest Boost TDP Duration',
 			value: 0,
@@ -90,7 +90,7 @@ let ryzenFormData: Map<RyzenFormTypes, RyzenFormItem> = new Map<
 		'tctlTemp',
 		{
 			min: 60,
-			max: 97,
+			max: 101,
 			caseKey: 'temp',
 			formLabel: 'CPU Temperature Limit',
 			value: 0,

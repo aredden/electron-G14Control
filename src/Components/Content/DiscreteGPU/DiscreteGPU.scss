@@ -1,0 +1,42 @@
+/** @format */
+
+.hoverButtonColor {
+	&.ant-radio-button-wrapper-checked {
+		:nth-child(2) {
+			color: white;
+			pointer-events: none;
+			user-select: none;
+			&:hover {
+				color: white;
+				pointer-events: none;
+				user-select: none;
+			}
+		}
+		pointer-events: none;
+		user-select: none;
+
+		&:hover {
+			background-color: #40a9ff;
+			color: white;
+			pointer-events: none;
+			user-select: none;
+		}
+		&:focus {
+			background-color: #40a9ff;
+			color: white;
+			pointer-events: none;
+			user-select: none;
+		}
+		&:active {
+			background-color: #40a9ff;
+			color: white;
+			pointer-events: none;
+			user-select: none;
+		}
+		.ant-radio-button-checked {
+			pointer-events: none;
+			user-select: none;
+			background-color: #40a9ff;
+		}
+	}
+}

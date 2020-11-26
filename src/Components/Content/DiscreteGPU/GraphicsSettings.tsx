@@ -1,9 +1,10 @@
 /** @format */
 
-import { Descriptions, message, Popover, Radio, Space } from 'antd';
+import { message, Popover, Radio, Space } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import React, { Component } from 'react';
-
+import GraphicsDescriptions from './GraphicsDescriptions';
+import './DiscreteGPU.scss';
 interface Props {}
 
 interface State {
@@ -19,9 +20,9 @@ interface State {
 
 const dynamicGraphicsOptions = [
 	'Force power-saving graphics',
-	' Optimize power savings',
+	'Optimize power savings',
 	'Optimize performance',
-	' Maximize performance',
+	'Maximize performance',
 ];
 
 export default class GraphicsSettings extends Component<Props, State> {
@@ -85,37 +86,41 @@ export default class GraphicsSettings extends Component<Props, State> {
 	};
 
 	render() {
-		let { plan, graphics } = this.state;
+		let { graphics } = this.state;
 
 		const graphicsTitleStyle: React.CSSProperties = {
 			display: 'block',
-			marginBottom: '1rem',
+			marginBottom: '2rem',
 		};
 
 		const radioStyle: React.CSSProperties = {
 			display: 'block',
 			position: 'absolute',
-			right: '70px',
-			top: '175px',
+			right: '65px',
+			top: '160px',
 			justifyContent: 'end',
 			marginTop: '2rem',
-			padding: '1rem',
-			paddingLeft: '1.2rem',
-			paddingRight: '1.2rem',
+			padding: '1.6rem 1.2rem 2rem 1.2rem',
 			height: 'min-content',
 			lineHeight: '10px',
 			background: '#FAFAFA',
-			border: '1px solid #F0F0F0',
+			border: '1px solid #E0E0E0',
 		};
 
-		const radioGroupStyle: React.CSSProperties = {};
+		const radioGroupStyle: React.CSSProperties = {
+			height: '50px',
+		};
 
 		const radioButtonStyle: React.CSSProperties = {
 			display: 'block',
+			paddingTop: '.18rem',
+			paddingBottom: '.2rem',
+			height: '35px',
+			borderRadius: '0rem',
 		};
 
 		const popoverContent = (
-			<div>
+			<div style={{ marginBottom: '-0.2rem' }}>
 				<p>This setting differs per Windows Power Plan.</p>
 			</div>
 		);
@@ -123,46 +128,45 @@ export default class GraphicsSettings extends Component<Props, State> {
 		return (
 			<div
 				style={{
-					marginBottom: '2rem',
+					marginBottom: '0rem',
 					marginTop: '2rem',
 					marginLeft: '.7rem',
 				}}>
 				<Space>
-					<Descriptions
-						title="Switchable Dynamic Graphics"
-						size="small"
-						bordered>
-						<Descriptions.Item span={5} label={'Windows Power Plan'}>
-							{plan.name}
-						</Descriptions.Item>
-						<Descriptions.Item span={5} label={'Plugged In'}>
-							{dynamicGraphicsOptions[graphics.ac]}
-						</Descriptions.Item>
-						<Descriptions.Item span={5} label={'On Battery'}>
-							{dynamicGraphicsOptions[graphics.dc]}
-						</Descriptions.Item>
-					</Descriptions>
+					<GraphicsDescriptions
+						graphics={this.state.graphics}
+						plan={this.state.plan}></GraphicsDescriptions>
 					<div style={radioStyle}>
-						<Popover
-							content={popoverContent}
-							title="Switchable Dynamic Graphics">
-							<h3 style={graphicsTitleStyle}>Graphics Options</h3>
+						<h3 style={graphicsTitleStyle}>Graphics Options</h3>
+						<Popover title="Graphics Options" content={popoverContent}>
 							<Radio.Group
 								name="Graphics Options"
 								value={graphics.ac}
 								style={radioGroupStyle}
 								size="middle"
 								onChange={this.handleChangeGraphics}>
-								<Radio.Button style={radioButtonStyle} value={0}>
+								<Radio.Button
+									className="hoverButtonColor"
+									style={radioButtonStyle}
+									value={0}>
 									{dynamicGraphicsOptions[0]}
 								</Radio.Button>
-								<Radio.Button style={radioButtonStyle} value={1}>
+								<Radio.Button
+									className="hoverButtonColor"
+									style={radioButtonStyle}
+									value={1}>
 									{dynamicGraphicsOptions[1]}
 								</Radio.Button>
-								<Radio.Button style={radioButtonStyle} value={2}>
+								<Radio.Button
+									className="hoverButtonColor"
+									style={radioButtonStyle}
+									value={2}>
 									{dynamicGraphicsOptions[2]}
 								</Radio.Button>
-								<Radio.Button style={radioButtonStyle} value={3}>
+								<Radio.Button
+									className="hoverButtonColor"
+									style={radioButtonStyle}
+									value={3}>
 									{dynamicGraphicsOptions[3]}
 								</Radio.Button>
 							</Radio.Group>
