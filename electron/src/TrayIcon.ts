@@ -4,13 +4,25 @@ import { app, BrowserWindow, Menu, Tray, Notification } from 'electron';
 import { showIconEnabled } from './electron';
 import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
 import { killEmitters, loopsAreRunning } from './IPCEvents/IPCEmitters';
+import is_dev from 'electron-is-dev';
+import path from 'path';
+
+const ICONPATH = is_dev
+	? './assets/icon_light.png'
+	: path.join(
+			app.getPath('exe'),
+			'../',
+			'resources',
+			'extraResources',
+			'icon_light.png'
+	  );
 
 export const buildTrayIcon = (
 	tray: Tray,
 	trayContext: Menu,
 	browserWindow: BrowserWindow
 ) => {
-	tray = new Tray('C:\\temp\\icon_light.png');
+	tray = new Tray(ICONPATH);
 	tray.on('click', (ev, bounds) => {
 		if (browserWindow.isMinimized()) {
 			browserWindow.restore();

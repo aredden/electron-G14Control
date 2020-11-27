@@ -1,6 +1,6 @@
 {
 	"current": {
-		"ryzenadj": "Power saver",
+		"ryzenadj": "Default",
 		"fanCurve": "Silent (low speed fan)"
 	},
 	"startup": { "checkBoostVisibility": true },

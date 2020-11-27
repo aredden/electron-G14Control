@@ -139,15 +139,15 @@ function createWindow() {
 
 export default app;
 
-app.on('window-all-closed', () => {
-	killEmitters();
+app.on('window-all-closed', async () => {
+	await killEmitters();
 	showIconEnabled = true;
 	updateMenuVisible();
 	LOGGER.info('window closed');
 });
 
-app.on('quit', (evt) => {
-	killEmitters();
+app.on('quit', async (evt) => {
+	await killEmitters();
 	process.exit(0);
 });
 
