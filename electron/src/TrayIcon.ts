@@ -1,9 +1,9 @@
 /** @format */
 
 import { app, BrowserWindow, Menu, Tray, Notification } from 'electron';
-import { showIconEnabled, updateMenuVisible } from './electron';
+import { showIconEnabled } from './electron';
 import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
-import { killEmitters, runLoop } from './IPCEvents/IPCEmitters';
+import { killEmitters, loopsAreRunning } from './IPCEvents/IPCEmitters';
 
 export const buildTrayIcon = (
 	tray: Tray,
@@ -12,18 +12,12 @@ export const buildTrayIcon = (
 ) => {
 	tray = new Tray('C:\\temp\\icon_light.png');
 	tray.on('click', (ev, bounds) => {
-		if (browserWindow.isMinimized() || !browserWindow.isFocused()) {
-			if (browserWindow.isMinimized()) {
-				browserWindow.restore();
-				runLoop(browserWindow);
-				updateMenuVisible();
-			} else {
-				browserWindow.show();
-			}
+		if (browserWindow.isMinimized()) {
+			browserWindow.restore();
+		} else if (!browserWindow.isVisible()) {
+			browserWindow.show();
 		} else {
-			killEmitters();
 			browserWindow.minimize();
-			updateMenuVisible();
 		}
 	});
 	trayContext = Menu.buildFromTemplate([
@@ -34,9 +28,6 @@ export const buildTrayIcon = (
 			enabled: showIconEnabled,
 			click: (item) => {
 				browserWindow.show();
-				browserWindow.webContents.reload();
-				item.enabled = !item.enabled;
-				item.menu.items[1].enabled = !item.enabled;
 			},
 		},
 		{
@@ -45,10 +36,7 @@ export const buildTrayIcon = (
 			id: 'hideapp',
 			enabled: !showIconEnabled,
 			click: (item) => {
-				killEmitters();
 				browserWindow.hide();
-				item.enabled = !item.enabled;
-				item.menu.items[0].enabled = !item.enabled;
 			},
 		},
 		{
@@ -72,8 +60,10 @@ export const buildTrayIcon = (
 		{
 			label: 'Reset Renderer',
 			type: 'normal',
-			click: (item) => {
-				killEmitters();
+			click: async (item) => {
+				if (loopsAreRunning()) {
+					await killEmitters();
+				}
 				browserWindow.reload();
 			},
 		},
@@ -85,7 +75,8 @@ export const buildTrayIcon = (
 			},
 		},
 	]);
-	tray.setToolTip('G14Control');
+	tray.setToolTip('G14ControlV2');
+	tray.setTitle('G14ControlV2');
 	tray.setContextMenu(trayContext);
 	return { tray, trayContext, browserWindow };
 };

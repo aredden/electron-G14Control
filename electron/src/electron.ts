@@ -9,7 +9,13 @@ import {
 	Notification,
 } from 'electron';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import { buildEmitters, killEmitters } from './IPCEvents/IPCEmitters';
+import {
+	buildEmitters,
+	checkProcesses,
+	killEmitters,
+	loopsAreRunning,
+	runLoop,
+} from './IPCEvents/IPCEmitters';
 import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
@@ -44,7 +50,7 @@ export let tray: Tray;
 export let trayContext: Menu;
 
 export const updateMenuVisible = (minimized?: boolean) => {
-	if (browserWindow.isMinimized()) {
+	if (browserWindow.isMinimized() || !browserWindow.isVisible()) {
 		trayContext.getMenuItemById('showapp').enabled = true;
 		trayContext.getMenuItemById('hideapp').enabled = false;
 	} else {
@@ -66,6 +72,7 @@ function createWindow() {
 		autoHideMenuBar: true,
 		frame: false,
 		icon: './assets/icon.ico',
+
 		webPreferences: {
 			allowRunningInsecureContent: false,
 			worldSafeExecuteJavaScript: true,
@@ -97,12 +104,43 @@ function createWindow() {
 	} else {
 		browserWindow.loadURL(loadurl);
 	}
+	let results = buildTrayIcon(tray, trayContext, browserWindow);
+
+	tray = results.tray;
+	trayContext = results.trayContext;
+	browserWindow = results.browserWindow;
+
+	browserWindow.on('hide', async () => {
+		if (loopsAreRunning()) {
+			await killEmitters();
+		}
+		updateMenuVisible();
+	});
+	browserWindow.on('show', () => {
+		if (!loopsAreRunning()) {
+			runLoop(browserWindow);
+		}
+		updateMenuVisible();
+	});
+	browserWindow.on('minimize', async () => {
+		if (loopsAreRunning()) {
+			await killEmitters();
+		}
+		updateMenuVisible();
+	});
+	browserWindow.on('restore', () => {
+		if (!loopsAreRunning()) {
+			runLoop(browserWindow);
+		}
+		updateMenuVisible();
+	});
+	checkProcesses();
 }
 
 export default app;
 
 app.on('window-all-closed', () => {
-	//killEmitters();
+	killEmitters();
 	showIconEnabled = true;
 	updateMenuVisible();
 	LOGGER.info('window closed');
@@ -110,15 +148,7 @@ app.on('window-all-closed', () => {
 
 app.on('quit', (evt) => {
 	killEmitters();
-	// tray.destroy();
 	process.exit(0);
 });
 
 app.on('ready', createWindow);
-
-app.whenReady().then(() => {
-	let results = buildTrayIcon(tray, trayContext, browserWindow);
-	tray = results.tray;
-	trayContext = results.trayContext;
-	browserWindow = results.browserWindow;
-});

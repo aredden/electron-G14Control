@@ -25,9 +25,7 @@ export const modifyArmoryCratePlan = async (plan: ArmoryPlan) => {
 			if (err || stderr) {
 				if (stderr.includes('Success')) {
 					resolve(plan);
-					LOGGER.info(
-						`Result of atrofac armory crate plan:\n${JSON.stringify(stderr)}`
-					);
+					LOGGER.info(`Result of atrofac armory crate plan:\n${stderr}`);
 				} else {
 					LOGGER.error(
 						`Error setting atrofac armory crate plan: ${JSON.stringify({

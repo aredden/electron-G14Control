@@ -21,6 +21,7 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 	handleMinimize = async () => {
 		let el = document.getElementById('menu-minimize') as HTMLButtonElement;
 		el.blur();
+		await window.ipcRenderer.send('cpuTempRun', false);
 		window.ipcRenderer.invoke('minimizeWindow');
 	};
 
