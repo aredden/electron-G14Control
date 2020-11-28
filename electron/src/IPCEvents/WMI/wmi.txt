@@ -1,0 +1,78 @@
+From: https://github.com/zllovesuki/reverse_engineering/blob/master/G14/wmi.txt
+
+Reference:
+- https://github.com/rufferson/ashs
+- https://code.woboq.org/linux/linux/include/linux/platform_data/x86/asus-wmi.h.html
+- http://gauss.ececs.uc.edu/Courses/c4029/pdf/ACPI_6.0.pdf
+- https://wiki.ubuntu.com/Kernel/Reference/WMI
+- g14-dsdt.dsl
+
+
+DSTS (0x53545344):
+
+- 0x00120061 / Check power supply/charging?(?)
+    (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DSTS(0x00120061)
+    Plugged in:     0x00010001 (65537)
+    Not plugged in: 0x00010000 (65536)
+- 0x0012006C / Is the charger plugged in?
+    (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DSTS(0x0012006C)
+    USB-C PD:       0x00010002 (65538)
+    180W:           0x00010001 (65537)
+    No:             0x00000000
+- 0x00010011 : Wireless Device Presence flag
+- 0x00010013 : Bluetooth Device Presence flag
+- 0x00110013 : Get Current CPU Fan Speed
+    (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DSTS(0x00110013)
+    Convert the result into hex, then the RPM is (HEX - 0x00010000) * 0x64
+- 0x00110014 : Get Current GPU Fan Speed
+    (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DSTS(0x00110014)
+    Convert the result into hex, then the RPM is (HEX - 0x00010000) * 0x64
+
+DEVS (0x53564544):
+- 0x00120075 / Set throttle plan (and apply default fan curve)
+    (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DEVS(0x00120075, 0x0000000X)
+    Performance: 0x00000000
+    Turbo:       0x00000001
+    Silent:      0x00000002
+- 0x00100021 / Hardware control
+    (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DEVS(0x00100021, X)
+    Sleep:       0x6C
+    RFKill:      0x88
+    kbLightUp:   0xC5 (doesn't do anything, need to communicate in userspace, default notify in event)
+    kbLightDd:   0xC4 (doesn't do anything, need to communicate in userspace, default notify in event)
+    LCDBrightUp: 0x10
+    LCDBrightDd: 0x20
+    (Unknown):   0x35 (doesn't do anything, default notify in event)
+    TouchPadTog: 0x6B (doesn't do anything, need to communicate in userspace, default notify in event)
+    Fn + V: 0x6B (doesn't do anything, need to communicate in userspace, default notify in event)
+    NKEY Hid:
+    Fn + F1: 226 (Handled by Windows)
+    Fn + F2: 182 (Handled by Windows)
+    Fn + F3: 205 (Handled by Windows)
+    Fn + F4: 181 (Handled by Windows)
+    Fn + F5: 174
+    Fn + F6: (Handled by Windows)
+    Fn + F7: 16
+    Fn + F8: 32
+    Fn + F9: (Handled by Windows)
+    Fn + F10: 107
+    Fn + F11: 108
+    Fn + F12: 136
+    Fn + C: 158
+    Fn + V: 138
+    Fn + Win: (Handled by Hardware)
+    Fn + Arrow {Left, Down, Right, Up}: {178, 197, 179, 196}
+    Vol-: 234
+    Vol+: 233
+    Mute: 124
+    ROG Key: 56
+
+- 0x00120057 / Battery charge limit
+    (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DEVS(0x00120057, X)
+    X is your desire percentage
+- 0x00110013 / Max CPU Fan
+    The command will not be posted here as max fan is pretty scary
+    Argument: 0/1 for disable/enable
+- 0x00110014 / Max GPU Fan
+    The command will not be posted here as max fan is pretty scary
+    Argument: 0/1 for disable/enable

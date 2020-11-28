@@ -36,23 +36,23 @@
 	}
 }
 
-// .titlebar-menu-dropdown {
-// 	-webkit-app-region: no-drag;
-// 	pointer-events: all;
-// 	position: absolute;
-// 	top: 0;
-// 	width: 15%;
-// 	z-index: 1000000 !important;
-// 	right: 10%;
-// 	height: 20px;
-// 	padding: 0;
-// 	* {
-// 		pointer-events: all;
-// 		-webkit-app-region: no-drag;
-// 		-webkit-user-select: auto;
-// 	}
-// 	> div {
-// 		padding: 0;
-// 		height: 20px !important;
-// 	}
-// }
+.titlebar-menu-dropdown {
+	-webkit-app-region: no-drag;
+	pointer-events: all;
+	position: absolute;
+	top: 0;
+	width: 15%;
+	z-index: 1000000 !important;
+	right: 10%;
+	height: 20px;
+	padding: 0;
+	* {
+		pointer-events: all;
+		-webkit-app-region: no-drag;
+		-webkit-user-select: auto;
+	}
+	> div {
+		padding: 0;
+		height: 20px !important;
+	}
+}

@@ -86,7 +86,7 @@ export default class WindowsPowerPlan extends Component<Props, State> {
 	render() {
 		let { plans, active } = this.state;
 		return (
-			<div>
+			<div style={{ paddingBottom: '2rem' }}>
 				<PageHeader
 					title="Windows Power Plans"
 					subTitle="Switch plans & modify processor performance boost setting"

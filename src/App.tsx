@@ -70,6 +70,7 @@ export default class App extends Component<Props, State> {
 
 	render() {
 		let { config, boostVisible, showModal } = this.state;
+		console.log(process.env.DEBUG_DROPMENU);
 		if (config) {
 			return (
 				<>
@@ -77,7 +78,7 @@ export default class App extends Component<Props, State> {
 					<div className="scrollbehavior">
 						<div
 							id="topDrag"
-							className="topDrag"
+							className={`topDrag show-dragarea`}
 							style={{
 								width: '90%',
 								height: '20px',

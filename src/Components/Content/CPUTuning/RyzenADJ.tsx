@@ -1,9 +1,10 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { message, Select, Space } from 'antd';
+import { Card, message, PageHeader, Select, Space } from 'antd';
 import { store, updateCurrentConfig } from '../../../Store/ReduxStore';
 import RyzenForm from './RyzenForm';
+import './Ryzenadj.scss';
 interface Props {}
 
 interface State {
@@ -292,18 +293,18 @@ export default class RyzenADJ extends Component<Props, State> {
 
 		return (
 			<>
-				<div
-					style={{
-						position: 'absolute',
-						right: '55px',
-						width: '300px',
-						height: '260px',
-						top: '199px',
-						backgroundColor: '#F0F2F5',
-						padding: '.5rem 1rem 1rem 1rem',
-					}}>
-					{' '}
-					<Space direction="vertical">
+				<PageHeader
+					title="RyzenADJ CPU Tuning"
+					subTitle="Modify CPU performance limits."></PageHeader>
+				<div className="ryzen-form-spacer">
+					<div className="ryzen-form-container">
+						<RyzenForm
+							submit={this.onSubmit}
+							formItems={radjFormItems}
+							onInputChange={this.onInputChange}
+						/>
+					</div>
+					<Space className="cpu-presets" direction="vertical">
 						<h4 style={{ margin: '.4rem' }}>CPU Presets:</h4>
 						<Select
 							defaultValue={radjName}
@@ -324,13 +325,29 @@ export default class RyzenADJ extends Component<Props, State> {
 							Ryzenadj settings will occasionally take several tries before
 							being successfully applied.
 						</div>
+						<button onClick={this.onSubmit}>Apply</button>
 					</Space>
 				</div>
-				<RyzenForm
-					submit={this.onSubmit}
-					formItems={radjFormItems}
-					onInputChange={this.onInputChange}
-				/>
+				<Card
+					style={{
+						width: '90%',
+						marginLeft: '5%',
+						marginRight: '5%',
+						marginTop: '2rem',
+						textAlign: 'center',
+					}}>
+					Credit to his majesty{' '}
+					<a
+						rel="noopener noreferrer"
+						target="_blank"
+						href="https://github.com/sbski/"
+						onClick={(e) => e.preventDefault()}>
+						sbski
+					</a>{' '}
+					for help with this page with respect to G14 defaults, minimum &
+					maxmimum values, and his contributions to AMD CPU SMU modification in
+					general.{' '}
+				</Card>
 			</>
 		);
 	}

@@ -16,13 +16,18 @@
 }
 .dragArea {
 	position: absolute;
-	-webkit-user-select: none;
+	-webkit-user-select: auto;
 	-webkit-app-region: drag;
+}
+
+.show-dragarea {
+	z-index: 10000000 !important;
+	background: rgba(100, 0, 100, 0.5);
 }
 
 .topDrag {
 	-webkit-app-region: drag;
-	-webkit-user-select: none;
+	-webkit-user-select: auto;
 	background: darken(#001529, 0);
 	border-top: 2px solid #1890ff;
 	border-bottom: 0.5px solid lighten(#001529, 10);

@@ -39,7 +39,7 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 	render() {
 		return (
 			<>
-				{/* <Select
+				<Select
 					className="titlebar-menu-dropdown"
 					placeholder="Menu"
 					optionLabelProp={'Menu'}
@@ -51,7 +51,7 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 					<Select.Option title="Exit App" value="exit">
 						Exit App
 					</Select.Option>
-				</Select> */}
+				</Select>
 				<Button.Group className="close-exit-group">
 					<Button id="menu-minimize" onClick={this.handleMinimize}>
 						_

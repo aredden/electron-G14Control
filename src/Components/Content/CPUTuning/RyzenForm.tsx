@@ -33,7 +33,6 @@ function RyzenFormItem(itemProps: ItemProps) {
 			key={caseKey + '-radjFormItem'}
 			label={formLabel}
 			style={{
-				width: '50%',
 				backgroundColor: '#F0F2F5',
 				margin: '0rem',
 				padding: '.3rem',
@@ -55,13 +54,10 @@ function RyzenFormItem(itemProps: ItemProps) {
 export function RyzenForm(props: Props) {
 	return (
 		<>
-			<PageHeader
-				title="RyzenADJ CPU Tuning"
-				subTitle="Modify CPU performance limits."></PageHeader>
 			<Form
 				title="CPU Tuning"
 				labelAlign="right"
-				labelCol={{ span: 17, pull: 0 }}
+				labelCol={{ span: 16, pull: 0 }}
 				wrapperCol={{ flex: 'inline', span: 10 }}>
 				{props.formItems.map((value, idx) => {
 					let formitemprops = {
@@ -74,26 +70,7 @@ export function RyzenForm(props: Props) {
 							{...formitemprops}></RyzenFormItem>
 					);
 				})}
-				<button
-					style={{ position: 'absolute', right: '279px', top: '25rem' }}
-					onClick={props.submit}>
-					Apply
-				</button>
 			</Form>
-			<Card
-				style={{
-					width: '90%',
-					marginLeft: '5%',
-					marginRight: '5%',
-					marginTop: '2rem',
-				}}>
-				Credit to his majesty{' '}
-				<a href="https://github.com/sbski/" onClick={(e) => e.preventDefault()}>
-					sbski
-				</a>{' '}
-				for help with this page with respect to G14 defaults, minimum & maxmimum
-				values, and his contributions to AMD CPU SMU modification in general.{' '}
-			</Card>
 		</>
 	);
 }

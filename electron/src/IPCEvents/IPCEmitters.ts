@@ -14,7 +14,7 @@ function pidIsRunning(pid) {
 		return false;
 	}
 }
-
+let processCheck: NodeJS.Timeout;
 let totalProcesses = [];
 let tempLoop: cp.ChildProcessWithoutNullStreams;
 let tempLoopRunning = false;
@@ -105,7 +105,7 @@ export const buildEmitters = (ipc: IpcMain, window: BrowserWindow) => {
 };
 
 export const checkProcesses = () => {
-	setTimeout(() => {
+	processCheck = setTimeout(() => {
 		let checkList = [];
 		totalProcesses.forEach((pid) => {
 			if (pidIsRunning(pid)) {
@@ -117,4 +117,10 @@ export const checkProcesses = () => {
 		);
 		checkProcesses();
 	}, 20000);
+};
+
+export const endAll = () => {
+	if (processCheck) {
+		clearTimeout(processCheck);
+	}
 };

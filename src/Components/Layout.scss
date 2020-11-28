@@ -24,7 +24,9 @@
 .sider-main {
 	padding-top: 7rem;
 	overflow: auto;
+	width: 20% !important;
 	height: 100vh;
+	box-shadow: 6px 3px 8px 1px rgba(0, 0, 0, 0.4);
 	position: fixed;
 	left: 0;
 	user-select: none;
@@ -39,12 +41,24 @@
 .content-header {
 	color: white;
 	padding: 1rem;
+	padding-right: 200px;
+	z-index: 100000;
 	border-color: white;
 	border: 5px solid white;
 	line-height: 3.8;
 	font-weight: bold;
-	position: absolute;
+	position: fixed !important;
+	top: 20px;
+	width: 100%;
+	z-index: 1000;
+	height: 70px !important;
 	background: rgb(0, 21, 41) !important;
+	padding: 4;
+	border: 0px;
+	text-align: center;
+	position: absolute;
+	height: 80px !important;
+	box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.4);
 }
 
 .site-layout {
@@ -56,16 +70,28 @@
 }
 
 .layoutContainer {
+	height: 100%;
 	margin-top: 20px;
 }
 
+.scroll-wrapper {
+	overflow: hidden;
+	top: 100px;
+	bottom: 0px;
+	position: fixed;
+	height: auto;
+	left: 200px !important;
+	right: 0 !important;
+}
+
 .scroll-content {
-	overflow-y: scroll !important;
+	overflow-y: scroll;
+	height: 100% !important;
 	&::-webkit-scrollbar {
-		width: 10px;
+		width: 12px;
 		display: block;
 		color: black;
-		background-color: #001529;
+		border: 1px solid #001529 !important;
 	}
 	&::-webkit-scrollbar-thumb {
 		display: block;
@@ -74,30 +100,46 @@
 
 /* Box styles */
 .scroll-content {
+	.ant-layout-content {
+		footer {
+			height: 10%;
+		}
+	}
+	box-sizing: border-box;
 	border: none;
 	padding: 5px;
+	display: block;
+	width: fit-content;
 	width: 100%;
-	height: 100%;
-	overflow-y: scroll !important;
+	overflow-y: scroll;
 	border-radius: 5px;
+	background-color: #f0f2f5;
 }
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
-	width: 12px;
+	width: 10px;
 	height: 12px;
+	right: 0 !important;
+	position: fixed;
 }
 
 ::-webkit-scrollbar-track {
-	border: 1px solid #001529;
-	border-radius: 5px;
+	width: 10px !important;
+	background-color: #00203d;
+	border: 1px solid #00203d !important;
+	right: 0 !important;
 }
 
 ::-webkit-scrollbar-thumb {
-	background: white;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.25);
+	background: #00203d;
 	border-radius: 5px;
+	border: 1px solid #1890ff !important;
+	right: 0 !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: #001529;
+	background: #334454;
+	right: 0 !important;
 }

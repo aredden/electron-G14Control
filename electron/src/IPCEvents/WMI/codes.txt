@@ -1,0 +1,30 @@
+From: https://github.com/zllovesuki/reverse_engineering/blob/master/G14/codes.txt
+
+NKEY Hid:
+Fn + F1: 226 (Handled by Windows)
+Fn + F2: 182 (Handled by Windows)
+Fn + F3: 205 (Handled by Windows)
+Fn + F4: 181 (Handled by Windows)
+Fn + F5: 174
+Fn + F6: (Handled by Windows)
+Fn + F7: 16
+Fn + F8: 32
+Fn + F9: (Handled by Windows)
+Fn + F10: 107
+Fn + F11: 108
+Fn + F12: 136
+
+Fn + C: 158
+Fn + V: 138
+Fn + Win: (Handled by Hardware)
+Fn + Arrow {Left, Down, Right, Up}: {178, 197, 179, 196}
+
+Vol-: 234
+Vol+: 233
+Mute: 124
+ROG Key: 56
+
+WMI:
+On battery: 87
+Power source changed: 123
+On Lid Open/Close: 233
