@@ -1,6 +1,6 @@
 /** @format */
 
-import { Button } from 'antd';
+import { Button, Select } from 'antd';
 import React, { Component } from 'react';
 import './CloseAndExitButtons.scss';
 interface Props {}
@@ -25,9 +25,33 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 		window.ipcRenderer.invoke('minimizeWindow');
 	};
 
+	handleSelect = async (value: any, option: any) => {
+		switch (value) {
+			case 'exit':
+				await window.ipcRenderer.invoke('exitApp');
+				break;
+			case 'logs':
+				await window.ipcRenderer.invoke('openLogs');
+				break;
+		}
+	};
+
 	render() {
 		return (
-			<div>
+			<>
+				{/* <Select
+					className="titlebar-menu-dropdown"
+					placeholder="Menu"
+					optionLabelProp={'Menu'}
+					defaultValue="Menu"
+					onSelect={this.handleSelect}>
+					<Select.Option title="Open Logs" value="logs">
+						Open Logs
+					</Select.Option>
+					<Select.Option title="Exit App" value="exit">
+						Exit App
+					</Select.Option>
+				</Select> */}
 				<Button.Group className="close-exit-group">
 					<Button id="menu-minimize" onClick={this.handleMinimize}>
 						_
@@ -36,7 +60,7 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 						x
 					</Button>
 				</Button.Group>
-			</div>
+			</>
 		);
 	}
 }

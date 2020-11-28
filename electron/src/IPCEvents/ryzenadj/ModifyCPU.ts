@@ -35,7 +35,7 @@ export const setRyzenadj = (config: RyzenadjConfig) => {
 		if (radjStr.length === 0) {
 			return false;
 		}
-		exec(`${RADJ_LOC} ${radjStr}`, (err, out, stderr) => {
+		exec(`cmd /c "${RADJ_LOC}" ${radjStr}`, (err, out, stderr) => {
 			if (err || stderr) {
 				LOGGER.error(
 					`Error setting ryzenadj settings: ${JSON.stringify({ err, stderr })}`

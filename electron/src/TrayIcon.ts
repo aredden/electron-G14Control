@@ -6,9 +6,13 @@ import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
 import { killEmitters, loopsAreRunning } from './IPCEvents/IPCEmitters';
 import is_dev from 'electron-is-dev';
 import path from 'path';
-
+import {
+	getActivePlan,
+	getWindowsPlans,
+	setWindowsPlan,
+} from './IPCEvents/powercfg/Powercfg';
 const ICONPATH = is_dev
-	? './assets/icon_light.png'
+	? path.join(__dirname, '../', 'src', 'assets', 'icon_light.png')
 	: path.join(
 			app.getPath('exe'),
 			'../',
@@ -17,7 +21,7 @@ const ICONPATH = is_dev
 			'icon_light.png'
 	  );
 
-export const buildTrayIcon = (
+export const buildTrayIcon = async (
 	tray: Tray,
 	trayContext: Menu,
 	browserWindow: BrowserWindow
@@ -50,6 +54,15 @@ export const buildTrayIcon = (
 			click: (item) => {
 				browserWindow.hide();
 			},
+		},
+		{
+			type: 'separator',
+		},
+		{
+			label: 'Windows Plans',
+			type: 'submenu',
+			id: 'windowsSubmenu',
+			submenu: await buildWindowsSwitcher(trayContext),
 		},
 		{
 			type: 'separator',
@@ -90,5 +103,38 @@ export const buildTrayIcon = (
 	tray.setToolTip('G14ControlV2');
 	tray.setTitle('G14ControlV2');
 	tray.setContextMenu(trayContext);
+	trayContext
+		.getMenuItemById('windowsSubmenu')
+		.submenu.items.forEach((item) => {
+			item.click = async (e: any, f: any) => {
+				console.log(JSON.stringify({ e, f }));
+				trayContext.getMenuItemById(
+					((await getActivePlan()) as { name: string; guid: string }).guid
+				).checked = false;
+				let result = await setWindowsPlan(item.id);
+				if (result) {
+					item.checked = true;
+				}
+			};
+		});
 	return { tray, trayContext, browserWindow };
+};
+
+const buildWindowsSwitcher = async (context: Menu) => {
+	let items: Menu = new Menu();
+	let ctx = [];
+	let plan = (await getActivePlan()) as { name: string; guid: string };
+	let plans = await getWindowsPlans();
+	if (plans) {
+		for (var x = 0; x < plans.length; x++) {
+			ctx.push({
+				label: plans[x].name,
+				id: plans[x].guid,
+				type: 'radio',
+				checked: plans[x].guid === plan.guid,
+			});
+		}
+		items = Menu.buildFromTemplate(ctx);
+		return items;
+	} else return undefined;
 };

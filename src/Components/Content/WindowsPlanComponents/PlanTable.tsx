@@ -109,7 +109,7 @@ export default class PlanTable extends Component<Props, State> {
 									</>
 								}
 								key={data.name + ' ' + data.guid}>
-								<CPUBoost plan={data} />
+								<CPUBoost active={data.active} plan={data} />
 								<Button
 									style={{ marginTop: '1rem' }}
 									disabled={data.active}

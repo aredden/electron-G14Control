@@ -1,6 +1,7 @@
 {
 	"name": "g14controlv2",
-	"version": "0.1.9",
+	"productName": "G14ControlV2",
+	"version": "0.1.13",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
@@ -47,6 +48,12 @@
 	},
 	"build": {
 		"appId": "g14control.main",
+		"nsis": {
+			"oneClick": false,
+			"perMachine": false,
+			"allowToChangeInstallationDirectory": false,
+			"license": "LICENSE"
+		},
 		"win": {
 			"target": "nsis",
 			"icon": "./electron/src/assets/icon.ico",

@@ -8,8 +8,6 @@ import getLogger from '../Logger';
 
 const LOGGER = getLogger('BoostVisibility');
 
-//@ts-ignore
-// eslint-ignore-next-line
 const BOOST_VIS_CHG = is_dev
 	? path.join(__dirname, '../../src/Registry', 'RegistryChecker.exe')
 	: path.join(
@@ -22,7 +20,7 @@ const BOOST_VIS_CHG = is_dev
 
 export const checkBoostVisibility = async (): Promise<boolean> => {
 	return new Promise((resolve, reject) => {
-		let proc = exec(`${BOOST_VIS_CHG} check`);
+		let proc = exec(`cmd /c "${BOOST_VIS_CHG}" check`);
 		proc.stdout.on('data', (data) => {
 			LOGGER.info(`RegistryChecker result: ${data}`);
 			if (data && data.indexOf('True') !== -1) {
@@ -40,7 +38,7 @@ export const checkBoostVisibility = async (): Promise<boolean> => {
 
 export const enableVisibility = async () => {
 	return new Promise((resolve) => {
-		let proc = exec(`${BOOST_VIS_CHG} modify`);
+		let proc = exec(`cmd /c "${BOOST_VIS_CHG}" modify`);
 		proc.stdout.on('data', (data) => {
 			LOGGER.info(
 				`\n${BOOST_VIS_CHG}\nRegistryChecker modification result: ${data}`

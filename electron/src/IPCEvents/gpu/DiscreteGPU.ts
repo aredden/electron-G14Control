@@ -30,7 +30,7 @@ const ps = new Shell({
 
 export const resetGPU = async () => {
 	return new Promise((resolve) => {
-		ps.addCommand(`${restartGPULoc} cli`);
+		ps.addCommand(`& "${restartGPULoc}" cli`);
 		ps.invoke()
 			.then((result) => {
 				LOGGER.info('Result resetting GPU:\n' + result);

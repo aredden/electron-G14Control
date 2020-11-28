@@ -57,7 +57,7 @@ export const setDisplayConfig = async (
 	}
 	let cmdString = buildCommandString(display, refresh, width, height);
 	return new Promise((resolve) => {
-		ps.addCommand(`${screenrefloc} ${cmdString}`);
+		ps.addCommand(`& '${screenrefloc}' ${cmdString}`);
 		ps.invoke()
 			.then((result) => {
 				LOGGER.info(
@@ -152,7 +152,7 @@ export const parseDisplayOptions = (stringOpts: string) => {
 
 export const getDisplays = async () => {
 	return new Promise((resolve) => {
-		ps.addCommand(`${screenrefloc} /m`);
+		ps.addCommand(`& "${screenrefloc}" /m`);
 		ps.invoke()
 			.then(async (result) => {
 				let displays = await parseDisplayOptions(result);

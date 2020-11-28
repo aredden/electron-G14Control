@@ -21,7 +21,7 @@ const LOGGER = getLogger('SetArmoryPlan');
 
 export const modifyArmoryCratePlan = async (plan: ArmoryPlan) => {
 	return new Promise<ArmoryPlan | false>((resolve, reject) => {
-		exec(`${ATRO_LOC} plan ${plan}`, (err, out, stderr) => {
+		exec(`cmd /c "${ATRO_LOC}" plan ${plan}`, (err, out, stderr) => {
 			if (err || stderr) {
 				if (stderr.includes('Success')) {
 					resolve(plan);

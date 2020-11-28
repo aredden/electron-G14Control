@@ -59,7 +59,7 @@ export const updateMenuVisible = (minimized?: boolean) => {
 	}
 };
 
-function createWindow() {
+async function createWindow() {
 	// Create the browser window.
 
 	browserWindow = new BrowserWindow({
@@ -77,7 +77,7 @@ function createWindow() {
 			allowRunningInsecureContent: false,
 			worldSafeExecuteJavaScript: true,
 			nodeIntegration: true,
-			accessibleTitle: 'G14ControlR4',
+			accessibleTitle: 'G14ControlV2',
 			preload: __dirname + '/Preload.js',
 		},
 		darkTheme: true,
@@ -104,7 +104,7 @@ function createWindow() {
 	} else {
 		browserWindow.loadURL(loadurl);
 	}
-	let results = buildTrayIcon(tray, trayContext, browserWindow);
+	let results = await buildTrayIcon(tray, trayContext, browserWindow);
 
 	tray = results.tray;
 	trayContext = results.trayContext;

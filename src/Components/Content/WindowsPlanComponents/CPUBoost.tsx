@@ -1,6 +1,6 @@
 /** @format */
 
-import { Radio } from 'antd';
+import { message, Radio } from 'antd';
 import React, { Component } from 'react';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import getLogger from '../../../Logger';
@@ -10,6 +10,7 @@ const LOGGER = getLogger('CPUBoost');
 
 interface Props {
 	plan?: { name: string; guid: string };
+	active: boolean;
 }
 
 interface State {
@@ -57,13 +58,20 @@ export default class CPUBoost extends Component<Props, State> {
 			if (result && this.props.plan) {
 				if (result.result) {
 					let { chosenBoost } = this.state;
-					console.log(this.props.plan.guid, result);
+					if (this.props.active) {
+						message.info(
+							'Switch to another plan and back to enable / disable boost. #WindowsThings',
+							5
+						);
+					}
 					this.setState({
 						currentBoost: { ac: chosenBoost, dc: chosenBoost },
 					});
 				}
 			} else {
-				alert('There was an issue setting boost, check logs for more details.');
+				message.error(
+					'There was an issue setting boost, check logs for more details.'
+				);
 			}
 		});
 	};

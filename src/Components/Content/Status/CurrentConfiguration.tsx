@@ -13,7 +13,15 @@ interface State {
 	boost: string;
 	needsUpdate: boolean;
 	windowsPlan: { name: string; guid: string };
+	graphics: { ac: number; dc: number };
 }
+
+const dynamicGraphicsOptions = [
+	'Force power-saving graphics',
+	'Optimize power savings',
+	'Optimize performance',
+	'Maximize performance',
+];
 
 export default class CurrentConfiguration extends Component<Props, State> {
 	constructor(props: Props) {
@@ -28,6 +36,10 @@ export default class CurrentConfiguration extends Component<Props, State> {
 			windowsPlan: {
 				name: '',
 				guid: '',
+			},
+			graphics: {
+				ac: 0,
+				dc: 0,
 			},
 		};
 	}
@@ -68,6 +80,24 @@ export default class CurrentConfiguration extends Component<Props, State> {
 					message.error("Couldn't load current Windows power plan.");
 				}
 			});
+		window.ipcRenderer.invoke('getSwitchableDynamicGraphics').then(
+			(
+				response:
+					| {
+							plan: { name: string; guid: string };
+							result: { ac: number; dc: number };
+					  }
+					| false
+			) => {
+				if (response) {
+					this.setState({ graphics: response.result });
+				} else {
+					message.error(
+						'There was trouble finding switchable dynamic graphics settings.'
+					);
+				}
+			}
+		);
 	}
 
 	render() {
@@ -81,7 +111,7 @@ export default class CurrentConfiguration extends Component<Props, State> {
 				title: 'Chosen Setting',
 			},
 		];
-		let { ryzenadj, fanCurve, boost, windowsPlan } = this.state;
+		let { ryzenadj, fanCurve, boost, windowsPlan, graphics } = this.state;
 		return (
 			<>
 				<Table
@@ -95,6 +125,10 @@ export default class CurrentConfiguration extends Component<Props, State> {
 						{ name: 'Fan Curve', value: fanCurve },
 						{ name: 'Windows Power Plan', value: windowsPlan.name },
 						{ name: 'Boost Mode', value: boost },
+						{
+							name: 'Graphics Preference',
+							value: dynamicGraphicsOptions[graphics.ac],
+						},
 					]}></Table>
 			</>
 		);

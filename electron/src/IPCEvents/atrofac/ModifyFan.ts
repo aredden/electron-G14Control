@@ -55,7 +55,7 @@ export const modifyFanCurve = async (
 	if (plan || cpuCurve || gpuCurve) {
 		return new Promise<{ cpuCurve: string; gpuCurve: string } | false>(
 			(resolve, reject) => {
-				exec(`${ATRO_LOC} ${command}`, (err, out, stderr) => {
+				exec(`cmd /C "${ATRO_LOC}" ${command}`, (err, out, stderr) => {
 					if (err || stderr) {
 						if (stderr.indexOf('Success') !== -1) {
 							//@ts-ignore

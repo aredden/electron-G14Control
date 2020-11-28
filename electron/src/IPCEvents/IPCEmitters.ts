@@ -63,10 +63,14 @@ export const killEmitters = async () => {
 		LOGGER.info('Killing emitters...');
 		tempLoop.stdout.pause();
 		tempLoop.stderr.pause();
+		let pid = tempLoop.pid;
 		killProcess(tempLoop.pid).then((result) => {
 			tempLoop = undefined;
 			tempLoopRunning = false;
 			killing = false;
+			totalProcesses = totalProcesses.filter((val) => {
+				return val !== pid;
+			});
 			LOGGER.info(
 				`\nKill Result: ${result}\nrunning: ${tempLoopRunning}\nis alive: ${loopsAreRunning()}\nkilling:${killing}`
 			);
@@ -108,9 +112,6 @@ export const checkProcesses = () => {
 				checkList.push(pid);
 			}
 		});
-		if (checkList.length > 1) {
-			throw new Error('More than 1 typeperf process! Let developer know.');
-		}
 		LOGGER.info(
 			`There are ${checkList.length} typeperf processes running. ${checkList}`
 		);
