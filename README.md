@@ -10,11 +10,15 @@ Pre-alpha sample styling:
 
 The `/electron` directory requires a `.env` file with two entries for the executables under `electron/atrofac-cli/` and `electron/ryzenadj/`. It should be structured as follows:
 
+**There are currently other requirements, but not many people helping, so I'm going to update this list later.**
 ```
+# Remove carrot braces
+
 ATRO_LOC=<C:/path/to/atrofac-cli.exe>
 RADJ_LOC=<C:/path/to/ryzenadj.exe>
 CONFIG_LOC=<C:/path/to/electron/src/config.json>
 SCREEN_REF_LOC=<C:/path/to/ChangeScreenResolution.exe>
+RESTART_GPU_LOC=<C:/path/to/RestartGPU.exe>
 ```
 
 ## Dev Startup
@@ -40,36 +44,40 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 This is just a starting list. I'm sure there is much more to do.
 
-- Functionality for the electron tray icon similar to the original in G14ControlR3, but initially without G14Control preset plans.
-- Main window styling and suggestions. \*_In progess_\*
-- Allow user to choose temperature polling time. \*_In progess_\*
-- Improved code commenting.
+- ~~Functionality for the electron tray icon similar to the original in G14ControlR3, but initially without G14Control preset plans.~~
+- ~~Main window styling and suggestions.~~
+- ~~Allow user to choose temperature polling time. \*_In progess_\*
+- ~~Improved code commenting.
 - ~~FanCurve page front end logic -- the ipcRenderer listener functions under /electron are already built.~~
   - ~~Atrofac command building.~~
   - ~~Integrating interactive draggable graph nodes on front end for building fan curve.~~
-  - ~Persistent storage of commonly used fan curves that can be saved / edited / loaded from a configuration file.~~
+  - ~~Persistent storage of commonly used fan curves that can be saved / edited / loaded from a configuration file.~~
   - ~~Command validation.~~
-- Persistent storage for configuration and runtime events. \*_In progess_\*
+- ~~Persistent storage for configuration and runtime events.~~
   - ~~config.json file for configuration loaded into electron process & sent to react renderer process.~~
   - ~~Saving / Editing / Adding configurations during runtime. ~~
   - ~~Give all components the ability to modify redux as necessary.~~
-- Ability for users to create new, remove, edit configuration options using the implemented redux store. (~~Fan curve profiles~~ / atrofac profiles / loop speeds / ~~armory crate plans~~)
-- Status page design and relevent data to show.
+- ~~Ability for users to create new, remove, edit configuration options using the implemented redux store. (Fan curve profiles / atrofac profiles / loop speeds /armory crate plans~~)
+- ~~Status page design and relevent data to show.~~
   - ~~Collect data from WMI & Windows PerformanceCounters such as BIOS version, ram, names of hardware vendors, important software versions, etc...~~
 - Add settings page for more options such as "exit on window close" vs "run as icon app on window close", etc.
 - Header main page ~~custom exit and minimize buttons~~, as well as possible dropdown menu (could use this as a 'settings page')
 - Low level hardware monitoring \*_In progress_\*
+ - Bug fixing. \*_In progress_\*
   ...
 
 - Eventually add G14Control plans configuration.
 
-#### _dreams_
-
-- Figure out how to directly control fans without needing to use atrofac-cli and preventing fan speed oscillation.
-
 ## License
 
 [MIT](https://github.com/aredden/electron-G14Control/blob/main/LICENSE)
+
+## Support
+
+If you wish to help me, or you have the beta you can check out the discord that I primarily use to give out the beta / chat about development.
+
+Discord: https://discord.gg/482ST4M6Ag
+Donate: https://www.paypal.com/pools/c/8uiaar8Sl9
 
 ## Major Contributors
 
@@ -78,5 +86,11 @@ https://github.com/thesacredmoocow/g14control-r2 (g14control's previous maintain
 https://github.com/FlyGoat/RyzenAdj (adjusting tdp)
 
 https://github.com/cronosun/atrofac (fan profiles)
-
 - advanced cli configuration [documentation](https://github.com/cronosun/atrofac/blob/master/ADVANCED.md).
+
+https://github.com/sbski (help with understanding ryzenadj & cpu performance limits control)
+
+
+## References
+
+https://github.com/zllovesuki/reverse_engineering/blob/master/G14 (hardware control via wmi)
