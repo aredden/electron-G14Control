@@ -1,6 +1,6 @@
 /** @format */
 
-import { Card, Form, InputNumber, PageHeader } from 'antd';
+import { Form, InputNumber } from 'antd';
 import React from 'react';
 
 type RADJReactConfig = 'tdp' | 'ftdp' | 'stdp' | 'ftime' | 'stime' | 'temp';

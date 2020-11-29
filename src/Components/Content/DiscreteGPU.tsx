@@ -162,14 +162,15 @@ export default class DiscreteGPU extends Component<Props, State> {
 		});
 
 		const headerStyles: React.CSSProperties = {
-			marginLeft: 0,
+			marginLeft: '.9rem',
+			marginTop: '-1rem',
 			paddingLeft: '.8rem',
 		};
 
 		const tableStyles: React.CSSProperties = {
 			width: '90%',
 			marginLeft: '5%',
-			marginTop: '2rem',
+			marginTop: '1.5rem',
 		};
 
 		return (
@@ -181,7 +182,11 @@ export default class DiscreteGPU extends Component<Props, State> {
 				<GraphicsSettings></GraphicsSettings>
 				<Space direction="horizontal">
 					<PageHeader style={headerStyles} title="Tools" />
-					<Button onClick={this.handleClick}>Reset GPU</Button>
+					<Button
+						style={{ marginTop: '-1.5rem !important' }}
+						onClick={this.handleClick}>
+						Reset GPU
+					</Button>
 				</Space>
 				<br style={{ height: '3rem' }}></br>
 				<Space direction="vertical" style={tableStyles}>

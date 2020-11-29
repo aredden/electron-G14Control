@@ -33,8 +33,9 @@ export default class GraphicsDescriptions extends Component<Props, State> {
 		const descriptionStyle: React.CSSProperties = {
 			maxWidth: '100%',
 			fontSize: '.4rem',
-			marginBottom: '1.4rem',
-			marginTop: '.5rem',
+			marginLeft: '.5rem',
+			marginBottom: '.5rem',
+			marginTop: '0rem',
 		};
 
 		const descriptionItemStyle: React.CSSProperties = {

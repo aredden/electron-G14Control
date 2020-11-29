@@ -96,7 +96,7 @@ export default class GraphicsSettings extends Component<Props, State> {
 		const radioStyle: React.CSSProperties = {
 			display: 'block',
 			position: 'relative',
-			right: '-45px',
+			right: '0px',
 			top: '-40px',
 			justifyContent: 'end',
 			marginTop: '0rem',
@@ -128,12 +128,12 @@ export default class GraphicsSettings extends Component<Props, State> {
 		return (
 			<div
 				style={{
-					marginLeft: '2rem',
+					marginLeft: '1rem',
 					justifyContent: 'center',
 					marginBottom: '0rem',
 					marginTop: '2rem',
 				}}>
-				<Space size="small">
+				<Space size="middle">
 					<GraphicsDescriptions
 						graphics={this.state.graphics}
 						plan={this.state.plan}></GraphicsDescriptions>
