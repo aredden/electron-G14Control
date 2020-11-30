@@ -8,14 +8,7 @@ import {
 	Tray,
 	Notification,
 } from 'electron';
-import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import {
-	buildEmitters,
-	checkProcesses,
-	killEmitters,
-	loopsAreRunning,
-	runLoop,
-} from './IPCEvents/IPCEmitters';
+
 import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
@@ -23,9 +16,21 @@ import getLogger from './Logger';
 import path from 'path';
 import url from 'url';
 import is_dev from 'electron-is-dev';
+import { buildIpcConnection } from './IPCEvents/IPCListeners';
+import {
+	buildEmitters,
+	killEmitters,
+	loopsAreRunning,
+	runLoop,
+} from './IPCEvents/IPCEmitters';
 import { buildTrayIcon } from './TrayIcon';
 
 const gotTheLock = app.requestSingleInstanceLock();
+
+export let g14Config: G14Config;
+export const setG14Config = (g14conf: G14Config) => {
+	g14Config = g14conf;
+};
 
 if (!gotTheLock) {
 	app.quit();
@@ -41,6 +46,16 @@ if (!gotTheLock) {
 		}
 	});
 }
+
+const ICONPATH = is_dev
+	? path.join(__dirname, '../', 'src', 'assets', 'icon.ico')
+	: path.join(
+			app.getPath('exe'),
+			'../',
+			'resources',
+			'extraResources',
+			'icon.ico'
+	  );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
@@ -61,6 +76,9 @@ export const updateMenuVisible = (minimized?: boolean) => {
 
 async function createWindow() {
 	// Create the browser window.
+	if (!gotTheLock) {
+		return;
+	}
 
 	browserWindow = new BrowserWindow({
 		width: 960,
@@ -71,7 +89,7 @@ async function createWindow() {
 		titleBarStyle: 'hidden',
 		autoHideMenuBar: true,
 		frame: false,
-		icon: './assets/icon.ico',
+		icon: ICONPATH,
 
 		webPreferences: {
 			allowRunningInsecureContent: false,
@@ -134,10 +152,11 @@ async function createWindow() {
 		}
 		updateMenuVisible();
 	});
-	checkProcesses();
-}
 
-export default app;
+	browserWindow.on('unresponsive', () => {
+		LOGGER.info('Window is unresponsive...');
+	});
+}
 
 app.on('window-all-closed', async () => {
 	await killEmitters();
@@ -146,9 +165,27 @@ app.on('window-all-closed', async () => {
 	LOGGER.info('window closed');
 });
 
-app.on('quit', async (evt) => {
-	await killEmitters();
-	process.exit(0);
+app.on('before-quit', () => {
+	LOGGER.info('Preparing to quit.');
+	killEmitters();
+});
+
+app.on('quit', async (evt, e) => {
+	LOGGER.info(`Quitting with exit code. ${e}`);
 });
 
 app.on('ready', createWindow);
+
+app.on('renderer-process-crashed', (event, webcontents, killed) => {
+	LOGGER.info(
+		`Renderer process crashed: ${JSON.stringify(
+			event,
+			null,
+			2
+		)}\nWas killed? ${killed} ... ${killed ? 'RIP' : ''}`
+	);
+});
+
+app.on('render-process-gone', (event, contents, details) => {
+	LOGGER.info(`Renderer Process is Gone:\n${details.reason}`);
+});

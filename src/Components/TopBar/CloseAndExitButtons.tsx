@@ -42,8 +42,11 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 				<Select
 					className="titlebar-menu-dropdown"
 					placeholder="Menu"
+					style={{ zIndex: 1000 }}
 					optionLabelProp={'Menu'}
 					defaultValue="Menu"
+					value="Menu"
+					dropdownClassName="titlebar-menu-dropdown-panel"
 					onSelect={this.handleSelect}>
 					<Select.Option title="Open Logs" value="logs">
 						Open Logs

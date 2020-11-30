@@ -19,11 +19,14 @@
 .ryzen-form-container {
 	margin-top: 0rem;
 	width: 58%;
+	display: flex;
+	justify-content: flex-start;
+	max-width: 400px;
 	top: 0;
 	form {
 		padding: 1.5rem 3.5rem 1.5rem 0rem;
 		width: 100%;
-		max-width: 500px;
+		max-width: 500px !important;
 	}
 }
 

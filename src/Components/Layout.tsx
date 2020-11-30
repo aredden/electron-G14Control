@@ -7,6 +7,7 @@ import SiderMenu from './Menu/SiderMenu';
 import ContentLayout from './ContentLayout';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import { MenuListMapper, MenuListOption } from '../Utilities/Constants';
+import icn from './icon_light.png';
 const { Sider, Header } = Layout;
 
 interface Props {}
@@ -36,7 +37,20 @@ export default class AppLayout extends Component<Props, State> {
 				<Layout className="layoutContainer">
 					<Sider className="sider-main">
 						<div className="logo" />
-						<Header className="header-main">G14Control</Header>
+						<Header className="header-main">
+							<img
+								className="g14-icon-style"
+								style={{
+									marginLeft: '-1rem',
+									marginTop: '-5px',
+									width: '20px',
+									height: '20px',
+								}}
+								src={icn}
+								alt=""
+							/>{' '}
+							G14Control
+						</Header>
 						<SiderMenu onChooseSubmenu={this.onChooseSubmenu} />
 					</Sider>
 					<ContentLayout currentPage={currentSubMenu} />

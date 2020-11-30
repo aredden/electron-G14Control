@@ -96,8 +96,8 @@ export default class GraphicsSettings extends Component<Props, State> {
 		const radioStyle: React.CSSProperties = {
 			display: 'block',
 			position: 'relative',
-			right: '0px',
-			top: '-40px',
+			right: '-35px',
+			top: '-20px',
 			justifyContent: 'end',
 			marginTop: '0rem',
 			padding: '1.6rem 1.2rem 2rem 1.2rem',

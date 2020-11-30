@@ -35,7 +35,7 @@ export default class GraphicsDescriptions extends Component<Props, State> {
 			fontSize: '.4rem',
 			marginLeft: '.5rem',
 			marginBottom: '.5rem',
-			marginTop: '0rem',
+			marginTop: '-1rem',
 		};
 
 		const descriptionItemStyle: React.CSSProperties = {

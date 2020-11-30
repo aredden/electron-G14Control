@@ -15,6 +15,7 @@
 	padding-right: 1rem;
 	padding-left: 0rem;
 	margin: 0.8rem;
+	margin-left: 15px;
 	margin-top: 0.5rem;
 	margin-bottom: 1.5rem;
 	-webkit-user-select: auto;
@@ -40,20 +41,16 @@
 
 .content-header {
 	color: white;
-	padding: 1rem;
-	padding-right: 200px;
-	z-index: 100000;
-	border-color: white;
-	border: 5px solid white;
-	line-height: 3.8;
+	padding: 1rem 200px 1rem 1rem !important;
+	// border-color: white;
+	// border: 5px solid white;
+	line-height: 2.8;
 	font-weight: bold;
 	position: fixed !important;
 	top: 20px;
 	width: 100%;
-	z-index: 1000;
-	height: 70px !important;
+	height: 50px;
 	background: rgb(0, 21, 41) !important;
-	padding: 4;
 	border: 0px;
 	text-align: center;
 	position: absolute;
@@ -142,4 +139,19 @@
 ::-webkit-scrollbar-thumb:hover {
 	background: #334454;
 	right: 0 !important;
+}
+
+@keyframes rotation {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(359deg);
+	}
+}
+
+.g14-icon-style {
+	&:hover {
+		animation: rotation 3s infinite cubic-bezier(0.165, 0.82, 0.165, 1);
+	}
 }

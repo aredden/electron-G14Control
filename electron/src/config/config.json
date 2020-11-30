@@ -1,5 +1,5 @@
 {
-	"current": { "ryzenadj": "Default", "fanCurve": "Silent (low speed fan)" },
+	"current": { "ryzenadj": "Default", "fanCurve": "Performance" },
 	"startup": { "checkBoostVisibility": true },
 	"ryzenadj": {
 		"defaults": {

@@ -32,14 +32,19 @@ const parseWmiObjectResult = (res: string) => {
 	}
 };
 
-export const buildHidFKey = (key: number) => {
-	return `(Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DEVS(0x00120057, ${key})`;
+export const buildAtkWmi = (area: string, address: string, key?: number) => {
+	return `(Get-WmiObject 
+			-Namespace root/WMI 
+			-Class AsusAtkWmi_WMNB)
+			.${area}(
+					${address}
+					${key ? ` ,${key}` : ''}
+					)`;
 };
 
 export const isPluggedIn = async () => {
-	ps.addCommand(
-		`(Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DSTS(0x00120061)`
-	);
+	let command = buildAtkWmi('DSDT', '0x00120061');
+	ps.addCommand(command);
 	let result = parseWmiObjectResult(await ps.invoke());
 	if (result) {
 		switch (result) {

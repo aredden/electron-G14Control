@@ -7,6 +7,7 @@ import is_dev from 'electron-is-dev';
 import getLogger from '../Logger';
 import path from 'path';
 import { app } from 'electron';
+import { setG14Config } from '../electron';
 dotenv.config();
 
 //@ts-ignore
@@ -63,13 +64,16 @@ export const buildConfigLoaderListeners = (ipc: IpcMain) => {
 			LOGGER.info(`Error loading config:\n${err}`);
 		});
 		if (config) {
+			let g14conf = JSON.parse((config as Buffer).toString('utf-8'));
+			setG14Config(g14conf);
 			return (config as Buffer).toString('utf-8');
 		} else {
 			return false;
 		}
 	});
-	ipc.handle('saveConfig', async (event, config: object) => {
+	ipc.handle('saveConfig', async (event, config: G14Config) => {
 		LOGGER.info('Attempting to save config.');
+		setG14Config(config);
 		let result = writeConfig(config);
 		if (result) {
 			return true;

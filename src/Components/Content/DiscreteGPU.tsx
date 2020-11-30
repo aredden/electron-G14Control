@@ -173,6 +173,12 @@ export default class DiscreteGPU extends Component<Props, State> {
 			marginTop: '1.5rem',
 		};
 
+		const toolsStyles: React.CSSProperties = {
+			marginLeft: '.9rem',
+			marginTop: '-.3rem',
+			paddingLeft: '.8rem',
+		};
+
 		return (
 			<div>
 				<PageHeader
@@ -180,10 +186,10 @@ export default class DiscreteGPU extends Component<Props, State> {
 					title="Discrete GPU Tools"
 					subTitle="Tools & Display Options"></PageHeader>
 				<GraphicsSettings></GraphicsSettings>
-				<Space direction="horizontal">
-					<PageHeader style={headerStyles} title="Tools" />
+				<Space direction="horizontal" style={{ marginTop: '-1rem' }}>
+					<PageHeader style={toolsStyles} title="Tools" />
 					<Button
-						style={{ marginTop: '-1.5rem !important' }}
+						style={{ marginTop: '-2.5rem !important' }}
 						onClick={this.handleClick}>
 						Reset GPU
 					</Button>

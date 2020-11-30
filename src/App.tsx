@@ -78,9 +78,9 @@ export default class App extends Component<Props, State> {
 					<div className="scrollbehavior">
 						<div
 							id="topDrag"
-							className={`topDrag show-dragarea`}
+							className={`topDrag`}
 							style={{
-								width: '90%',
+								width: '75%',
 								height: '20px',
 							}}></div>
 

@@ -59,7 +59,7 @@ export default class Status extends Component<Props, State> {
 					return;
 				}
 				let descitem = (
-					<Descriptions.Item span={5} key={val[0] + key} label={val[0]}>
+					<Descriptions.Item span={3} key={val[0] + key} label={val[0]}>
 						{val[1]}
 					</Descriptions.Item>
 				);
@@ -69,7 +69,7 @@ export default class Status extends Component<Props, State> {
 			for (let x = 0; x < 10; x++) {
 				descriptionBiosItems.push(
 					<Descriptions.Item
-						span={5}
+						span={3}
 						style={{ paddingTop: '1rem !important' }}
 						key={'skeloitem' + x}
 						label={
@@ -97,7 +97,7 @@ export default class Status extends Component<Props, State> {
 						<>
 							<Descriptions.Item
 								className="desc-item-row"
-								span={5}
+								span={3}
 								key={key + keyo + 'descSoft'}
 								label={keyo}>
 								<div key={key + keyo + 'vers'} className="desc-item-ver-vend">
@@ -118,7 +118,7 @@ export default class Status extends Component<Props, State> {
 				descriptionSoftwareItems.push(
 					<Descriptions.Item
 						className="desc-item-row"
-						span={5}
+						span={3}
 						key={'skeleton' + x}
 						label={
 							<Skeleton
@@ -183,7 +183,7 @@ export default class Status extends Component<Props, State> {
 						}
 						style={{ maxWidth: '100%' }}
 						bordered>
-						<Descriptions.Item className="desc-item-row" span={5} label="Name">
+						<Descriptions.Item className="desc-item-row" span={3} label="Name">
 							<div
 								style={{ padding: '2rem', backgroundColor: '#FAFAFA' }}
 								className="desc-item-ver-vend">

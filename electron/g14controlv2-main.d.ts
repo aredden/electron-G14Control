@@ -54,3 +54,39 @@ declare type DisplayOptionData = {
 	refresh: number;
 	format: string;
 };
+
+declare type RyzenadjConfigNamed = {
+	name: string;
+	stapmLimit: number;
+	fastLimit: number;
+	slowLimit: number;
+	slowTime: number;
+	stapmTime: number;
+	tctlTemp: number;
+};
+
+declare type G14Config = {
+	startup: {
+		checkBoostVisibility: boolean;
+	};
+	current: {
+		ryzenadj: string;
+		fanCurve: string;
+	};
+	ryzenadj: {
+		defaults: RyzenadjConfig;
+		limits: RyzenadjConfig;
+		options: RyzenadjConfigNamed[];
+	};
+	loopTimes: {
+		temp: number;
+		load: number;
+	};
+	fanCurves: Array<{
+		name: string;
+		plan: ArmoryPlan;
+		cpu: number[];
+		gpu: number[];
+	}>;
+	displayOptions: DisplayOptionData[];
+};

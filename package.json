@@ -1,7 +1,7 @@
 {
 	"name": "g14controlv2",
 	"productName": "G14ControlV2",
-	"version": "0.1.13",
+	"version": "0.1.15",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
@@ -25,6 +25,7 @@
 		"lodash": "^4.17.20",
 		"node-powershell": "^4.0.0",
 		"node-sass": "^4.14.1",
+		"perfmon": "^0.2.0",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
 		"winston": "^3.3.3",
@@ -50,7 +51,7 @@
 		"appId": "g14control.main",
 		"nsis": {
 			"oneClick": false,
-			"perMachine": false,
+			"perMachine": true,
 			"allowToChangeInstallationDirectory": false,
 			"license": "LICENSE"
 		},

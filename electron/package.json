@@ -1,5 +1,6 @@
 {
-	"name": "electronthread",
+	"name": "g14controlv2-main",
+	"productName": "G14ControlV2-Main",
 	"version": "1.0.0",
 	"description": "",
 	"main": "./build/electron.js",
@@ -9,13 +10,17 @@
 		"tsc": "tsc --project ./tsconfig.dev.json",
 		"watch": "nodemon -e ts --ignore /build --ignore /node_modules --exec \"tsc --project ./tsconfig.dev.json && electron . || exit 1\" || exit 1"
 	},
-	"author": "",
+	"author": "Alex Redden",
 	"license": "ISC",
 	"dependencies": {
+		"@types/mathjs": "^6.0.7",
 		"electron": "^10.1.3",
 		"electron-is-dev": "^1.2.0",
+		"electron-updater": "^4.3.5",
 		"lodash": "^4.17.20",
+		"mathjs": "^8.0.1",
 		"node-powershell": "^4.0.0",
+		"perfmon": "^0.2.0",
 		"wmi-client": "^0.5.0"
 	},
 	"devDependencies": {
