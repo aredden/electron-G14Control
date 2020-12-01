@@ -11,8 +11,9 @@ const ps = new Shell({
 	inputEncoding: 'utf-8',
 	outputEncoding: 'utf-8',
 });
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const BATTERY_AC_USBC = '0x0012006C';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const BATTERY_AC = '0x00120061';
 
 const parseWmiObjectResult = (res: string) => {
@@ -33,13 +34,9 @@ const parseWmiObjectResult = (res: string) => {
 };
 
 export const buildAtkWmi = (area: string, address: string, key?: number) => {
-	return `(Get-WmiObject 
-			-Namespace root/WMI 
-			-Class AsusAtkWmi_WMNB)
-			.${area}(
-					${address}
-					${key ? ` ,${key}` : ''}
-					)`;
+	return `"(Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).${area}(${address}${
+		key ? ` ,${key}` : ''
+	})"`;
 };
 
 export const isPluggedIn = async () => {
@@ -56,6 +53,16 @@ export const isPluggedIn = async () => {
 		LOGGER.info(`Charger state: ${result}`);
 	}
 };
-isPluggedIn().then((result) => {
-	LOGGER.info(result);
-});
+
+export const whichCharger = async () => {
+	let command = buildAtkWmi('DSDT', BATTERY_AC_USBC);
+	ps.addCommand(command);
+
+	let whichcharger = await ps.invoke();
+	LOGGER.info(whichcharger);
+	return { ac: true, usbc: false };
+};
+
+export const setBatteryLimiter = async (amount: number) => {
+	return true;
+};

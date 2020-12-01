@@ -53,6 +53,13 @@ export const updateDisplayOptions = createAction(
 		return { payload: value };
 	}
 );
+
+export const updateStartOnBoot = createAction(
+	'UPDATE_START_ON_BOOT',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -131,6 +138,31 @@ const createRootReducer = (initialState: G14Config) => {
 			let newState = {
 				current: payload,
 				startup,
+				ryzenadj,
+				fanCurves,
+				loopTimes,
+				displayOptions,
+			};
+			state = newState;
+			return state;
+		});
+
+		reducer.addCase(updateStartOnBoot, (state, action) => {
+			let { payload } = action;
+			let {
+				current,
+				ryzenadj,
+				fanCurves,
+				loopTimes,
+				startup,
+				displayOptions,
+			} = state;
+			let newState = {
+				current,
+				startup: {
+					checkBoostVisibility: startup.checkBoostVisibility,
+					autoLaunchEnabled: payload,
+				},
 				ryzenadj,
 				fanCurves,
 				loopTimes,

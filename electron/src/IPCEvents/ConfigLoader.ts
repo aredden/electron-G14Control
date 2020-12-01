@@ -8,6 +8,7 @@ import getLogger from '../Logger';
 import path from 'path';
 import { app } from 'electron';
 import { setG14Config } from '../electron';
+
 dotenv.config();
 
 //@ts-ignore
@@ -43,7 +44,7 @@ export const loadConfig = async () => {
 	});
 };
 
-export const writeConfig = async (config: object) => {
+export const writeConfig = async (config: G14Config) => {
 	return new Promise((resolve) => {
 		fs.writeFile(location, JSON.stringify(config), (err) => {
 			if (err) {
@@ -52,6 +53,7 @@ export const writeConfig = async (config: object) => {
 				);
 				resolve(false);
 			} else {
+				setG14Config(config);
 				resolve(true);
 			}
 		});

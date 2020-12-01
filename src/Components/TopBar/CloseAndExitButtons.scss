@@ -78,10 +78,10 @@
 .titlebar-menu-dropdown {
 	-webkit-app-region: no-drag;
 	pointer-events: all;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	border-top: 2px solid #1890ff;
-	height: 20px;
+	height: 22px;
 	border-left: 1px solid #1890ff;
 	border-bottom: 1px solid #1890ff;
 	color: white;

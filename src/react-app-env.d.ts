@@ -62,6 +62,7 @@ declare type CpuBiosMapValues = {
 declare type G14Config = {
 	startup: {
 		checkBoostVisibility: boolean;
+		autoLaunchEnabled: boolean;
 	};
 	current: {
 		ryzenadj: string;

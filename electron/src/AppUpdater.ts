@@ -1,7 +1,6 @@
 /** @format */
 
-import { autoUpdater, Provider, NsisUpdater } from 'electron-updater';
-import { FeedURLOptions } from 'electron/main';
+import { autoUpdater } from 'electron-updater';
 import getLogger from './Logger';
 
 export default class AppUpdater {
@@ -9,6 +8,8 @@ export default class AppUpdater {
 		autoUpdater.setFeedURL('https://github.com/aredden/electron-g14control');
 		const LOGGER = getLogger('AppUpdater');
 		autoUpdater.logger = LOGGER;
-		autoUpdater.checkForUpdatesAndNotify();
+		autoUpdater.checkForUpdatesAndNotify().then((result) => {
+			result.downloadPromise.then((e) => {});
+		});
 	}
 }

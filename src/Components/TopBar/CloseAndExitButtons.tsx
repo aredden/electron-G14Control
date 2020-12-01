@@ -1,16 +1,26 @@
 /** @format */
 
-import { Button, Select } from 'antd';
-import React, { Component } from 'react';
+import { Button, message, Select } from 'antd';
+import React, { Component, createRef } from 'react';
 import './CloseAndExitButtons.scss';
+import { store, updateStartOnBoot } from '../../Store/ReduxStore';
+import { RefSelectProps } from 'antd/lib/select';
 interface Props {}
 
-interface State {}
+interface State {
+	launchEnabled: boolean;
+	menuRef: React.Ref<RefSelectProps>;
+}
 
 export default class CloseAndExitButtons extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		this.state = {};
+		let stuff = store.getState() as G14Config;
+		let enabled = stuff.startup.autoLaunchEnabled;
+		this.state = {
+			launchEnabled: enabled,
+			menuRef: createRef(),
+		};
 	}
 
 	handleExit = async () => {
@@ -25,6 +35,12 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 		window.ipcRenderer.invoke('minimizeWindow');
 	};
 
+	handleMenuEvents = async () => {
+		let { menuRef } = this.state;
+		//@ts-ignore
+		menuRef.current.blur();
+	};
+
 	handleSelect = async (value: any, option: any) => {
 		switch (value) {
 			case 'exit':
@@ -33,10 +49,31 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 			case 'logs':
 				await window.ipcRenderer.invoke('openLogs');
 				break;
+			case 'setBoot':
+				let { launchEnabled } = this.state;
+				store.dispatch(updateStartOnBoot(!launchEnabled));
+				let state = store.getState() as G14Config;
+				let result = await window.ipcRenderer.invoke(
+					'setAutoLaunch',
+					!launchEnabled,
+					state
+				);
+				if (result) {
+					message.success(
+						`Successully ${
+							!launchEnabled ? 'enabled' : 'disabled'
+						} start on boot!`
+					);
+					this.setState({ launchEnabled: !launchEnabled });
+				} else {
+					message.error('There was trouble setting start on boot option.');
+				}
+				break;
 		}
 	};
 
 	render() {
+		let { launchEnabled, menuRef } = this.state;
 		return (
 			<>
 				<Select
@@ -45,11 +82,17 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 					style={{ zIndex: 1000 }}
 					optionLabelProp={'Menu'}
 					defaultValue="Menu"
+					ref={menuRef}
 					value="Menu"
+					onMouseLeave={this.handleMenuEvents}
+					id="titlebar-dropdown-menu"
 					dropdownClassName="titlebar-menu-dropdown-panel"
 					onSelect={this.handleSelect}>
 					<Select.Option title="Open Logs" value="logs">
 						Open Logs
+					</Select.Option>
+					<Select.Option title="Start on boot" value="setBoot">
+						{launchEnabled ? 'Disable start on boot' : 'Enable start on boot'}
 					</Select.Option>
 					<Select.Option title="Exit App" value="exit">
 						Exit App

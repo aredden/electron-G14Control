@@ -2,6 +2,7 @@
 
 import { BrowserWindow, IpcMain } from 'electron';
 import { buildAtrofacListeners } from './AtrofacListeners';
+import { buildBatterySaverListener } from './BatteryListener';
 import { buildConfigLoaderListeners } from './ConfigLoader';
 import { buildCPUBoostListeners } from './CPUBoostListeners';
 import { buildElectronListeners } from './ElectronConfigListeners';
@@ -21,4 +22,5 @@ export function buildIpcConnection(ipc: IpcMain, win: BrowserWindow) {
 	buildGPUListeners(ipc, win);
 	buildElectronListeners(ipc, win);
 	buildStartupListeners(ipc);
+	buildBatterySaverListener(win, ipc);
 }

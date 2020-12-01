@@ -7,6 +7,9 @@ import {
 	Menu,
 	Tray,
 	Notification,
+	globalShortcut,
+	powerMonitor,
+	shell,
 } from 'electron';
 
 import installExtension, {
@@ -24,6 +27,7 @@ import {
 	runLoop,
 } from './IPCEvents/IPCEmitters';
 import { buildTrayIcon } from './TrayIcon';
+import { setAutoLaunch } from './AutoLaunch';
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -63,6 +67,12 @@ let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
 export let tray: Tray;
 export let trayContext: Menu;
+
+if (is_dev) {
+	LOGGER.info('Running in development');
+} else {
+	LOGGER.info('Running in production');
+}
 
 export const updateMenuVisible = (minimized?: boolean) => {
 	if (browserWindow.isMinimized() || !browserWindow.isVisible()) {
@@ -122,12 +132,15 @@ async function createWindow() {
 	} else {
 		browserWindow.loadURL(loadurl);
 	}
+
+	// build tray icon menu
 	let results = await buildTrayIcon(tray, trayContext, browserWindow);
 
 	tray = results.tray;
 	trayContext = results.trayContext;
 	browserWindow = results.browserWindow;
 
+	// set up renderer process events.
 	browserWindow.on('hide', async () => {
 		if (loopsAreRunning()) {
 			await killEmitters();
@@ -152,10 +165,19 @@ async function createWindow() {
 		}
 		updateMenuVisible();
 	});
-
 	browserWindow.on('unresponsive', () => {
 		LOGGER.info('Window is unresponsive...');
 	});
+
+	// Register global shortcut ctrl + space
+	let registered = globalShortcut.register('Control+Space', () => {
+		browserWindow.show();
+	});
+	if (registered) {
+		LOGGER.info('Show app shortcut registered.');
+	} else {
+		LOGGER.info('Error registering shortcut.');
+	}
 }
 
 app.on('window-all-closed', async () => {
@@ -165,7 +187,12 @@ app.on('window-all-closed', async () => {
 	LOGGER.info('window closed');
 });
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
+	globalShortcut.unregisterAll();
+	LOGGER.info('Keyboard shortcuts unregistered.');
+	if (!is_dev && g14Config.startup.autoLaunchEnabled) {
+		setAutoLaunch(true);
+	}
 	LOGGER.info('Preparing to quit.');
 	killEmitters();
 });

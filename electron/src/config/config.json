@@ -1,6 +1,6 @@
 {
 	"current": { "ryzenadj": "Default", "fanCurve": "Performance" },
-	"startup": { "checkBoostVisibility": true },
+	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": false },
 	"ryzenadj": {
 		"defaults": {
 			"fastLimit": 65,
