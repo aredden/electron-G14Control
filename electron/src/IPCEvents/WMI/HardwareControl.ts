@@ -16,9 +16,12 @@ const BATTERY_AC_USBC = '0x0012006C';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const BATTERY_AC = '0x00120061';
 
-const parseWmiObjectResult = (res: string) => {
+const parseWmiObjectResult = (res: string, targetProperty?: string) => {
 	//@ts-ignore
-	let matches = res.match(/device_status *: *(0x){0,1}[a-zA-Z0-9]{1,10}/gm);
+	let matcher = targetProperty
+		? new RegExp(`${targetProperty} *: *(0x){0,1}[a-zA-Z0-9]{1,10}`, 'gm')
+		: /device_status *: *(0x){0,1}[a-zA-Z0-9]{1,10}/gm;
+	let matches = res.match(matcher);
 	if (matches && matches.length === 1) {
 		let preresult = matches[0].split(':')[1];
 		let result = preresult.match(/(0x){0,1}[a-fA-F0-9]{1,10}/gm);
@@ -34,13 +37,13 @@ const parseWmiObjectResult = (res: string) => {
 };
 
 export const buildAtkWmi = (area: string, address: string, key?: number) => {
-	return `"(Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).${area}(${address}${
+	return `(Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).${area}(${address}${
 		key ? ` ,${key}` : ''
-	})"`;
+	})`;
 };
 
 export const isPluggedIn = async () => {
-	let command = buildAtkWmi('DSDT', '0x00120061');
+	let command = buildAtkWmi('DSTS', '0x00120061');
 	ps.addCommand(command);
 	let result = parseWmiObjectResult(await ps.invoke());
 	if (result) {
@@ -54,15 +57,72 @@ export const isPluggedIn = async () => {
 	}
 };
 
+//    USB-C PD:       0x00010002 (65538)
+//    180W:           0x00010001 (65537)
+//    No:             0x00000000
 export const whichCharger = async () => {
-	let command = buildAtkWmi('DSDT', BATTERY_AC_USBC);
+	let command = buildAtkWmi('DSTS', BATTERY_AC_USBC);
 	ps.addCommand(command);
-
-	let whichcharger = await ps.invoke();
-	LOGGER.info(whichcharger);
-	return { ac: true, usbc: false };
+	return new Promise<false | { ac: boolean; dc: boolean; usb: boolean }>(
+		(resolve) => {
+			ps.invoke()
+				.then((resulted) => {
+					let parsed = parseWmiObjectResult(resulted);
+					LOGGER.info('Which Charger Result: ' + parsed);
+					if (parsed) {
+						switch (parsed) {
+							case '0': {
+								resolve({ ac: false, dc: true, usb: false });
+								break;
+							}
+							case '65538': {
+								resolve({ ac: false, dc: false, usb: true });
+								break;
+							}
+							case '65537': {
+								resolve({ ac: true, dc: false, usb: true });
+								break;
+							}
+						}
+					} else {
+						resolve(false);
+					}
+				})
+				.catch((err) => {
+					LOGGER.info('Error result from check which charger: \n' + err);
+					resolve(false);
+				});
+		}
+	);
 };
 
+// (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DEVS(0x00120057, X)
 export const setBatteryLimiter = async (amount: number) => {
-	return true;
+	if (amount <= 100 && amount > 20) {
+		let command = buildAtkWmi('DEVS', '0x00120057', amount);
+		ps.addCommand(command);
+		return new Promise((resolve) => {
+			ps.invoke()
+				.then((result) => {
+					let resultValue = parseWmiObjectResult(result, 'result');
+					if (resultValue === '1') {
+						resolve(true);
+					} else {
+						LOGGER.info(
+							`Setting battery limit resulted in unexpected result: \n${JSON.stringify(
+								result
+							)}`
+						);
+						resolve(false);
+					}
+				})
+				.catch((err) => {
+					LOGGER.info(
+						`Setting battery limit resulted in error: \n${JSON.stringify(err)}`
+					);
+					return false;
+				});
+		});
+	}
+	return false;
 };

@@ -21,6 +21,13 @@ export const initStore = async (initialState: G14Config) => {
 	return store;
 };
 
+export const updateBatteryLimit = createAction(
+	'UPDATE_BATTERY_LIMIT',
+	(value: number) => {
+		return { payload: value };
+	}
+);
+
 export const updateCurrentConfig = createAction(
 	'UPDATE_CURRENT_CONFIG',
 	(value: { ryzenadj: string; fanCurve: string }) => {
@@ -136,7 +143,7 @@ const createRootReducer = (initialState: G14Config) => {
 			let { payload } = action;
 			let { ryzenadj, fanCurves, loopTimes, startup, displayOptions } = state;
 			let newState = {
-				current: payload,
+				current: { ...payload, batteryLimit: state.current.batteryLimit },
 				startup,
 				ryzenadj,
 				fanCurves,
@@ -170,6 +177,17 @@ const createRootReducer = (initialState: G14Config) => {
 			};
 			state = newState;
 			return state;
+		});
+
+		reducer.addCase(updateBatteryLimit, (state, action) => {
+			let newState: G14Config = Object.assign(state, {
+				current: {
+					ryzenadj: state.current.ryzenadj,
+					fanCurve: state.current.fanCurve,
+					batteryLimit: action.payload,
+				},
+			});
+			state = newState;
 		});
 	});
 	return reducer;

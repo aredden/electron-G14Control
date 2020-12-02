@@ -8,8 +8,6 @@ import {
 	Tray,
 	Notification,
 	globalShortcut,
-	powerMonitor,
-	shell,
 } from 'electron';
 
 import installExtension, {
@@ -171,7 +169,11 @@ async function createWindow() {
 
 	// Register global shortcut ctrl + space
 	let registered = globalShortcut.register('Control+Space', () => {
-		browserWindow.show();
+		if (browserWindow.isFocused()) {
+			browserWindow.minimize();
+		} else {
+			browserWindow.show();
+		}
 	});
 	if (registered) {
 		LOGGER.info('Show app shortcut registered.');

@@ -1,6 +1,13 @@
 /** @format */
 
-import { app, BrowserWindow, Menu, Tray, Notification } from 'electron';
+import {
+	app,
+	BrowserWindow,
+	Menu,
+	Tray,
+	Notification,
+	nativeTheme,
+} from 'electron';
 import { showIconEnabled } from './electron';
 import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
 import { killEmitters, loopsAreRunning } from './IPCEvents/IPCEmitters';
@@ -12,7 +19,13 @@ import {
 	setWindowsPlan,
 } from './IPCEvents/powercfg/Powercfg';
 const ICONPATH = is_dev
-	? path.join(__dirname, '../', 'src', 'assets', 'icon_light.png')
+	? path.join(
+			__dirname,
+			'../',
+			'src',
+			'assets',
+			nativeTheme.themeSource === 'light' ? 'icon_dark.png' : 'icon_light.png'
+	  )
 	: path.join(
 			app.getPath('exe'),
 			'../',

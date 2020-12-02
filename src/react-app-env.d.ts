@@ -67,6 +67,7 @@ declare type G14Config = {
 	current: {
 		ryzenadj: string;
 		fanCurve: string;
+		batteryLimit: number | undefined;
 	};
 	ryzenadj: {
 		defaults: RyzenadjConfig;

@@ -24,6 +24,7 @@
 		"electron-is-dev": "^1.2.0",
 		"electron-updater": "^4.3.5",
 		"fkill": "^7.0.1",
+		"is-admin": "^3.0.0",
 		"lodash": "^4.17.20",
 		"node-powershell": "^4.0.0",
 		"node-sass": "^4.14.1",

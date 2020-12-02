@@ -6,7 +6,8 @@ export type MenuListOption =
 	| 'Discrete GPU'
 	| 'Windows Power Plans'
 	| 'Auto Power Switching'
-	| 'CPU Tuning';
+	| 'CPU Tuning'
+	| 'Battery';
 
 export const MenuListMapper: Array<MenuListOption> = [
 	'Status',
@@ -15,4 +16,5 @@ export const MenuListMapper: Array<MenuListOption> = [
 	'Windows Power Plans',
 	'Auto Power Switching',
 	'CPU Tuning',
+	'Battery',
 ];

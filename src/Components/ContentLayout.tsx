@@ -4,6 +4,7 @@ import { Affix, Layout } from 'antd';
 import React, { Component } from 'react';
 import { MenuListOption } from '../Utilities/Constants';
 import AutoPowerSwitch from './Content/AutoPowerSwitch';
+import Battery from './Content/Battery';
 import CPUTuning from './Content/CPUTuning';
 import DiscreteGPU from './Content/DiscreteGPU';
 import FanCurve from './Content/FanCurve';
@@ -41,6 +42,8 @@ export default class ContentLayout extends Component<Props, State> {
 			case 'Auto Power Switching':
 				displayPage = <AutoPowerSwitch />;
 				break;
+			case 'Battery':
+				displayPage = <Battery />;
 		}
 		return (
 			<>
@@ -68,7 +71,7 @@ export default class ContentLayout extends Component<Props, State> {
 									margin: '2rem 1rem',
 									height: 'auto',
 								}}>
-								G14ControlR3 ©2020 Created by Zippy
+								G14ControlV2 ©2020 Created by Alex Redden
 							</Footer>
 						</div>
 					</div>

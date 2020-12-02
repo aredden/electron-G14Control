@@ -50,3 +50,40 @@ td {
 		}
 	}
 }
+
+.refresh-hardware-btn {
+	position: fixed !important;
+	background-color: #334454;
+	color: white;
+	border-radius: 0.4rem;
+	border: 2px solid #001529;
+	right: 2rem !important;
+	top: 100px !important;
+	z-index: 1000;
+	margin-top: 1rem;
+	display: block;
+	padding: 0.7rem;
+	line-height: 0.01 !important;
+	&:hover {
+		background-color: #334454;
+		color: white;
+		line-height: 0.01 !important;
+	}
+	&:focus {
+		background-color: #334454;
+		color: white;
+		border-color: #1890ff;
+		border: 2px solid #1890ff;
+		line-height: 0.01 !important;
+	}
+	&:active {
+		background-color: #334454;
+		color: white;
+		line-height: 0.01 !important;
+	}
+	&:focus-within {
+		background-color: #334454;
+		color: white;
+		line-height: 0.01 !important;
+	}
+}

@@ -25,9 +25,7 @@ export const buildPerfmonThermalProcess = (win: BrowserWindow) => {
 					win.webContents.send('cpuTemperature', resultingTemp);
 				}
 				let discharge = data.counters['\\Power Meter(_Total)\\Power'];
-				if (discharge > 0) {
-					win.webContents.send('dischargeRate', discharge);
-				}
+				win.webContents.send('dischargeRate', discharge);
 			} else {
 				LOGGER.info(
 					`ERROR getting info from perfmon.js\n${JSON.stringify(err, null, 2)}`

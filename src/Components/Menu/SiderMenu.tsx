@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { Menu } from 'antd';
+import { Menu, message } from 'antd';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import {
 	BarChartOutlined,
@@ -10,6 +10,7 @@ import {
 	SettingOutlined,
 	PictureOutlined,
 	LineChartOutlined,
+	PoweroffOutlined,
 } from '@ant-design/icons';
 import TempView from './TempView';
 
@@ -74,6 +75,13 @@ export default class SiderMenu extends Component<Props, State> {
 					icon={<PictureOutlined />}
 					onClick={this.handleClick}>
 					Discrete GPU
+				</Menu.Item>
+				<Menu.Item
+					key="6"
+					icon={<PoweroffOutlined />}
+					title="Battery"
+					onClick={this.handleClick}>
+					Battery
 				</Menu.Item>
 				<Menu.Item
 					key="4"

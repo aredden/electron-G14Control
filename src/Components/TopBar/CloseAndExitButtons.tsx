@@ -38,7 +38,6 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 	handleMenuEvents = async () => {
 		let { menuRef } = this.state;
 		//@ts-ignore
-		menuRef.current.blur();
 	};
 
 	handleSelect = async (value: any, option: any) => {

@@ -5,7 +5,7 @@ import path from 'path';
 import { app } from 'electron';
 import { exec } from 'child_process';
 import getLogger from '../Logger';
-
+import isAdmin from 'is-admin';
 const LOGGER = getLogger('BoostVisibility');
 
 const BOOST_VIS_CHG = is_dev
@@ -19,6 +19,12 @@ const BOOST_VIS_CHG = is_dev
 	  );
 
 export const checkBoostVisibility = async (): Promise<boolean> => {
+	let admin = await isAdmin();
+
+	if (!admin) {
+		return true;
+	}
+
 	return new Promise((resolve, reject) => {
 		let proc = exec(`cmd /c "${BOOST_VIS_CHG}" check`);
 		proc.stdout.on('data', (data) => {

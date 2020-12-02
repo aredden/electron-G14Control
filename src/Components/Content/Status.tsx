@@ -1,18 +1,27 @@
 /** @format */
 
-import { Descriptions, PageHeader, Skeleton, Space } from 'antd';
+import {
+	Button,
+	Descriptions,
+	PageHeader,
+	Skeleton,
+	Space,
+	Spin,
+	Table,
+} from 'antd';
 import React, { Component } from 'react';
 import './Status.scss';
 import CurrentConfiguration from './Status/CurrentConfiguration';
 type SoftwareMap = Map<string, Map<string, string>>;
 type CpuBiosMap = Map<string, string>;
-
+type DriverMap = Map<string, string>;
 interface Props {}
 
 interface State {
 	loadValues: Array<{ Name: string; PercentProcessorTime: number }>;
 	cpubiosmap: CpuBiosMap | undefined;
 	softwaremap: SoftwareMap | undefined;
+	driverMap: DriverMap | undefined;
 	loading: boolean;
 }
 
@@ -23,6 +32,7 @@ export default class Status extends Component<Props, State> {
 			loadValues: [],
 			cpubiosmap: undefined,
 			softwaremap: undefined,
+			driverMap: undefined,
 			loading: true,
 		};
 	}
@@ -32,14 +42,40 @@ export default class Status extends Component<Props, State> {
 		let software: Promise<SoftwareMap> = window.ipcRenderer.invoke(
 			'getAsusPrograms'
 		);
+		let drivers: Promise<Map<string, string>> = window.ipcRenderer.invoke(
+			'getDrivers'
+		);
 
-		Promise.all([info, software]).then(([cpubios, softmap]) => {
-			this.setState({
-				cpubiosmap: cpubios,
-				softwaremap: softmap,
-				loading: false,
-			});
-		});
+		Promise.all([info, software, drivers]).then(
+			([cpubios, softmap, drivermap]) => {
+				this.setState({
+					cpubiosmap: cpubios,
+					softwaremap: softmap,
+					driverMap: drivermap,
+					loading: false,
+				});
+			}
+		);
+	};
+
+	refreshEverything = () => {
+		this.setState({ loading: true, driverMap: undefined });
+		window.ipcRenderer
+			.invoke('refreshStatus')
+			.then(
+				(response: {
+					cpubios: CpuBiosMap;
+					software: SoftwareMap;
+					drivers: DriverMap;
+				}) => {
+					this.setState({
+						cpubiosmap: response.cpubios,
+						softwaremap: response.software,
+						driverMap: response.drivers,
+						loading: false,
+					});
+				}
+			);
 	};
 
 	componentDidMount() {
@@ -150,6 +186,34 @@ export default class Status extends Component<Props, State> {
 			}
 		}
 
+		let { driverMap } = this.state;
+		let drivers = <div />;
+		if (driverMap) {
+			let rows: Array<{ name: string; value: string }> = [];
+			let columns = [
+				{
+					dataIndex: 'name',
+					title: 'Driver',
+				},
+				{
+					dataIndex: 'value',
+					title: 'Version',
+				},
+			];
+
+			Array.from(driverMap).forEach(([key, version], idx) => {
+				rows.push({ name: key, value: version });
+			});
+			rows.sort((a, b) => {
+				let aname = a.name.toUpperCase();
+				let bname = b.name.toUpperCase();
+
+				return aname > bname ? 1 : aname < bname ? -1 : 0;
+			});
+
+			drivers = <Table bordered columns={columns} dataSource={rows} />;
+		}
+
 		return (
 			<>
 				<Space
@@ -164,7 +228,27 @@ export default class Status extends Component<Props, State> {
 						}}
 						title={<div style={{ fontWeight: 'bold' }}>G14Control Status</div>}
 						subTitle="Current configuration & laptop details"></PageHeader>
+
 					<CurrentConfiguration></CurrentConfiguration>
+					<Button
+						className="refresh-hardware-btn"
+						size="small"
+						title="Refresh Software, Drivers, And Hardware Information"
+						onClick={this.refreshEverything}>
+						{loading ? (
+							<Spin
+								size="small"
+								style={{
+									display: 'flex',
+									bottom: '7px',
+									position: 'relative',
+								}}
+								spinning={true}
+							/>
+						) : (
+							'Refresh'
+						)}
+					</Button>
 					<Descriptions
 						title={
 							<div style={{ marginLeft: '5%', fontWeight: 'bold' }}>
@@ -175,6 +259,7 @@ export default class Status extends Component<Props, State> {
 						bordered>
 						{descriptionBiosItems}
 					</Descriptions>
+					{drivers}
 					<Descriptions
 						title={
 							<div style={{ marginLeft: '5%', fontWeight: 'bold' }}>
