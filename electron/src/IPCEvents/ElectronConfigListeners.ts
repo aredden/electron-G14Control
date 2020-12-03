@@ -36,11 +36,15 @@ export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('editShortcuts', (event, keys: ShortCuts) => {
 		if (keys) {
 			if (!keys.minmax.enabled) {
-				globalShortcut.unregister('Control+Space');
+				globalShortcut.unregisterAll();
+				globalShortcut.unregister(keys.minmax.accelerator);
 				LOGGER.info('Disabled minmax shortcut');
 				return true;
 			} else {
-				let result = globalShortcut.register('Control+Space', minMaxFunc);
+				let result = globalShortcut.register(
+					keys.minmax.accelerator,
+					minMaxFunc
+				);
 				LOGGER.info('Enabled minmax shortcut');
 				return result;
 			}

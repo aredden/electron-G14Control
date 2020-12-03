@@ -176,13 +176,16 @@ async function createWindow() {
 
 	// Register global shortcut ctrl + space
 	if (g14Config.current.shortcuts.minmax.enabled) {
-		let registered = globalShortcut.register('Control+Space', () => {
-			if (browserWindow.isFocused()) {
-				browserWindow.minimize();
-			} else {
-				browserWindow.show();
+		let registered = globalShortcut.register(
+			g14Config.current.shortcuts.minmax.accelerator,
+			() => {
+				if (browserWindow.isFocused()) {
+					browserWindow.minimize();
+				} else {
+					browserWindow.show();
+				}
 			}
-		});
+		);
 		if (registered) {
 			LOGGER.info('Show app shortcut registered.');
 		} else {
