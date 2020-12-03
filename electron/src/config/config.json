@@ -1,5 +1,11 @@
 {
-	"current": { "ryzenadj": "Default", "fanCurve": "Performance" },
+	"current": {
+		"ryzenadj": "Default",
+		"fanCurve": "Performance",
+		"shortcuts": {
+			"minmax": { "enabled": true, "accelerator": "Control+Space" }
+		}
+	},
 	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": false },
 	"ryzenadj": {
 		"defaults": {

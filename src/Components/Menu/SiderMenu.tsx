@@ -11,6 +11,7 @@ import {
 	PictureOutlined,
 	LineChartOutlined,
 	PoweroffOutlined,
+	SettingFilled,
 } from '@ant-design/icons';
 import TempView from './TempView';
 
@@ -84,13 +85,21 @@ export default class SiderMenu extends Component<Props, State> {
 					Battery
 				</Menu.Item>
 				<Menu.Item
+					key="7"
+					icon={<SettingFilled />}
+					title="Settings"
+					onClick={this.handleClick}>
+					Settings
+				</Menu.Item>
+				{/* <Menu.Item
 					key="4"
 					icon={<UserOutlined />}
 					disabled
 					title="Not yet implemented."
 					onClick={this.handleClick}>
 					Auto Power Switching
-				</Menu.Item>
+				</Menu.Item> */}
+
 				<TempView />
 			</Menu>
 		);

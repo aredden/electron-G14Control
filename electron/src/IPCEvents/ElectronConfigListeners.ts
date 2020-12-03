@@ -1,10 +1,13 @@
 /** @format */
 
 import { exec } from 'child_process';
-import { IpcMain, BrowserWindow, app } from 'electron';
+import { IpcMain, BrowserWindow, app, globalShortcut } from 'electron';
 import path from 'path';
 import { setAutoLaunch } from '../AutoLaunch';
+import getLogger from '../Logger';
 import { writeConfig } from './ConfigLoader';
+import { browserWindow } from '../electron';
+const LOGGER = getLogger('ElectronSettings');
 export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('exitWindow', () => {
 		win.hide();
@@ -30,4 +33,30 @@ export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 			}
 		}
 	);
+	ipc.handle('editShortcuts', (event, keys: ShortCuts) => {
+		if (keys) {
+			if (!keys.minmax.enabled) {
+				globalShortcut.unregister('Control+Space');
+				LOGGER.info('Disabled minmax shortcut');
+				return true;
+			} else {
+				let result = globalShortcut.register('Control+Space', minMaxFunc);
+				LOGGER.info('Enabled minmax shortcut');
+				return result;
+			}
+		} else {
+			LOGGER.info(
+				'Problem with editShortcuts command. Shortcuts were not sent to handler.'
+			);
+			return false;
+		}
+	});
+};
+
+const minMaxFunc = () => {
+	if (browserWindow.isFocused()) {
+		browserWindow.minimize();
+	} else {
+		browserWindow.show();
+	}
 };

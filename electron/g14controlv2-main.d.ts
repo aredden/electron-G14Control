@@ -65,6 +65,13 @@ declare type RyzenadjConfigNamed = {
 	tctlTemp: number;
 };
 
+declare type ShortCuts = {
+	minmax: {
+		enabled: boolean;
+		accelerator: string;
+	};
+};
+
 declare type G14Config = {
 	startup: {
 		checkBoostVisibility: boolean;
@@ -74,6 +81,7 @@ declare type G14Config = {
 		ryzenadj: string;
 		fanCurve: string;
 		batteryLimit: number | undefined;
+		shortcuts: ShortCuts;
 	};
 	ryzenadj: {
 		defaults: RyzenadjConfig;

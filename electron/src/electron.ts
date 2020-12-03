@@ -26,6 +26,7 @@ import {
 } from './IPCEvents/IPCEmitters';
 import { buildTrayIcon } from './TrayIcon';
 import { setAutoLaunch } from './AutoLaunch';
+import { loadConfig } from './IPCEvents/ConfigLoader';
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -61,7 +62,7 @@ const ICONPATH = is_dev
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('Main');
-let browserWindow: BrowserWindow;
+export let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
 export let tray: Tray;
 export let trayContext: Menu;
@@ -86,6 +87,12 @@ async function createWindow() {
 	// Create the browser window.
 	if (!gotTheLock) {
 		return;
+	}
+
+	try {
+		g14Config = JSON.parse((await loadConfig()).toString()) as G14Config;
+	} catch (err) {
+		LOGGER.error('Error loading config at startup');
 	}
 
 	browserWindow = new BrowserWindow({
@@ -168,17 +175,19 @@ async function createWindow() {
 	});
 
 	// Register global shortcut ctrl + space
-	let registered = globalShortcut.register('Control+Space', () => {
-		if (browserWindow.isFocused()) {
-			browserWindow.minimize();
+	if (g14Config.current.shortcuts.minmax.enabled) {
+		let registered = globalShortcut.register('Control+Space', () => {
+			if (browserWindow.isFocused()) {
+				browserWindow.minimize();
+			} else {
+				browserWindow.show();
+			}
+		});
+		if (registered) {
+			LOGGER.info('Show app shortcut registered.');
 		} else {
-			browserWindow.show();
+			LOGGER.info('Error registering shortcut.');
 		}
-	});
-	if (registered) {
-		LOGGER.info('Show app shortcut registered.');
-	} else {
-		LOGGER.info('Error registering shortcut.');
 	}
 }
 

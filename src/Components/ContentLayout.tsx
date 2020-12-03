@@ -8,6 +8,7 @@ import Battery from './Content/Battery';
 import CPUTuning from './Content/CPUTuning';
 import DiscreteGPU from './Content/DiscreteGPU';
 import FanCurve from './Content/FanCurve';
+import Settings from './Content/Settings';
 import Status from './Content/Status';
 import WindowsPowerPlan from './Content/WindowsPowerPlan';
 
@@ -44,6 +45,9 @@ export default class ContentLayout extends Component<Props, State> {
 				break;
 			case 'Battery':
 				displayPage = <Battery />;
+				break;
+			case 'Settings':
+				displayPage = <Settings />;
 		}
 		return (
 			<>

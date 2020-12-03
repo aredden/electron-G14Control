@@ -21,6 +21,13 @@ export const initStore = async (initialState: G14Config) => {
 	return store;
 };
 
+export const updateShortcuts = createAction(
+	'EDIT_SHORTCUTS',
+	(value: ShortCuts) => {
+		return { payload: value };
+	}
+);
+
 export const updateBatteryLimit = createAction(
 	'UPDATE_BATTERY_LIMIT',
 	(value: number) => {
@@ -143,7 +150,11 @@ const createRootReducer = (initialState: G14Config) => {
 			let { payload } = action;
 			let { ryzenadj, fanCurves, loopTimes, startup, displayOptions } = state;
 			let newState = {
-				current: { ...payload, batteryLimit: state.current.batteryLimit },
+				current: {
+					...payload,
+					batteryLimit: state.current.batteryLimit,
+					shortcuts: state.current.shortcuts,
+				},
 				startup,
 				ryzenadj,
 				fanCurves,
@@ -185,9 +196,24 @@ const createRootReducer = (initialState: G14Config) => {
 					ryzenadj: state.current.ryzenadj,
 					fanCurve: state.current.fanCurve,
 					batteryLimit: action.payload,
+					shortcuts: state.current.shortcuts,
 				},
 			});
 			state = newState;
+			return state;
+		});
+
+		reducer.addCase(updateShortcuts, (state, action) => {
+			let newState: G14Config = Object.assign(state, {
+				current: {
+					ryzenadj: state.current.ryzenadj,
+					fanCurve: state.current.fanCurve,
+					batteryLimit: state.current.batteryLimit,
+					shortcuts: action.payload,
+				},
+			});
+			state = newState;
+			return state;
 		});
 	});
 	return reducer;
