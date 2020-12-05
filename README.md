@@ -4,7 +4,7 @@
 
 Pre-alpha sample styling:
 
-![example image](https://i.ibb.co/WVDhjLb/g14control-electron-sample.png)
+[![](https://img.youtube.com/vi/4RbYqslijug/0.jpg)](http://www.youtube.com/watch?v=4RbYqslijug "Click to play on Youtube.com")
 
 ## Prerequisites
 
@@ -47,7 +47,7 @@ This is just a starting list. I'm sure there is much more to do.
 - ~~Functionality for the electron tray icon similar to the original in G14ControlR3, but initially without G14Control preset plans.~~
 - ~~Main window styling and suggestions.~~
 - ~~Allow user to choose temperature polling time. \*_In progess_\*
-- ~~Improved code commenting.
+- ~~Improved code commenting.~~
 - ~~FanCurve page front end logic -- the ipcRenderer listener functions under /electron are already built.~~
   - ~~Atrofac command building.~~
   - ~~Integrating interactive draggable graph nodes on front end for building fan curve.~~
@@ -77,6 +77,9 @@ This is just a starting list. I'm sure there is much more to do.
 If you wish to help me, or you have the beta you can check out the discord that I primarily use to give out the beta / chat about development.
 
 Discord: https://discord.gg/482ST4M6Ag
+
+**I'm currently not actively working, so donations are greatly appreciated!** 
+
 Donate: https://www.paypal.com/pools/c/8uiaar8Sl9
 
 ## Major Contributors
