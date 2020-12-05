@@ -74,6 +74,14 @@ export const updateStartOnBoot = createAction(
 		return { payload: value };
 	}
 );
+
+export const updateROGKey = createAction(
+	'UPDATE_ROG_KEY',
+	(value: RogKeyConfig) => {
+		return { payload: value };
+	}
+);
+
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -152,6 +160,7 @@ const createRootReducer = (initialState: G14Config) => {
 			let newState = {
 				current: {
 					...payload,
+					rogKey: state.current.rogKey,
 					batteryLimit: state.current.batteryLimit,
 					shortcuts: state.current.shortcuts,
 				},
@@ -209,7 +218,27 @@ const createRootReducer = (initialState: G14Config) => {
 					ryzenadj: state.current.ryzenadj,
 					fanCurve: state.current.fanCurve,
 					batteryLimit: state.current.batteryLimit,
+					rogKey: state.current.rogKey,
 					shortcuts: action.payload,
+				},
+			});
+			state = newState;
+			return state;
+		});
+
+		reducer.addCase(updateROGKey, (state, action) => {
+			let { ryzenadj, fanCurve, batteryLimit, shortcuts } = state.current;
+			let newState: G14Config = Object.assign(state, {
+				current: {
+					ryzenadj,
+					fanCurve,
+					batteryLimit,
+					shortcuts,
+					rogKey: {
+						enabled: action.payload.enabled,
+						func: action.payload.func,
+						armouryCrate: action.payload.armouryCrate,
+					},
 				},
 			});
 			state = newState;

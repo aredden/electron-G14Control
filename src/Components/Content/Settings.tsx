@@ -12,8 +12,9 @@ import {
 import isAccelerator from 'electron-is-accelerator';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import React, { Component } from 'react';
-import { store, updateShortcuts } from '../../Store/ReduxStore';
+import { store, updateROGKey, updateShortcuts } from '../../Store/ReduxStore';
 import _ from 'lodash';
+import ReactMarkdown from 'react-markdown';
 
 interface Props {}
 
@@ -21,17 +22,24 @@ interface State {
 	shortcuts: ShortCuts;
 	keys: string;
 	recordEnabled: boolean;
+	rogRemapped: boolean;
+	func: string;
+	armouryEnabled: boolean;
 }
 
 export default class Settings extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		let g14state = store.getState() as G14Config;
-		let modifiableState = Object.assign({}, g14state.current.shortcuts);
+		let rogState = Object.assign({}, g14state.current.rogKey);
+		let shortCutsState = Object.assign({}, g14state.current.shortcuts);
 		this.state = {
-			shortcuts: modifiableState,
-			keys: modifiableState.minmax.accelerator,
+			shortcuts: shortCutsState,
+			keys: shortCutsState.minmax.accelerator,
 			recordEnabled: false,
+			armouryEnabled: rogState.armouryCrate,
+			func: 'minmax',
+			rogRemapped: rogState.enabled,
 		};
 	}
 
@@ -101,6 +109,93 @@ export default class Settings extends Component<Props, State> {
 		}
 	}
 
+	handleReviveROG = async () => {
+		message.loading('Renaming Armoury Crate executables...');
+		let result = await window.ipcRenderer.invoke('enableROG');
+		if (result) {
+			message.success(
+				'Successfully renamed executables, restart computer to complete the process.'
+			);
+
+			this.setState({ armouryEnabled: true }, () => {
+				let { rogRemapped, armouryEnabled, func } = this.state;
+				store.dispatch(
+					updateROGKey({
+						enabled: rogRemapped,
+						armouryCrate: armouryEnabled,
+						func: func,
+					})
+				);
+			});
+		} else {
+			message.error(
+				'There was an issue renaming executables...Send logs to the developer.'
+			);
+		}
+	};
+
+	handleKillROG = async () => {
+		message.loading('Killing and renaming Armoury Crate processes...');
+		let result = await window.ipcRenderer.invoke('disableROG');
+		if (result) {
+			message.success('Successfully disabled ROG functions.');
+			this.setState({ armouryEnabled: false }, () => {
+				let { rogRemapped, armouryEnabled, func } = this.state;
+				store.dispatch(
+					updateROGKey({
+						enabled: rogRemapped,
+						armouryCrate: armouryEnabled,
+						func: func,
+					})
+				);
+			});
+		} else {
+			message.error('There was an issue disabling ROG functions.');
+		}
+	};
+
+	handleRemap = async () => {
+		message.loading('Remapping ROG Key');
+		let result = await window.ipcRenderer.invoke('remapROG', 'minmax');
+		if (result) {
+			message.success(
+				'Successfully remapped ROG Key to minimize / maximize G14ControlV2'
+			);
+			this.setState({ rogRemapped: true }, () => {
+				let { rogRemapped, armouryEnabled, func } = this.state;
+				store.dispatch(
+					updateROGKey({
+						enabled: rogRemapped,
+						armouryCrate: armouryEnabled,
+						func,
+					})
+				);
+			});
+		} else {
+			message.error('Error remapping rog key.');
+		}
+	};
+
+	handleUnmap = async () => {
+		message.loading('Removing key listener...');
+		let result = await window.ipcRenderer.invoke('unbindROG');
+		if (result) {
+			message.success('Successfully removed custom ROG Key listener.');
+			this.setState({ rogRemapped: false }, () => {
+				let { rogRemapped, armouryEnabled, func } = this.state;
+				store.dispatch(
+					updateROGKey({
+						enabled: rogRemapped,
+						armouryCrate: armouryEnabled,
+						func,
+					})
+				);
+			});
+		} else {
+			message.error('Error removing ROG key listener.');
+		}
+	};
+
 	submitNewKeys = async () => {
 		message.loading('Updating shortcuts...');
 		if (isAccelerator(this.state.keys)) {
@@ -133,39 +228,94 @@ export default class Settings extends Component<Props, State> {
 
 	render() {
 		let { recordEnabled, shortcuts, keys } = this.state;
+
+		let mkd = `
+### To stop Armoury Crate ROG Key:
+
+If you have Armoury Crate installed, you must use the *"Disable ROG"* button, 
+which will result in most **Armoury Crate**
+functionality not working, since Armoury Crate processes need to be
+killed and their executables need to be renamed so they are not
+reopened automatically and result in Armoury Crate being opened upon pressing the key.
+
+### To get the normal ROG Key and Armoury Crate running again:
+
+Just pressing the *"Enable ROG"* button will not bring
+back Armoury Crate. You need to press the *"Enable ROG"* button, and
+then restart your computer, so that the processes get spun up the
+way they are supposed to. 
+
+`;
 		return (
 			<div>
 				<PageHeader
 					title="G14Control Settings"
 					subTitle="Edit G14ControlV2 related settings & shortcuts."></PageHeader>
-				<Card
-					title="Shortcut: Bring to front or minimize"
-					headStyle={{ backgroundColor: '#F0F2F5' }}
-					bordered>
-					<Space direction="vertical">
-						<div>
-							<Checkbox
-								id="minmaxcheckid"
-								onChange={this.handleMinMaxEnable}
-								checked={shortcuts.minmax.enabled}>
-								Enabled
-							</Checkbox>
-							<Checkbox checked={recordEnabled} onClick={this.enableRecording}>
-								Enable shortcut recording
-							</Checkbox>
-							<Button disabled={!recordEnabled} onClick={this.clearShortcut}>
-								Clear Macro
+				<Space direction="vertical">
+					<Card
+						title="Shortcut: Bring to front or minimize"
+						headStyle={{ backgroundColor: '#F0F2F5' }}
+						bordered>
+						<Space direction="vertical">
+							<div>
+								<Checkbox
+									id="minmaxcheckid"
+									onChange={this.handleMinMaxEnable}
+									checked={shortcuts.minmax.enabled}>
+									Enabled
+								</Checkbox>
+								<Checkbox
+									checked={recordEnabled}
+									onClick={this.enableRecording}>
+									Enable shortcut recording
+								</Checkbox>
+								<Button disabled={!recordEnabled} onClick={this.clearShortcut}>
+									Clear Macro
+								</Button>
+							</div>
+							<Input disabled value={keys}></Input>
+							<Button
+								id="modifyshortcuts"
+								disabled={shortcuts.minmax.accelerator === this.state.keys}
+								onClick={this.submitNewKeys}>
+								Update
 							</Button>
-						</div>
-						<Input disabled value={keys}></Input>
-						<Button
-							id="modifyshortcuts"
-							disabled={shortcuts.minmax.accelerator === this.state.keys}
-							onClick={this.submitNewKeys}>
-							Update
-						</Button>
-					</Space>
-				</Card>
+						</Space>
+					</Card>
+					<Card title="ROG Key Remapping">
+						<Space direction="vertical">
+							<ReactMarkdown skipHtml>{mkd}</ReactMarkdown>
+							<Space direction="horizontal" style={{ marginBottom: '1rem' }}>
+								<Button
+									disabled={!this.state.armouryEnabled}
+									onClick={this.handleKillROG}>
+									Disable ROG
+								</Button>
+								<Button
+									disabled={this.state.armouryEnabled}
+									onClick={this.handleReviveROG}>
+									Enable ROG
+								</Button>
+							</Space>
+							<ReactMarkdown>
+								To remap the ROG Key to open G14ControlV2 (as long as the
+								program is open) press the *"Remap ROG"* button.
+							</ReactMarkdown>
+							<Space direction="horizontal">
+								<Button
+									disabled={this.state.rogRemapped}
+									onClick={this.handleRemap}>
+									Remap ROG
+								</Button>
+								<Button
+									disabled={!this.state.rogRemapped}
+									onClick={this.handleUnmap}>
+									Undo ROG Remap
+								</Button>
+							</Space>
+						</Space>
+					</Card>
+				</Space>
 			</div>
 		);
 	}

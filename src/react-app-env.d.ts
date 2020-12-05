@@ -2,6 +2,8 @@
 
 /// <reference types="react-scripts" />
 
+/// <reference types="electron" />
+
 declare module 'chartjs-plugin-draggable' {}
 declare module 'chartjs-plugin-dragdata' {}
 declare type RyzenadjConfig = {
@@ -66,6 +68,12 @@ declare type ShortCuts = {
 	};
 };
 
+declare type RogKeyConfig = {
+	enabled: boolean;
+	func: string;
+	armouryCrate: boolean;
+};
+
 declare type G14Config = {
 	startup: {
 		checkBoostVisibility: boolean;
@@ -81,6 +89,7 @@ declare type G14Config = {
 				accelerator: string;
 			};
 		};
+		rogKey: RogKeyConfig;
 	};
 	ryzenadj: {
 		defaults: RyzenadjConfig;

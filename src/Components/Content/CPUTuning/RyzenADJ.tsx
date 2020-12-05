@@ -341,7 +341,10 @@ export default class RyzenADJ extends Component<Props, State> {
 						rel="noopener noreferrer"
 						target="_blank"
 						href="https://github.com/sbski/"
-						onClick={(e) => e.preventDefault()}>
+						onClick={(e) => {
+							e.preventDefault();
+							window.shell.openExternal('https://github.com/sbski/');
+						}}>
 						sbski
 					</a>{' '}
 					for help with this page with respect to G14 defaults, minimum &

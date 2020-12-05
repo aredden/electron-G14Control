@@ -72,6 +72,12 @@ declare type ShortCuts = {
 	};
 };
 
+declare type RogKeyConfig = {
+	enabled: boolean;
+	func: string;
+	armoryCrate: boolean;
+};
+
 declare type G14Config = {
 	startup: {
 		checkBoostVisibility: boolean;
@@ -81,7 +87,13 @@ declare type G14Config = {
 		ryzenadj: string;
 		fanCurve: string;
 		batteryLimit: number | undefined;
-		shortcuts: ShortCuts;
+		shortcuts: {
+			minmax: {
+				enabled: boolean;
+				accelerator: string;
+			};
+		};
+		rogKey: RogKeyConfig;
 	};
 	ryzenadj: {
 		defaults: RyzenadjConfig;

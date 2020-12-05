@@ -3,30 +3,19 @@
 import {
 	app,
 	BrowserWindow,
-	ipcMain,
 	Menu,
 	Tray,
 	Notification,
 	globalShortcut,
+	powerMonitor,
 } from 'electron';
 
-import installExtension, {
-	REACT_DEVELOPER_TOOLS,
-} from 'electron-devtools-installer';
 import getLogger from './Logger';
 import path from 'path';
-import url from 'url';
 import is_dev from 'electron-is-dev';
-import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import {
-	buildEmitters,
-	killEmitters,
-	loopsAreRunning,
-	runLoop,
-} from './IPCEvents/IPCEmitters';
-import { buildTrayIcon } from './TrayIcon';
-import { setAutoLaunch } from './AutoLaunch';
-import { loadConfig } from './IPCEvents/ConfigLoader';
+import { killEmitters } from './IPCEvents/IPCEmitters';
+import { createWindow } from './Browser';
+import { HID } from 'node-hid';
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -66,12 +55,27 @@ export let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
 export let tray: Tray;
 export let trayContext: Menu;
-
+export let hid: HID;
 if (is_dev) {
 	LOGGER.info('Running in development');
 } else {
 	LOGGER.info('Running in production');
 }
+
+export const minMaxFunc = () => {
+	if (browserWindow.isFocused()) {
+		browserWindow.minimize();
+	} else {
+		browserWindow.show();
+	}
+};
+
+export const getROGHID = () => hid;
+
+export const setHidMain = (hiddevice: HID) => {
+	LOGGER.info('Updating state of rogKey hid device.');
+	hid = hiddevice;
+};
 
 export const updateMenuVisible = (minimized?: boolean) => {
 	if (browserWindow.isMinimized() || !browserWindow.isVisible()) {
@@ -83,116 +87,9 @@ export const updateMenuVisible = (minimized?: boolean) => {
 	}
 };
 
-async function createWindow() {
-	// Create the browser window.
-	if (!gotTheLock) {
-		return;
-	}
-
-	try {
-		g14Config = JSON.parse((await loadConfig()).toString()) as G14Config;
-	} catch (err) {
-		LOGGER.error('Error loading config at startup');
-	}
-
-	browserWindow = new BrowserWindow({
-		width: 960,
-		height: 600,
-		resizable: true,
-		maxWidth: is_dev ? 1920 : 1300,
-		minWidth: 960,
-		titleBarStyle: 'hidden',
-		autoHideMenuBar: true,
-		frame: false,
-		icon: ICONPATH,
-
-		webPreferences: {
-			allowRunningInsecureContent: false,
-			worldSafeExecuteJavaScript: true,
-			nodeIntegration: true,
-			accessibleTitle: 'G14ControlV2',
-			preload: __dirname + '/Preload.js',
-		},
-		darkTheme: true,
-	});
-	if (is_dev) {
-		installExtension(REACT_DEVELOPER_TOOLS)
-			.then((name) => console.log(`Added Extension:  ${name}`))
-			.catch((err) => console.log('An error occurred adding devtools: ', err));
-	}
-	const ipc = ipcMain;
-	ipc.setMaxListeners(35);
-	buildIpcConnection(ipc, browserWindow);
-	buildEmitters(ipc, browserWindow);
-	// and load the index.html of the app.
-	let loadurl = 'http://localhost:3000/';
-	if (!is_dev) {
-		browserWindow.loadURL(
-			url.format({
-				pathname: path.join(__dirname, './index.html'),
-				protocol: 'file:',
-				slashes: true,
-			})
-		);
-	} else {
-		browserWindow.loadURL(loadurl);
-	}
-
-	// build tray icon menu
-	let results = await buildTrayIcon(tray, trayContext, browserWindow);
-
-	tray = results.tray;
-	trayContext = results.trayContext;
-	browserWindow = results.browserWindow;
-
-	// set up renderer process events.
-	browserWindow.on('hide', async () => {
-		if (loopsAreRunning()) {
-			await killEmitters();
-		}
-		updateMenuVisible();
-	});
-	browserWindow.on('show', () => {
-		if (!loopsAreRunning()) {
-			runLoop(browserWindow);
-		}
-		updateMenuVisible();
-	});
-	browserWindow.on('minimize', async () => {
-		if (loopsAreRunning()) {
-			await killEmitters();
-		}
-		updateMenuVisible();
-	});
-	browserWindow.on('restore', () => {
-		if (!loopsAreRunning()) {
-			runLoop(browserWindow);
-		}
-		updateMenuVisible();
-	});
-	browserWindow.on('unresponsive', () => {
-		LOGGER.info('Window is unresponsive...');
-	});
-
-	// Register global shortcut ctrl + space
-	if (g14Config.current.shortcuts.minmax.enabled) {
-		let registered = globalShortcut.register(
-			g14Config.current.shortcuts.minmax.accelerator,
-			() => {
-				if (browserWindow.isFocused()) {
-					browserWindow.minimize();
-				} else {
-					browserWindow.show();
-				}
-			}
-		);
-		if (registered) {
-			LOGGER.info('Show app shortcut registered.');
-		} else {
-			LOGGER.info('Error registering shortcut.');
-		}
-	}
-}
+powerMonitor.on('shutdown', () => {
+	app.quit();
+});
 
 app.on('window-all-closed', async () => {
 	await killEmitters();
@@ -204,9 +101,6 @@ app.on('window-all-closed', async () => {
 app.on('before-quit', async () => {
 	globalShortcut.unregisterAll();
 	LOGGER.info('Keyboard shortcuts unregistered.');
-	if (!is_dev && g14Config.startup.autoLaunchEnabled) {
-		setAutoLaunch(true);
-	}
 	LOGGER.info('Preparing to quit.');
 	killEmitters();
 });
@@ -215,7 +109,22 @@ app.on('quit', async (evt, e) => {
 	LOGGER.info(`Quitting with exit code. ${e}`);
 });
 
-app.on('ready', createWindow);
+app.on('ready', async () => {
+	let results = await createWindow(
+		gotTheLock,
+		g14Config,
+		browserWindow,
+		tray,
+		trayContext,
+		ICONPATH,
+		hid
+	);
+
+	g14Config = results.g14Config;
+	tray = results.tray;
+	browserWindow = results.browserWindow;
+	trayContext = results.trayContext;
+});
 
 app.on('renderer-process-crashed', (event, webcontents, killed) => {
 	LOGGER.info(

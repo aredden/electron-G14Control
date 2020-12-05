@@ -6,7 +6,9 @@ import PlanTable from './WindowsPlanComponents/PlanTable';
 
 declare global {
 	interface Window {
-		ipcRenderer: any;
+		ipcRenderer: Electron.IpcRenderer;
+		shell: Electron.Shell;
+		powerMonitor: Electron.PowerMonitor;
 	}
 }
 interface Props {}

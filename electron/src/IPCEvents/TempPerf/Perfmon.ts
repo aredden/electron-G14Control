@@ -1,8 +1,8 @@
 /** @format */
 
-import { app, BrowserWindow } from 'electron';
+import { BrowserWindow } from 'electron';
 import perfmon from 'perfmon';
-import { tray } from '../../electron';
+
 import getLogger from '../../Logger';
 
 const LOGGER = getLogger('Perfmon');

@@ -6,7 +6,7 @@ import path from 'path';
 import { setAutoLaunch } from '../AutoLaunch';
 import getLogger from '../Logger';
 import { writeConfig } from './ConfigLoader';
-import { browserWindow } from '../electron';
+import { minMaxFunc } from '../electron';
 const LOGGER = getLogger('ElectronSettings');
 export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('exitWindow', () => {
@@ -55,12 +55,4 @@ export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 			return false;
 		}
 	});
-};
-
-const minMaxFunc = () => {
-	if (browserWindow.isFocused()) {
-		browserWindow.minimize();
-	} else {
-		browserWindow.show();
-	}
 };

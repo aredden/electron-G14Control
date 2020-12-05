@@ -96,6 +96,16 @@ export default class Battery extends Component<Props, State> {
 		);
 	};
 
+	batterySwitch = () => {
+		console.log('Battery switch event occurred.');
+		this.setState({ chargerState: 'Battery' });
+	};
+
+	chargerSwitch = () => {
+		console.log('Charger switch event occured.');
+		this.getDeliveryStatus();
+	};
+
 	componentDidMount() {
 		this.buildListener();
 		this.getDeliveryStatus();
@@ -147,10 +157,6 @@ export default class Battery extends Component<Props, State> {
 									onChange={this.handleDisabledChange}
 								/>
 							</div>
-
-							{/* <h3 style={{ marginTop: '.5rem', marginBottom: '-.5rem' }}>
-								Select Limit
-							</h3> */}
 							<div
 								style={{
 									display: 'flex',
