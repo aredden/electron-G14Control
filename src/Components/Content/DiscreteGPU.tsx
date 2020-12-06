@@ -17,6 +17,7 @@ interface State {
 	columns: ColumnsType<DisplayOptionListType>;
 	popconfirm: boolean;
 	targetDisplay: DisplayOptions;
+	plugged: boolean;
 }
 
 type SortOrder = 'ascend' | 'descend' | undefined | null;
@@ -34,6 +35,7 @@ export default class DiscreteGPU extends Component<Props, State> {
 				height: 1080,
 				display: 0,
 			},
+			plugged: true,
 		};
 	}
 
@@ -128,6 +130,17 @@ export default class DiscreteGPU extends Component<Props, State> {
 				}
 			});
 		}
+	};
+
+	getPowerDelivery = async () => {
+		window.ipcRenderer.invoke(
+			'isPlugged',
+			(result: false | { ac: boolean; dc: boolean; usb: boolean }) => {
+				if (result) {
+					this.setState({ plugged: result.ac || result.usb });
+				}
+			}
+		);
 	};
 
 	handleConfirmChangeDisplay = async () => {

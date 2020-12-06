@@ -16,6 +16,7 @@ interface State {
 		ac: number;
 		dc: number;
 	};
+	plugged: boolean;
 }
 
 const dynamicGraphicsOptions = [
@@ -37,6 +38,7 @@ export default class GraphicsSettings extends Component<Props, State> {
 				ac: 0,
 				dc: 0,
 			},
+			plugged: true,
 		};
 	}
 
@@ -59,6 +61,7 @@ export default class GraphicsSettings extends Component<Props, State> {
 				}
 			}
 		);
+		this.getPowerDelivery();
 	}
 
 	handleChangeGraphics = (event: RadioChangeEvent) => {
@@ -83,6 +86,17 @@ export default class GraphicsSettings extends Component<Props, State> {
 					);
 				}
 			});
+	};
+
+	getPowerDelivery = async () => {
+		let result:
+			| false
+			| {
+					ac: boolean;
+					dc: boolean;
+					usb: boolean;
+			  } = await window.ipcRenderer.invoke('isPlugged');
+		this.setState({ plugged: result ? result.ac || result.usb : true });
 	};
 
 	render() {
@@ -125,6 +139,8 @@ export default class GraphicsSettings extends Component<Props, State> {
 			</div>
 		);
 
+		let { plugged } = this.state;
+
 		return (
 			<div
 				style={{
@@ -142,7 +158,7 @@ export default class GraphicsSettings extends Component<Props, State> {
 						<Popover title="Graphics Options" content={popoverContent}>
 							<Radio.Group
 								name="Graphics Options"
-								value={graphics.ac}
+								value={plugged ? graphics.ac : graphics.dc}
 								style={radioGroupStyle}
 								size="middle"
 								onChange={this.handleChangeGraphics}>

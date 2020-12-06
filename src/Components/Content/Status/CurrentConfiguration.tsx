@@ -10,10 +10,11 @@ interface Props {}
 interface State {
 	fanCurve: string;
 	ryzenadj: string;
-	boost: string;
+	boost: { ac: number; dc: number };
 	needsUpdate: boolean;
 	windowsPlan: { name: string; guid: string };
 	graphics: { ac: number; dc: number };
+	plugged: boolean;
 }
 
 const dynamicGraphicsOptions = [
@@ -21,6 +22,14 @@ const dynamicGraphicsOptions = [
 	'Optimize power savings',
 	'Optimize performance',
 	'Maximize performance',
+];
+
+const boostModeOptions = [
+	'Disabled',
+	'',
+	'Aggressive',
+	'',
+	'Efficient Aggressive',
 ];
 
 export default class CurrentConfiguration extends Component<Props, State> {
@@ -32,7 +41,11 @@ export default class CurrentConfiguration extends Component<Props, State> {
 			needsUpdate: false,
 			ryzenadj: current.ryzenadj,
 			fanCurve: current.fanCurve,
-			boost: '',
+			plugged: true,
+			boost: {
+				ac: 0,
+				dc: 0,
+			},
 			windowsPlan: {
 				name: '',
 				guid: '',
@@ -60,14 +73,11 @@ export default class CurrentConfiguration extends Component<Props, State> {
 									| false
 							) => {
 								if (resultboost && !isNull(resultboost.boost.ac)) {
-									boost = [
-										'Disabled',
-										'',
-										'Aggressive',
-										'',
-										'Efficient Aggressive',
-									][resultboost.boost.ac];
-									this.setState({ windowsPlan, boost });
+									if (result) {
+										this.setState({ windowsPlan, boost: resultboost.boost });
+									} else {
+										this.setState({ windowsPlan });
+									}
 								} else {
 									this.setState({ windowsPlan });
 									message.error(
@@ -98,6 +108,24 @@ export default class CurrentConfiguration extends Component<Props, State> {
 				}
 			}
 		);
+		window.ipcRenderer.invoke('isPlugged').then(
+			(
+				plugType:
+					| false
+					| {
+							ac: boolean;
+							dc: boolean;
+							usb: boolean;
+					  }
+			) => {
+				if (plugType) {
+					let { ac, usb } = plugType;
+					this.setState({ plugged: ac || usb });
+				} else {
+					this.setState({ plugged: true });
+				}
+			}
+		);
 	}
 
 	render() {
@@ -111,7 +139,14 @@ export default class CurrentConfiguration extends Component<Props, State> {
 				title: 'Chosen Setting',
 			},
 		];
-		let { ryzenadj, fanCurve, boost, windowsPlan, graphics } = this.state;
+		let {
+			ryzenadj,
+			fanCurve,
+			boost,
+			windowsPlan,
+			graphics,
+			plugged,
+		} = this.state;
 		return (
 			<>
 				<Table
@@ -124,10 +159,21 @@ export default class CurrentConfiguration extends Component<Props, State> {
 						{ name: 'CPU Tuning', value: ryzenadj },
 						{ name: 'Fan Curve', value: fanCurve },
 						{ name: 'Windows Power Plan', value: windowsPlan.name },
-						{ name: 'Boost Mode', value: boost },
+						{
+							name: 'Boost Mode',
+							value: plugged
+								? boostModeOptions[boost.ac]
+								: boostModeOptions[boost.dc],
+						},
 						{
 							name: 'Graphics Preference',
-							value: dynamicGraphicsOptions[graphics.ac],
+							value: plugged
+								? dynamicGraphicsOptions[graphics.ac]
+								: dynamicGraphicsOptions[graphics.dc],
+						},
+						{
+							name: 'Power Delivery',
+							value: plugged ? 'Charger' : 'Battery',
 						},
 					]}></Table>
 			</>

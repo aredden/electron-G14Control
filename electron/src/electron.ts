@@ -221,6 +221,10 @@ export async function createWindow(
 		}
 	}
 
+	globalShortcut.register('Control+Shift+I', () => {
+		browserWindow.webContents.openDevTools();
+	});
+
 	if (rogKey.enabled) {
 		let hdd = setUpNewG14ControlKey(mapperBuilder);
 		if (hdd) {
