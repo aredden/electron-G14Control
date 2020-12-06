@@ -204,6 +204,7 @@ const createRootReducer = (initialState: G14Config) => {
 				current: {
 					ryzenadj: state.current.ryzenadj,
 					fanCurve: state.current.fanCurve,
+					rogKey: state.current.rogKey,
 					batteryLimit: action.payload,
 					shortcuts: state.current.shortcuts,
 				},

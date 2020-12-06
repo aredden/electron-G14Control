@@ -37,9 +37,9 @@ export default class Settings extends Component<Props, State> {
 			shortcuts: shortCutsState,
 			keys: shortCutsState.minmax.accelerator,
 			recordEnabled: false,
-			armouryEnabled: rogState.armouryCrate,
+			armouryEnabled: Boolean(rogState.armouryCrate),
 			func: 'minmax',
-			rogRemapped: rogState.enabled,
+			rogRemapped: Boolean(rogState.enabled),
 		};
 	}
 
@@ -116,13 +116,12 @@ export default class Settings extends Component<Props, State> {
 			message.success(
 				'Successfully renamed executables, restart computer to complete the process.'
 			);
-
-			this.setState({ armouryEnabled: true }, () => {
-				let { rogRemapped, armouryEnabled, func } = this.state;
+			let { rogRemapped, armouryEnabled, func } = this.state;
+			this.setState({ armouryEnabled: !armouryEnabled }, () => {
 				store.dispatch(
 					updateROGKey({
 						enabled: rogRemapped,
-						armouryCrate: armouryEnabled,
+						armouryCrate: !armouryEnabled,
 						func: func,
 					})
 				);
@@ -139,12 +138,12 @@ export default class Settings extends Component<Props, State> {
 		let result = await window.ipcRenderer.invoke('disableROG');
 		if (result) {
 			message.success('Successfully disabled ROG functions.');
-			this.setState({ armouryEnabled: false }, () => {
-				let { rogRemapped, armouryEnabled, func } = this.state;
+			let { rogRemapped, armouryEnabled, func } = this.state;
+			this.setState({ armouryEnabled: !armouryEnabled }, () => {
 				store.dispatch(
 					updateROGKey({
 						enabled: rogRemapped,
-						armouryCrate: armouryEnabled,
+						armouryCrate: !armouryEnabled,
 						func: func,
 					})
 				);
@@ -161,11 +160,11 @@ export default class Settings extends Component<Props, State> {
 			message.success(
 				'Successfully remapped ROG Key to minimize / maximize G14ControlV2'
 			);
-			this.setState({ rogRemapped: true }, () => {
-				let { rogRemapped, armouryEnabled, func } = this.state;
+			let { rogRemapped, armouryEnabled, func } = this.state;
+			this.setState({ rogRemapped: !rogRemapped }, () => {
 				store.dispatch(
 					updateROGKey({
-						enabled: rogRemapped,
+						enabled: !rogRemapped,
 						armouryCrate: armouryEnabled,
 						func,
 					})
@@ -181,11 +180,11 @@ export default class Settings extends Component<Props, State> {
 		let result = await window.ipcRenderer.invoke('unbindROG');
 		if (result) {
 			message.success('Successfully removed custom ROG Key listener.');
-			this.setState({ rogRemapped: false }, () => {
-				let { rogRemapped, armouryEnabled, func } = this.state;
+			let { rogRemapped, armouryEnabled, func } = this.state;
+			this.setState({ rogRemapped: !rogRemapped }, () => {
 				store.dispatch(
 					updateROGKey({
-						enabled: rogRemapped,
+						enabled: !rogRemapped,
 						armouryCrate: armouryEnabled,
 						func,
 					})
@@ -287,12 +286,12 @@ way they are supposed to.
 							<ReactMarkdown skipHtml>{mkd}</ReactMarkdown>
 							<Space direction="horizontal" style={{ marginBottom: '1rem' }}>
 								<Button
-									disabled={!this.state.armouryEnabled}
+									disabled={this.state.armouryEnabled}
 									onClick={this.handleKillROG}>
 									Disable ROG
 								</Button>
 								<Button
-									disabled={this.state.armouryEnabled}
+									disabled={!this.state.armouryEnabled}
 									onClick={this.handleReviveROG}>
 									Enable ROG
 								</Button>

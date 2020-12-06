@@ -4,6 +4,8 @@
 
 /// <reference types="electron" />
 
+/// <reference types="@reduxjs/toolkit"/>
+
 declare module 'chartjs-plugin-draggable' {}
 declare module 'chartjs-plugin-dragdata' {}
 declare type RyzenadjConfig = {

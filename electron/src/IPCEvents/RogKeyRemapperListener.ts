@@ -29,8 +29,12 @@ export const buildRogKeyRemapperListener = (
 					let result = setUpNewG14ControlKey(mapperBuilder);
 					if (result) {
 						setHidMain(result);
+						LOGGER.info('Remap successful.');
+						return true;
+					} else {
+						LOGGER.info('Failed to remap ROG Key.');
+						return false;
 					}
-					return true;
 				}
 			}
 		}
@@ -41,8 +45,10 @@ export const buildRogKeyRemapperListener = (
 		LOGGER.info(`current hid device: ` + JSON.stringify(hid));
 		if (hid) {
 			hid.removeAllListeners('data');
+			LOGGER.info('Removed all listeners from HID Device.');
 			return true;
 		} else {
+			LOGGER.info("Tried to unbind from HID that didn't exist.");
 			return false;
 		}
 	});

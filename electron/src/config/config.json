@@ -4,6 +4,11 @@
 		"fanCurve": "Performance",
 		"shortcuts": {
 			"minmax": { "enabled": true, "accelerator": "Control+Space" }
+		},
+		"rogKey": {
+			"enabled": false,
+			"armouryCrate": false,
+			"func": "minmax"
 		}
 	},
 	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": false },
