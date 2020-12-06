@@ -40,7 +40,7 @@ const checkIfPrint = () => {
 
 const buildSoftwareList = () => {
 	let softchild = spawn('powershell.exe', [
-		`Get-WmiObject win32_product | where-object { $_.vendor -like "*ASUS*" -or $_.vendor -like "*Advanced Micro Devices*" -or $_.vendor -like "*AMD*" -or $_.vendor -like "*Intel*" -or $_.vendor -like "*NVIDIA*" } | Select-Object Name,Vendor,Version | Format-List *`,
+		`Get-WmiObject win32_product | where-object { $_.vendor -like "*ASUS*" -or $_.vendor -like "*Advanced Micro Devices*" -or $_.vendor -like "*AMD*" -or $_.vendor -like "*Intel*" -or $_.vendor -like "*NVIDIA*"-or $_.vendor -like "*Realtek*" -or $_.vendor -like "*Dolby*" } | Select-Object Name,Vendor,Version | Format-List *`,
 	]);
 	softchild.stdout.on('data', (data) => {
 		softwareString = softwareString + data.toString();
@@ -59,7 +59,7 @@ const buildSoftwareList = () => {
 	return softchild;
 };
 
-const GET_G14_DRIVERS = `Get-WmiObject Win32_PnPSignedDriver| select devicename, driverversion | where-object { $_.devicename -like "*ASUS*" -or $_.devicename -like "*Advanced Micro Devices*" -or $_.devicename -like "*AMD*" -or $_.devicename -like "*Intel*" -or $_.devicename -like "*NVIDIA*" } | Format-List *`;
+const GET_G14_DRIVERS = `Get-WmiObject Win32_PnPSignedDriver | select devicename, driverversion | where-object { $_.devicename -like "*ASUS*" -or $_.devicename -like "*Advanced Micro Devices*" -or $_.devicename -like "*AMD*" -or $_.devicename -like "*Intel*" -or $_.devicename -like "*NVIDIA*" -or $_.devicename -like "*Realtek*"-or $_.devicename -like "*Dolby*"} | Format-List *`;
 
 const buildPsSpawn = (args: string) => {
 	count = count + 1;

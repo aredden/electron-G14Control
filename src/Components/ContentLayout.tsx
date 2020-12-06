@@ -76,6 +76,8 @@ export default class ContentLayout extends Component<Props, State> {
 									height: 'auto',
 								}}>
 								G14ControlV2 ©2020 Created by Alex Redden
+								<br />
+								Version 0.1.20
 							</Footer>
 						</div>
 					</div>

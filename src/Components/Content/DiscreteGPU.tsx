@@ -132,17 +132,6 @@ export default class DiscreteGPU extends Component<Props, State> {
 		}
 	};
 
-	getPowerDelivery = async () => {
-		window.ipcRenderer.invoke(
-			'isPlugged',
-			(result: false | { ac: boolean; dc: boolean; usb: boolean }) => {
-				if (result) {
-					this.setState({ plugged: result.ac || result.usb });
-				}
-			}
-		);
-	};
-
 	handleConfirmChangeDisplay = async () => {
 		message.loading('Modifying display settings.');
 		window.ipcRenderer
