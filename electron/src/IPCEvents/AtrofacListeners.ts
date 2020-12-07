@@ -7,7 +7,7 @@ import { modifyArmoryCratePlan } from './atrofac/SetArmoryPlan';
 
 const LOGGER = getLogger('AtrofacListeners');
 
-const parseArrayCurve = (arrCurve: Array<number>) => {
+export const parseArrayCurve = (arrCurve: Array<number>) => {
 	let curve = arrCurve
 		.map((value, idx) => {
 			return `${idx + 3}0c:${value}%`;

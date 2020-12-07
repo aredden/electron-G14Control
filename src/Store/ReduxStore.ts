@@ -82,6 +82,13 @@ export const updateROGKey = createAction(
 	}
 );
 
+export const updateG14Plans = createAction(
+	'UPDATE_G14_PLANS',
+	(value: G14ControlPlan[]) => {
+		return { payload: value };
+	}
+);
+
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -121,6 +128,7 @@ const createRootReducer = (initialState: G14Config) => {
 				startup: state.startup,
 				loopTimes: state.loopTimes,
 				fanCurves: state.fanCurves,
+				plans: state.plans,
 				ryzenadj: {
 					defaults: {
 						tctlTemp: tctlTemp as number,
@@ -141,12 +149,13 @@ const createRootReducer = (initialState: G14Config) => {
 
 		reducer.addCase(updateDisplayOptions, (state, action) => {
 			let { payload } = action;
-			let { ryzenadj, fanCurves, loopTimes } = state;
+			let { plans, ryzenadj, fanCurves, loopTimes } = state;
 			let newState = {
 				current: state.current,
 				startup: state.startup,
 				ryzenadj,
 				fanCurves,
+				plans,
 				loopTimes,
 				displayOptions: payload,
 			};
@@ -156,7 +165,14 @@ const createRootReducer = (initialState: G14Config) => {
 
 		reducer.addCase(updateCurrentConfig, (state, action) => {
 			let { payload } = action;
-			let { ryzenadj, fanCurves, loopTimes, startup, displayOptions } = state;
+			let {
+				ryzenadj,
+				fanCurves,
+				loopTimes,
+				startup,
+				displayOptions,
+				plans,
+			} = state;
 			let newState = {
 				current: {
 					...payload,
@@ -167,6 +183,7 @@ const createRootReducer = (initialState: G14Config) => {
 				startup,
 				ryzenadj,
 				fanCurves,
+				plans,
 				loopTimes,
 				displayOptions,
 			};
@@ -182,6 +199,7 @@ const createRootReducer = (initialState: G14Config) => {
 				fanCurves,
 				loopTimes,
 				startup,
+				plans,
 				displayOptions,
 			} = state;
 			let newState = {
@@ -192,6 +210,7 @@ const createRootReducer = (initialState: G14Config) => {
 				},
 				ryzenadj,
 				fanCurves,
+				plans,
 				loopTimes,
 				displayOptions,
 			};
@@ -243,6 +262,11 @@ const createRootReducer = (initialState: G14Config) => {
 				},
 			});
 			state = newState;
+			return state;
+		});
+
+		reducer.addCase(updateG14Plans, (state, action) => {
+			state = Object.assign(state, { plans: action.payload });
 			return state;
 		});
 	});

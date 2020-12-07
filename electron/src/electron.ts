@@ -64,6 +64,8 @@ if (is_dev) {
 	LOGGER.info('Running in production');
 }
 
+export const getConfig = () => g14Config;
+
 export const minMaxFunc = () => {
 	if (browserWindow.isFocused()) {
 		browserWindow.minimize();
@@ -221,10 +223,6 @@ export async function createWindow(
 		}
 	}
 
-	globalShortcut.register('Control+Shift+I', () => {
-		browserWindow.webContents.openDevTools();
-	});
-
 	if (rogKey.enabled) {
 		let hdd = setUpNewG14ControlKey(mapperBuilder);
 		if (hdd) {
@@ -240,6 +238,8 @@ export async function createWindow(
 }
 
 powerMonitor.on('shutdown', () => {
+	browserWindow.close();
+	tray.destroy();
 	app.quit();
 });
 

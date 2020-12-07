@@ -93,6 +93,7 @@ declare type G14Config = {
 		};
 		rogKey: RogKeyConfig;
 	};
+	plans: G14ControlPlan[];
 	ryzenadj: {
 		defaults: RyzenadjConfig;
 		limits: RyzenadjConfig;
@@ -144,6 +145,30 @@ declare type DisplayOptions = {
 	display?: number;
 	width?: number;
 	height?: number;
+};
+
+declare type G14ControlPlan = {
+	name: string;
+	ryzenadj: string;
+	fanCurve: string;
+	boost: number;
+	armouryCrate: ArmoryPlan;
+	graphics: number;
+	windowsPlan: { name: string; guid: string };
+};
+
+declare type FullG14ControlPlan = {
+	name: string;
+	ryzenadj: RyzenadjConfigNamed;
+	fanCurve: {
+		name: string;
+		cpu: undefined | number[];
+		gpu: undefined | number[];
+	};
+	boost: number;
+	armouryCrate: ArmoryPlan;
+	graphics: number;
+	windowsPlan: { name: string; guid: string };
 };
 
 declare module 'wmi-client';

@@ -101,9 +101,17 @@ export const getSwitchableDynamicGraphicsSettings = async () => {
 	});
 };
 
-export const setSwitchableDynamicGraphicsSettings = async (setting: number) => {
+export const setSwitchableDynamicGraphicsSettings = async (
+	setting: number,
+	guid?: string
+) => {
 	return new Promise(async (resolve) => {
-		let result = await getActivePlan();
+		let result: { name: string; guid: string } | false;
+		if (guid) {
+			result = { name: '', guid: guid };
+		} else {
+			result = await getActivePlan();
+		}
 		if (result) {
 			ps.addCommand(
 				`powercfg ${AC} ${result.guid} ${SW_DYNAMC_GRAPHICS} ${GLOBAL_SETTINGS} ${setting}`

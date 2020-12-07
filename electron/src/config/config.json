@@ -3,7 +3,7 @@
 		"ryzenadj": "Default",
 		"fanCurve": "Performance",
 		"shortcuts": {
-			"minmax": { "enabled": true, "accelerator": "Control+Space" }
+			"minmax": { "enabled": false, "accelerator": "Control+Space" }
 		},
 		"rogKey": {
 			"enabled": false,
