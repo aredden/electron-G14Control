@@ -32,6 +32,8 @@ export const buildG14ControlPlanListeners = (
 				plan = plano;
 			}
 
+			LOGGER.info(`Recieved plan:\n${JSON.stringify(plan, null, 2)}`);
+
 			let curve = config.fanCurves.find((curv) => {
 				return curv.name === plan.fanCurve;
 			});
@@ -52,6 +54,7 @@ export const buildG14ControlPlanListeners = (
 				if (result) {
 					return true;
 				} else {
+					LOGGER.error('Failed to set G14Control plan.');
 					return false;
 				}
 			} else {
@@ -73,8 +76,10 @@ export const switchWindowsPlanToActivateSettings = async (
 			return plan.guid !== activeGuid;
 		});
 		if (otherPlan) {
+			LOGGER.info(`Found other plan: ${otherPlan.name}`);
 			let other = await setWindowsPlan(otherPlan.guid);
 			if (other) {
+				LOGGER.info(`Switched to other plan: ${otherPlan.name}`);
 				let back = await setWindowsPlan(activeGuid);
 				if (back) {
 					return true;
@@ -114,6 +119,7 @@ export const switchWindowsPlanToActivateSettings = async (
 export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let { ryzenadj, fanCurve, boost, armouryCrate, graphics, windowsPlan } = plan;
 	let boos = await setBoost(boost, windowsPlan.guid);
+
 	let graphi = await setSwitchableDynamicGraphicsSettings(
 		graphics,
 		windowsPlan.guid
@@ -133,23 +139,34 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 		}
 		let arm = await modifyArmoryCratePlan(armouryCrate);
 		if (arm) {
-			let ryzn = await setRyzenadj(ryzenadj);
-			if (!ryzn) {
-				await setRyzenadj(ryzenadj);
-			}
-			let { cpu, gpu } = fanCurve;
-			let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
-			let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
-			let result = await modifyFanCurve(cpuCurve, gpuCurve);
-			if (result) {
-				return true;
+			LOGGER.info('Succeffully modified armory crate plan to: ' + armouryCrate);
+			let switchPlan = await setWindowsPlan(windowsPlan.guid);
+			if (switchPlan) {
+				LOGGER.info('Successfully switched windows plan to target plan.');
+				let ryzn = await setRyzenadj(ryzenadj);
+				if (!ryzn) {
+					await setRyzenadj(ryzenadj);
+				}
+				let { cpu, gpu } = fanCurve;
+				let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
+				let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
+				let result = await modifyFanCurve(cpuCurve, gpuCurve);
+				if (result) {
+					return true;
+				} else {
+					LOGGER.error('Failed to modify fan curve.');
+					return false;
+				}
 			} else {
+				LOGGER.error('Failed to switch windows plan to target plan.');
 				return false;
 			}
 		} else {
+			LOGGER.error('Failed to set Armoury Crate plan.');
 			return false;
 		}
 	} else {
+		LOGGER.error("Couldn't set boost & graphics preferences.");
 		return false;
 	}
 };

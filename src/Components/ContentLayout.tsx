@@ -8,6 +8,7 @@ import Battery from './Content/Battery';
 import CPUTuning from './Content/CPUTuning';
 import DiscreteGPU from './Content/DiscreteGPU';
 import FanCurve from './Content/FanCurve';
+import G14ControlPlans from './Content/G14ControlPlans';
 import Settings from './Content/Settings';
 import Status from './Content/Status';
 import WindowsPowerPlan from './Content/WindowsPowerPlan';
@@ -48,6 +49,10 @@ export default class ContentLayout extends Component<Props, State> {
 				break;
 			case 'Settings':
 				displayPage = <Settings />;
+				break;
+			case 'Plans':
+				displayPage = <G14ControlPlans/>
+				break;
 		}
 		return (
 			<>

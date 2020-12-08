@@ -58,7 +58,7 @@ export default class CurrentConfiguration extends Component<Props, State> {
 	}
 
 	componentDidMount() {
-		let { windowsPlan, boost } = this.state;
+		let { windowsPlan } = this.state;
 		window.ipcRenderer
 			.invoke('getActivePlan')
 			.then((result: { name: string; guid: string } | false) => {

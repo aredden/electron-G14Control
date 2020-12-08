@@ -28,9 +28,13 @@ export const setRyzenadj = (config: RyzenadjConfig) => {
 		let radjStr = '';
 
 		Object.keys(config).forEach((value) => {
-			radjStr +=
-				//@ts-ignore
-				value && config[value] ? `--${kebabCase(value)} ${config[value]} ` : '';
+			if (value !== 'name') {
+				radjStr +=
+					//@ts-ignore
+					value && config[value]
+						? `--${kebabCase(value)} ${config[value]} `
+						: '';
+			}
 		});
 		if (radjStr.length === 0) {
 			return false;

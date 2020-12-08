@@ -39,24 +39,65 @@ const removeOldStartupFile = async () => {
 };
 
 export const setAutoLaunch = async (enabled: boolean) => {
-	return new Promise((resolve) => {
+	return new Promise(async (resolve) => {
 		removeOldStartupFile();
-		ps.addCommand(startupCommand(enabled));
+		let taskAlreadyExists = await checkTaskExists('G14ControlSkipUAC');
+		if (!taskAlreadyExists) {
+			ps.addCommand(startupCommand(enabled));
+			ps.invoke()
+				.then((response: string) => {
+					if (
+						(enabled && response.includes('Ready')) ||
+						(!enabled && response.length === 0)
+					) {
+						LOGGER.info('Startup modification completed.');
+						resolve(true);
+					} else {
+						LOGGER.error(`Error creating startup Task : ${response}`);
+						resolve(false);
+					}
+				})
+				.catch((error) => {
+					LOGGER.error(
+						`There was an error thrown when trying to sett autolaunch ${enabled}..\nError: ${error}`
+					);
+					resolve(false);
+				});
+		} else {
+			LOGGER.info('Task already existed.');
+			resolve(false);
+		}
+	});
+};
+
+export const checkTaskExists = async (name: string) => {
+	let ps = new Shell({
+		noProfile: true,
+		executionPolicy: 'Bypass',
+		inputEncoding: 'utf-8',
+		outputEncoding: 'utf-8',
+	});
+	let command = `Get-ScheduledTask | Where-Object {$_.TaskName -like "${name}*" }`;
+	ps.addCommand(command);
+	return new Promise<boolean>((resolve) => {
 		ps.invoke()
-			.then((response: string) => {
-				if (
-					(enabled && response.includes('Ready')) ||
-					(!enabled && response.length === 0)
-				) {
-					LOGGER.info('Startup modification completed.');
+			.then((result) => {
+				if (result.length > 0) {
+					LOGGER.info(
+						`Results were returned from task exists query, meaning task was not in list.`
+					);
 					resolve(true);
 				} else {
-					LOGGER.error(`Error creating startup Task : ${response}`);
+					LOGGER.info(
+						`Search for task ${name}* didn't come up with any results.`
+					);
 					resolve(false);
 				}
 			})
-			.catch((error) => {
-				LOGGER.error(error);
+			.catch((err) => {
+				LOGGER.error(
+					`An error was thrown while checking if task: ${name} existed`
+				);
 				resolve(false);
 			});
 	});

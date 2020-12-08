@@ -1,8 +1,8 @@
 {
 	"current": {
 		"ryzenadj": "Performance",
-		"fanCurve": "Gaming",
-		"rogKey": { "enabled": true, "func": "minmax", "armouryCrate": true },
+		"fanCurve": "Silent (low speed fan)",
+		"rogKey": { "enabled": false, "func": "minmax", "armouryCrate": false },
 		"batteryLimit": 70,
 		"shortcuts": {
 			"minmax": { "enabled": false, "accelerator": "Control+Space" }
@@ -96,6 +96,20 @@
 			"cpu": [33, 41, 43, 46, 51, 61, 62, 63],
 			"gpu": [35, 38, 44, 47, 51, 63, 65, 69],
 			"plan": "performance"
+		}
+	],
+	"plans": [
+		{
+			"windowsPlan": {
+				"name": "Power saver",
+				"guid": "64a64f24-65b9-4b56-befd-5ec1eaced9b3"
+			},
+			"ryzenadj": "Power saver",
+			"fanCurve": null,
+			"boost": 0,
+			"armouryCrate": "silent",
+			"graphics": 0,
+			"name": "Standard Saver"
 		}
 	]
 }

@@ -59,10 +59,8 @@ export const modifyFanCurve = async (
 					if (err || stderr) {
 						if (stderr.indexOf('Success') !== -1) {
 							//@ts-ignore
-							LOGGER.error(
-								`Result of atrofac fan curve ${cpuCurve} ${gpuCurve}:\n${JSON.stringify(
-									stderr
-								)}`
+							LOGGER.info(
+								`Result of atrofac fan curve: \ncpu: ${cpuCurve}\n gpu: ${gpuCurve}:\n result:${stderr}`
 							);
 							//@ts-ignore
 							resolve({ cpuCurve, gpuCurve });
@@ -78,9 +76,7 @@ export const modifyFanCurve = async (
 						}
 					} else {
 						LOGGER.info(
-							`Result of atrofac fan curve:\n${cpuCurve}:\n${JSON.stringify(
-								out
-							)}`
+							`Result of atrofac fan curve: \ncpu: ${cpuCurve}\n gpu: ${gpuCurve}:\n result:${out}`
 						);
 						//@ts-ignore
 						resolve({ cpuCurve, gpuCurve });

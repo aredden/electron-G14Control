@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { Menu, message } from 'antd';
+import { Menu } from 'antd';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import {
 	BarChartOutlined,
@@ -50,6 +50,9 @@ export default class SiderMenu extends Component<Props, State> {
 					icon={<BarChartOutlined />}
 					onClick={this.handleClick}>
 					Status
+				</Menu.Item>
+				<Menu.Item key="8" icon={<UserOutlined />} onClick={this.handleClick}>
+					Plans
 				</Menu.Item>
 				<Menu.Item
 					key="1"

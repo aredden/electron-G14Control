@@ -8,7 +8,8 @@ export type MenuListOption =
 	| 'Auto Power Switching'
 	| 'CPU Tuning'
 	| 'Battery'
-	| 'Settings';
+	| 'Settings'
+	| 'Plans'
 
 export const MenuListMapper: Array<MenuListOption> = [
 	'Status',
@@ -19,4 +20,5 @@ export const MenuListMapper: Array<MenuListOption> = [
 	'CPU Tuning',
 	'Battery',
 	'Settings',
+	'Plans'
 ];

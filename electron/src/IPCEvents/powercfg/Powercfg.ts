@@ -15,6 +15,8 @@ export const getActivePlan = async (): Promise<
 				let parsed = parsePlans(out);
 				if (parsed.length === 1) {
 					resolve(parsed[0]);
+				} else {
+					LOGGER.info("Couldn't parse active plan. " + parsed);
 				}
 			} else {
 				LOGGER.error(
@@ -55,6 +57,7 @@ export const setWindowsPlan = async (guid: string): Promise<boolean> => {
 	return new Promise((resolve) => {
 		exec(`powercfg /setactive ${guid}`, (err, out, stderr) => {
 			if (!err && !stderr) {
+				LOGGER.info('Switched to plan: ' + guid);
 				resolve(true);
 			} else {
 				LOGGER.error(
@@ -132,6 +135,7 @@ export const setBoost = async (value: string | number, guid?: string) => {
 					);
 					resolve(false);
 				} else {
+					LOGGER.info('Successfully set AC boost to: ' + value);
 					resolve(true);
 				}
 			}
@@ -149,6 +153,7 @@ export const setBoost = async (value: string | number, guid?: string) => {
 					);
 					resolve(false);
 				} else {
+					LOGGER.info('Successfully set DC boost to: ' + value);
 					resolve(true);
 				}
 			}

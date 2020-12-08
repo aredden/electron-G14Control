@@ -12,6 +12,20 @@
 		}
 	},
 	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": false },
+	"plans":[
+		{
+			"windowsPlan":{
+				"name":"Power saver",
+				"guid":"64a64f24-65b9-4b56-befd-5ec1eaced9b3"
+			},
+			"ryzenadj":"Default",
+			"fanCurve":"Performance",
+			"boost":2,
+			"armouryCrate":"silent",
+			"graphics":0,
+			"name":"Standard Saver"
+		}
+	],
 	"ryzenadj": {
 		"defaults": {
 			"fastLimit": 65,
