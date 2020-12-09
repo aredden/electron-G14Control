@@ -51,7 +51,11 @@ export default class SiderMenu extends Component<Props, State> {
 					onClick={this.handleClick}>
 					Status
 				</Menu.Item>
-				<Menu.Item key="8" icon={<UserOutlined />} onClick={this.handleClick}>
+				<Menu.Item
+					disabled
+					key="8"
+					icon={<UserOutlined />}
+					onClick={this.handleClick}>
 					Plans
 				</Menu.Item>
 				<Menu.Item

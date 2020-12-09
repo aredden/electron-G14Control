@@ -1,7 +1,10 @@
 {
 	"current": {
 		"ryzenadj": "Default",
-		"fanCurve": "Performance",
+		"fanCurve": {
+			"type": "Custom",
+			"name": "Performance"
+		},
 		"shortcuts": {
 			"minmax": { "enabled": false, "accelerator": "Control+Space" }
 		},
@@ -12,18 +15,18 @@
 		}
 	},
 	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": false },
-	"plans":[
+	"plans": [
 		{
-			"windowsPlan":{
-				"name":"Power saver",
-				"guid":"64a64f24-65b9-4b56-befd-5ec1eaced9b3"
+			"windowsPlan": {
+				"name": "Power saver",
+				"guid": "64a64f24-65b9-4b56-befd-5ec1eaced9b3"
 			},
-			"ryzenadj":"Default",
-			"fanCurve":"Performance",
-			"boost":2,
-			"armouryCrate":"silent",
-			"graphics":0,
-			"name":"Standard Saver"
+			"ryzenadj": "Default",
+			"fanCurve": "Performance",
+			"boost": 2,
+			"armouryCrate": "silent",
+			"graphics": 0,
+			"name": "Standard Saver"
 		}
 	],
 	"ryzenadj": {
@@ -66,12 +69,6 @@
 		]
 	},
 	"fanCurves": [
-		{
-			"name": "Silent (low speed fan)",
-			"plan": "silent",
-			"cpu": [0, 0, 0, 0, 31, 49, 56, 56],
-			"gpu": [0, 0, 0, 0, 34, 51, 61, 61]
-		},
 		{
 			"name": "Performance",
 			"plan": "performance",

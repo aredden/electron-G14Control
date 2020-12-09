@@ -1,12 +1,12 @@
 {
 	"current": {
 		"ryzenadj": "Performance",
-		"fanCurve": "Silent (low speed fan)",
-		"rogKey": { "enabled": false, "func": "minmax", "armouryCrate": false },
+		"fanCurve": { "type": "Armoury", "name": "Silent" },
 		"batteryLimit": 70,
 		"shortcuts": {
 			"minmax": { "enabled": false, "accelerator": "Control+Space" }
-		}
+		},
+		"rogKey": { "enabled": false, "func": "minmax", "armouryCrate": false }
 	},
 	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": true },
 	"ryzenadj": {
@@ -111,5 +111,6 @@
 			"graphics": 0,
 			"name": "Standard Saver"
 		}
-	]
+	],
+	"armouryPlan": "silent"
 }

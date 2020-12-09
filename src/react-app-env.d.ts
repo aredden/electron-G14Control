@@ -83,7 +83,10 @@ declare type G14Config = {
 	};
 	current: {
 		ryzenadj: string;
-		fanCurve: string;
+		fanCurve: {
+			type: 'Custom' | 'Armoury';
+			name: string;
+		};
 		batteryLimit: number | undefined;
 		shortcuts: {
 			minmax: {
@@ -103,9 +106,9 @@ declare type G14Config = {
 		temp: number;
 		load: number;
 	};
+	armouryPlan: ArmoryPlan;
 	fanCurves: Array<{
 		name: string;
-		plan: ArmoryPlan;
 		cpu: number[];
 		gpu: number[];
 	}>;
@@ -114,7 +117,6 @@ declare type G14Config = {
 
 declare type FanCurveConfig = {
 	name: string;
-	plan: ArmoryPlan;
 	cpu: number[];
 	gpu: number[];
 };

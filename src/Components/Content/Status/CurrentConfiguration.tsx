@@ -1,6 +1,7 @@
 /** @format */
 
 import { message, Table } from 'antd';
+import _ from 'lodash';
 import { isNull } from 'lodash';
 import React, { Component } from 'react';
 import { store } from '../../../Store/ReduxStore';
@@ -8,13 +9,14 @@ import { store } from '../../../Store/ReduxStore';
 interface Props {}
 
 interface State {
-	fanCurve: string;
+	fanCurve: { name: string; type: 'Custom' | 'Armoury' };
 	ryzenadj: string;
 	boost: { ac: number; dc: number };
 	needsUpdate: boolean;
 	windowsPlan: { name: string; guid: string };
 	graphics: { ac: number; dc: number };
 	plugged: boolean;
+	armoury: string;
 }
 
 const dynamicGraphicsOptions = [
@@ -35,12 +37,13 @@ const boostModeOptions = [
 export default class CurrentConfiguration extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		let { current } = store.getState() as G14Config;
+		let { current, armouryPlan } = store.getState() as G14Config;
 
 		this.state = {
 			needsUpdate: false,
 			ryzenadj: current.ryzenadj,
 			fanCurve: current.fanCurve,
+			armoury: armouryPlan,
 			plugged: true,
 			boost: {
 				ac: 0,
@@ -157,7 +160,13 @@ export default class CurrentConfiguration extends Component<Props, State> {
 					bordered
 					dataSource={[
 						{ name: 'CPU Tuning', value: ryzenadj },
-						{ name: 'Fan Curve', value: fanCurve },
+						{
+							name: 'Fan Curve',
+							value:
+								fanCurve.type === 'Custom'
+									? `Custom: ${fanCurve.name}`
+									: `Armoury: ${_.capitalize(this.state.armoury)}`,
+						},
 						{ name: 'Windows Power Plan', value: windowsPlan.name },
 						{
 							name: 'Boost Mode',

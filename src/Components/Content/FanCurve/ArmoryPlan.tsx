@@ -3,10 +3,13 @@
 import { message, Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import React, { Component } from 'react';
+import { store, updateArmouryPlan } from '../../../Store/ReduxStore';
 
 interface Props {
 	selectPlan: (plan: ArmoryPlan) => void;
-	currentPlan: ArmoryPlan;
+	currentPlan: ArmoryPlan | undefined;
+	currentFan: string;
+	armouryActive: boolean;
 }
 
 interface State {
@@ -27,7 +30,10 @@ export default class ArmoryPlanSettings extends Component<Props, State> {
 			.invoke('setArmoryPlan', option)
 			.then((result: ArmoryPlan | false) => {
 				if (result) {
-					message.success(`Successfully set Armory Crate plan to: ${result}`);
+					store.dispatch(updateArmouryPlan(option));
+					this.setState({ plan: option }, () => {
+						message.success(`Successfully set Armory Crate plan to: ${result}`);
+					});
 				} else {
 					message.error(`Could not set Armory Crate default plan.`);
 				}
@@ -35,12 +41,22 @@ export default class ArmoryPlanSettings extends Component<Props, State> {
 			});
 	};
 
+	componentDidUpdate() {
+		let { currentPlan, armouryActive } = this.props;
+		let { plan } = this.state;
+		if (!armouryActive && plan) {
+			this.setState({ plan: undefined });
+		} else if (armouryActive && !plan) {
+			this.setState({ plan: currentPlan });
+		}
+	}
+
 	render() {
-		let { currentPlan } = this.props;
+		let { plan } = this.state;
 		return (
 			<>
 				<Radio.Group
-					value={currentPlan}
+					value={plan}
 					onChange={this.handleRadioClick}
 					optionType={'default'}>
 					<Radio value="windows" name="windows">

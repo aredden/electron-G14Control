@@ -6,6 +6,7 @@ import {
 	createReducer,
 	EnhancedStore,
 } from '@reduxjs/toolkit';
+import _ from 'lodash';
 
 export let store: EnhancedStore;
 
@@ -35,9 +36,22 @@ export const updateBatteryLimit = createAction(
 	}
 );
 
+export const updateArmouryPlan = createAction(
+	'UPDATE_ARMOURY_PLAN',
+	(value: ArmoryPlan) => {
+		return { payload: value };
+	}
+);
+
 export const updateCurrentConfig = createAction(
 	'UPDATE_CURRENT_CONFIG',
-	(value: { ryzenadj: string; fanCurve: string }) => {
+	(value: {
+		ryzenadj: string;
+		fanCurve: {
+			type: 'Custom' | 'Armoury';
+			name: string;
+		};
+	}) => {
 		return { payload: value };
 	}
 );
@@ -123,12 +137,7 @@ const createRootReducer = (initialState: G14Config) => {
 				stapmLimit,
 				stapmTime,
 			} = action.payload;
-			let newState = {
-				current: state.current,
-				startup: state.startup,
-				loopTimes: state.loopTimes,
-				fanCurves: state.fanCurves,
-				plans: state.plans,
+			let newState = Object.assign(state, {
 				ryzenadj: {
 					defaults: {
 						tctlTemp: tctlTemp as number,
@@ -141,79 +150,43 @@ const createRootReducer = (initialState: G14Config) => {
 					options: state.ryzenadj.options,
 					limits: state.ryzenadj.limits,
 				},
-				displayOptions: state.displayOptions,
-			};
+			});
 			state = newState;
 			return state;
 		});
 
 		reducer.addCase(updateDisplayOptions, (state, action) => {
 			let { payload } = action;
-			let { plans, ryzenadj, fanCurves, loopTimes } = state;
-			let newState = {
-				current: state.current,
-				startup: state.startup,
-				ryzenadj,
-				fanCurves,
-				plans,
-				loopTimes,
+			let newState = Object.assign(state, {
 				displayOptions: payload,
-			};
+			});
 			state = newState;
 			return state;
 		});
 
 		reducer.addCase(updateCurrentConfig, (state, action) => {
 			let { payload } = action;
-			let {
-				ryzenadj,
-				fanCurves,
-				loopTimes,
-				startup,
-				displayOptions,
-				plans,
-			} = state;
-			let newState = {
+
+			let newState = Object.assign(state, {
 				current: {
 					...payload,
 					rogKey: state.current.rogKey,
 					batteryLimit: state.current.batteryLimit,
 					shortcuts: state.current.shortcuts,
 				},
-				startup,
-				ryzenadj,
-				fanCurves,
-				plans,
-				loopTimes,
-				displayOptions,
-			};
+			});
 			state = newState;
 			return state;
 		});
 
 		reducer.addCase(updateStartOnBoot, (state, action) => {
 			let { payload } = action;
-			let {
-				current,
-				ryzenadj,
-				fanCurves,
-				loopTimes,
-				startup,
-				plans,
-				displayOptions,
-			} = state;
-			let newState = {
-				current,
+			let newState = Object.assign(state, {
 				startup: {
-					checkBoostVisibility: startup.checkBoostVisibility,
+					checkBoostVisibility: state.startup.checkBoostVisibility,
 					autoLaunchEnabled: payload,
 				},
-				ryzenadj,
-				fanCurves,
-				plans,
-				loopTimes,
-				displayOptions,
-			};
+			});
 			state = newState;
 			return state;
 		});
@@ -267,6 +240,24 @@ const createRootReducer = (initialState: G14Config) => {
 
 		reducer.addCase(updateG14Plans, (state, action) => {
 			state = Object.assign(state, { plans: action.payload });
+			return state;
+		});
+		reducer.addCase(updateArmouryPlan, (state, action) => {
+			let { ryzenadj, batteryLimit, shortcuts, rogKey } = state.current;
+			let newState: G14Config = Object.assign(state, {
+				current: {
+					ryzenadj,
+					fanCurve: {
+						type: 'Armoury',
+						name: _.capitalize(action.payload),
+					},
+					batteryLimit,
+					shortcuts,
+					rogKey,
+				},
+				armouryPlan: action.payload,
+			});
+			state = newState;
 			return state;
 		});
 	});

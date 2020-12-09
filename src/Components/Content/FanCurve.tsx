@@ -27,19 +27,40 @@ interface State {
 		cpu: Chart | undefined;
 		gpu: Chart | undefined;
 	};
-	plan: ArmoryPlan;
 	modalVisible: boolean;
 	modalLoading: boolean;
 	newName: string;
+	armoury: ArmoryPlan;
+	armouryActive: boolean;
 }
 
 export default class FanCurve extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		let currentState = store.getState() as G14Config;
-		let { cpu, gpu, plan, name } = currentState.fanCurves.find((value) => {
-			return value.name === currentState.current.fanCurve;
-		}) as { name: string; plan: ArmoryPlan; cpu: number[]; gpu: number[] };
+
+		// Is armory plan active?
+		let arm = currentState.current.fanCurve.type;
+
+		// Find armoury plan only if armoury plan not active.
+		let val = currentState.fanCurves.find((value) => {
+			let { name } = value,
+				{ current } = currentState;
+			return name === current.fanCurve.name && arm !== 'Armoury';
+		}) as { name: string; cpu: number[]; gpu: number[] } | undefined;
+
+		// Placeholders if plan not armoury.
+		let cpu: Array<number> = [],
+			gpu: Array<number> = [],
+			name = '';
+		if (val) {
+			cpu = val.cpu;
+			gpu = val.gpu;
+			name = val.name;
+		}
+
+		let currentArmoury = currentState.armouryPlan;
+
 		this.state = {
 			currentPlanName: name,
 			chart: undefined,
@@ -52,17 +73,18 @@ export default class FanCurve extends Component<Props, State> {
 				gpu: undefined,
 			},
 			fanCurves: currentState.fanCurves,
-			plan: plan,
 			modalVisible: false,
 			modalLoading: false,
 			newName: '',
+			armoury: currentArmoury,
+			armouryActive: val === undefined,
 		};
 	}
 
 	deletePlan = () => {
-		let { currentCurves, plan, fanCurves, currentPlanName } = this.state;
+		let { currentCurves, fanCurves, currentPlanName } = this.state;
 		let reduxState = store.getState() as G14Config;
-		if (reduxState.current.fanCurve === currentPlanName) {
+		if (reduxState.current.fanCurve.name === currentPlanName) {
 			message.error(
 				"Don't murder the plan you're currently using ya' dum dum."
 			);
@@ -74,13 +96,11 @@ export default class FanCurve extends Component<Props, State> {
 			if (newFanCurves.length > 0) {
 				currentCurves.cpu = [...newFanCurves[0].cpu];
 				currentCurves.gpu = [...newFanCurves[0].gpu];
-				plan = newFanCurves[0].plan;
 				currentPlanName = newFanCurves[0].name;
 				store.dispatch(updateFanConfig(newFanCurves));
 				this.setState(
 					{
 						fanCurves: newFanCurves,
-						plan: plan,
 						currentPlanName: currentPlanName,
 					},
 					() => {
@@ -92,13 +112,12 @@ export default class FanCurve extends Component<Props, State> {
 	};
 
 	savePlan = () => {
-		let { currentCurves, plan, fanCurves, newName } = this.state;
+		let { currentCurves, fanCurves, newName } = this.state;
 		let { cpu, gpu } = currentCurves;
 		let newFanConfigOption: FanCurveConfig = {
 			name: newName,
 			cpu: cpu,
 			gpu: gpu,
-			plan: plan,
 		};
 		let newFanCurves = [...fanCurves, newFanConfigOption];
 		store.dispatch(updateFanConfig(newFanCurves));
@@ -112,8 +131,11 @@ export default class FanCurve extends Component<Props, State> {
 	};
 
 	selectArmoryPlan = (plan: ArmoryPlan) => {
-		console.log(plan);
-		this.setState({ plan: (plan + '') as ArmoryPlan });
+		this.setState({
+			armoury: (plan + '') as ArmoryPlan,
+			currentPlanName: '',
+			armouryActive: true,
+		});
 	};
 
 	handleMapModify = (key: string, index: number, value: number) => {
@@ -146,7 +168,6 @@ export default class FanCurve extends Component<Props, State> {
 		window.ipcRenderer
 			.invoke('setFanCurve', {
 				...this.state.currentCurves,
-				plan: this.state.plan,
 			})
 			.then((result: any) => {
 				if (result) {
@@ -154,10 +175,14 @@ export default class FanCurve extends Component<Props, State> {
 					store.dispatch(
 						updateCurrentConfig({
 							ryzenadj: state.current.ryzenadj,
-							fanCurve: this.state.currentPlanName,
+							fanCurve: {
+								type: 'Custom',
+								name: this.state.currentPlanName,
+							},
 						})
 					);
 					message.success('Sucessfully set fan curve.');
+					this.setState({ armouryActive: false });
 				} else {
 					message.success('Failed to set fan curve.');
 				}
@@ -192,7 +217,7 @@ export default class FanCurve extends Component<Props, State> {
 		});
 
 		if (chosen && charts.cpu && charts.gpu) {
-			let { cpu, gpu, plan } = chosen;
+			let { cpu, gpu } = chosen;
 			let cpuc = buildDataSet([...cpu], 'fanCurveChartCPU');
 			let gpuc = buildDataSet([...gpu], 'fanCurveChartGPU');
 			//@ts-ignore
@@ -202,7 +227,6 @@ export default class FanCurve extends Component<Props, State> {
 			charts.cpu.update();
 			charts.gpu.update();
 			this.setState({
-				plan: (plan + '') as ArmoryPlan,
 				currentPlanName: chosen.name,
 				currentCurves: { cpu: [...cpu], gpu: [...gpu] },
 			});
@@ -234,7 +258,8 @@ export default class FanCurve extends Component<Props, State> {
 			fanCurves,
 			newName,
 			currentPlanName,
-			plan,
+			armoury,
+			armouryActive,
 		} = this.state;
 		return (
 			<div>
@@ -288,8 +313,10 @@ export default class FanCurve extends Component<Props, State> {
 							paddingLeft: '2rem',
 						}}>
 						<ArmoryPlanSettings
-							currentPlan={plan}
-							selectPlan={this.selectArmoryPlan}></ArmoryPlanSettings>
+							armouryActive={armouryActive}
+							currentPlan={armouryActive ? armoury : undefined}
+							selectPlan={this.selectArmoryPlan}
+							currentFan={currentPlanName}></ArmoryPlanSettings>
 					</div>
 				</Card>
 
