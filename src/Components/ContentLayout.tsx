@@ -51,7 +51,7 @@ export default class ContentLayout extends Component<Props, State> {
 				displayPage = <Settings />;
 				break;
 			case 'Plans':
-				displayPage = <G14ControlPlans/>
+				displayPage = <G14ControlPlans />;
 				break;
 		}
 		return (
@@ -82,7 +82,7 @@ export default class ContentLayout extends Component<Props, State> {
 								}}>
 								G14ControlV2 ©2020 Created by Alex Redden
 								<br />
-								Version 0.1.20
+								Version 0.1.22
 							</Footer>
 						</div>
 					</div>
