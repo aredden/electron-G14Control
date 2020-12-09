@@ -280,6 +280,7 @@ export default class FanCurve extends Component<Props, State> {
 							Delete Plan
 						</Button>
 						<Button
+							disabled={armouryActive && currentPlanName === ''}
 							style={{
 								display: 'block',
 								position: 'absolute',

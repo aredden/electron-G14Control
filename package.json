@@ -1,7 +1,7 @@
 {
 	"name": "g14controlv2",
 	"productName": "G14ControlV2",
-	"version": "0.1.21",
+	"version": "0.1.22",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
@@ -48,7 +48,9 @@
 		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
 		"dist": "electron-builder",
-		"postinstall": "electron-builder install-app-deps"
+		"postinstall": "electron-builder install-app-deps",
+		"build-electron": "call \"./build-all.bat\"",
+		"build-github": "call \"./github-build.bat\""
 	},
 	"eslintConfig": {
 		"extends": "react-app"

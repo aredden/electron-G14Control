@@ -8,6 +8,8 @@ import {
 	globalShortcut,
 	powerMonitor,
 	ipcMain,
+	Notification,
+	remote,
 } from 'electron';
 
 import getLogger from './Logger';
@@ -98,6 +100,15 @@ export const updateMenuVisible = (minimized?: boolean) => {
 	}
 };
 
+function showNotification(title: string, body: string) {
+	const notification = {
+		icon: ICONPATH,
+		title: title,
+		body: body,
+	};
+	new Notification(notification).show();
+}
+
 export const buildBrowserListeners = (browserWindow: BrowserWindow) => {
 	// set up renderer process events.
 	browserWindow.on('hide', async () => {
@@ -177,6 +188,8 @@ export async function createWindow(
 	}
 	const ipc = ipcMain;
 	ipc.setMaxListeners(35);
+	browserWindow.setMaxListeners(35);
+	app.setMaxListeners(35);
 	buildIpcConnection(ipc, browserWindow);
 	buildEmitters(ipc, browserWindow);
 	// and load the index.html of the app.
@@ -238,9 +251,13 @@ export async function createWindow(
 }
 
 powerMonitor.on('shutdown', () => {
-	browserWindow.close();
-	tray.destroy();
+	let w = remote.getCurrentWindow();
+	w.close();
 	app.quit();
+});
+
+powerMonitor.on('suspend', () => {
+	browserWindow.hide();
 });
 
 app.on('window-all-closed', async () => {
@@ -297,6 +314,7 @@ app.on('render-process-gone', (event, contents, details) => {
 
 app.on('second-instance', () => {
 	LOGGER.info('Another process interupted my thoughts, how dare he!');
+	showNotification('G14ControlV2', 'Only one instance allowed at a time!');
 	if (browserWindow) {
 		if (browserWindow.isMinimized()) browserWindow.restore();
 		browserWindow.focus();

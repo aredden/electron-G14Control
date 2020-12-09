@@ -11,7 +11,9 @@ import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
 
 declare global {
 	interface Window {
-		require: any;
+		ipcRenderer: Electron.IpcRenderer;
+		shell: Electron.Shell;
+		powerMonitor: Electron.PowerMonitor;
 	}
 }
 

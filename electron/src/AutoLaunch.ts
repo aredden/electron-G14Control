@@ -65,7 +65,7 @@ export const setAutoLaunch = async (enabled: boolean) => {
 				});
 		} else {
 			LOGGER.info('Task already existed.');
-			resolve(false);
+			resolve(true);
 		}
 	});
 };
