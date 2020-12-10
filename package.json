@@ -47,7 +47,7 @@
 		"preelectron-pack": "prebuild-install",
 		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
-		"dist": "electron-builder --publish onTag",
+		"dist": "electron-builder --publish always",
 		"postinstall": "electron-builder install-app-deps",
 		"build-electron": "call \"./build-all.bat\"",
 		"build-github": "call \"./github-build.bat\""
