@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
 import { buildDataSet, createChart } from './FanCurve/FanCurveChartConfig';
-import { Button, Card, Input, message, Modal, PageHeader } from 'antd';
+import { Button, Card, Input, message, Modal, PageHeader, Tag } from 'antd';
 import ArmoryPlanSettings from './FanCurve/ArmoryPlan';
 import {
 	store,
@@ -305,7 +305,18 @@ export default class FanCurve extends Component<Props, State> {
 				<Card
 					bordered
 					headStyle={{ backgroundColor: '#FAFAFA' }}
-					title="Armory Crate Plans"
+					title={
+						<div style={{ width: '100%' }}>
+							Armoury Crate Plans
+							{!armouryActive && armoury === 'silent' ? (
+								<Tag style={{ marginLeft: '.2rem' }} title="" color="warning">
+									CPU may be throttling, last plan: "Silent"
+								</Tag>
+							) : (
+								''
+							)}
+						</div>
+					}
 					style={{ width: '70%' }}>
 					<div
 						style={{
