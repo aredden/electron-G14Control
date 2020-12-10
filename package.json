@@ -1,7 +1,7 @@
 {
 	"name": "g14controlv2",
 	"productName": "G14ControlV2",
-	"version": "v0.1.23",
+	"version": "v0.1.24",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
@@ -47,7 +47,7 @@
 		"preelectron-pack": "prebuild-install",
 		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
-		"dist": "electron-builder --publish always",
+		"dist": "electron-builder --publish onTag",
 		"postinstall": "electron-builder install-app-deps",
 		"build-electron": "call \"./build-all.bat\"",
 		"build-github": "call \"./github-build.bat\""

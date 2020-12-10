@@ -31,6 +31,7 @@ import { mapperBuilder } from './IPCEvents/RogKeyRemapperListener';
 import { buildTrayIcon } from './TrayIcon';
 import installExtension from 'electron-devtools-installer';
 import forceFocus from 'forcefocus';
+import AppUpdater from './AppUpdater';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -60,6 +61,7 @@ export let showIconEnabled = false;
 export let tray: Tray;
 export let trayContext: Menu;
 export let hid: HID;
+export let updateNote: AppUpdater;
 if (is_dev) {
 	LOGGER.info('Running in development');
 } else {
@@ -247,6 +249,7 @@ export async function createWindow(
 	}
 	browserWindow.setMenu(null);
 	app.setAppLogsPath(app.getPath('home') + '/g14control_logs');
+	updateNote = new AppUpdater();
 	return { tray, browserWindow, g14Config, trayContext };
 }
 

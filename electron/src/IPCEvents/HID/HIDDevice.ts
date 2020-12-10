@@ -31,14 +31,17 @@ export const checkExecutableAtPathExists = (name: string, path: string) => {
 			.then((result) => {
 				if (result.indexOf('False') !== -1) {
 					LOGGER.info(`Did not find file ${name} at path: "${path}"`);
+					ps.dispose();
 					resolve(false);
 				} else {
 					LOGGER.info(`Found file ${name} at path: "${path}"`);
+					ps.dispose();
 					resolve(true);
 				}
 			})
 			.catch((err) => {
 				LOGGER.info('Error checking path exists: ' + err);
+				ps.dispose();
 				resolve(false);
 			});
 	});
@@ -107,11 +110,13 @@ export const checkProcessExist = async (executableName: string) => {
 					LOGGER.info(
 						`Result of checkProcessExists(): Process ${executableName} is running!`
 					);
+					ps.dispose();
 					resolve(true);
 				} else {
 					LOGGER.info(
 						`Result of checkProcessExists(): Process ${executableName} is not running.`
 					);
+					ps.dispose();
 					resolve(false);
 				}
 			})
@@ -119,6 +124,7 @@ export const checkProcessExist = async (executableName: string) => {
 				LOGGER.error(
 					`Error checking process named: ${executableName}, had error: \n${err}`
 				);
+				ps.dispose();
 				resolve(false);
 			});
 	});
@@ -138,17 +144,20 @@ export const killProcess = async (executablename: string) => {
 						'Successully killed process with message: ' +
 							success.replace('\n', '')
 					);
+					ps.dispose();
 					resolve(true);
 				} else {
 					LOGGER.error(
 						'Failed to kill process (or something idk but no error):\n' +
 							success
 					);
+					ps.dispose();
 					resolve(true);
 				}
 			})
 			.catch((error) => {
 				LOGGER.error('Failed to kill process. Error:\n' + error);
+				ps.dispose();
 				resolve(false);
 			});
 	});
@@ -169,6 +178,7 @@ export const renameProcess = async (
 			.then((result) => {
 				if (result) {
 					LOGGER.info('Failed to rename process (or something idk):' + result);
+					ps.dispose();
 					resolve(true);
 				} else {
 					LOGGER.info(
@@ -177,6 +187,7 @@ export const renameProcess = async (
 					LOGGER.info(
 						'Will now check that execuatable path expected exists...'
 					);
+					ps.dispose();
 					checkExecutableAtPathExists(newName, path).then((result) => {
 						if (result) {
 							resolve(true);
@@ -188,6 +199,7 @@ export const renameProcess = async (
 			})
 			.catch((error) => {
 				LOGGER.error('Failed to rename process. Error:\n' + error);
+				ps.dispose();
 				resolve(false);
 			});
 	});
