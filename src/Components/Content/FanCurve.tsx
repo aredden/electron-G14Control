@@ -261,6 +261,8 @@ export default class FanCurve extends Component<Props, State> {
 			armoury,
 			armouryActive,
 		} = this.state;
+
+		let notCustom = armouryActive && currentPlanName === '';
 		return (
 			<div>
 				<PageHeader
@@ -273,6 +275,7 @@ export default class FanCurve extends Component<Props, State> {
 							selectables={fanCurves}
 							handleChange={this.chooseFanCurveThing}></Select>
 						<Button
+							disabled={notCustom}
 							className="deleteplan-button"
 							style={{ display: 'block' }}
 							title="Will delete the currently selected plan."
@@ -280,7 +283,7 @@ export default class FanCurve extends Component<Props, State> {
 							Delete Plan
 						</Button>
 						<Button
-							disabled={armouryActive && currentPlanName === ''}
+							disabled={notCustom}
 							style={{
 								display: 'block',
 								position: 'absolute',
@@ -291,6 +294,7 @@ export default class FanCurve extends Component<Props, State> {
 							Apply
 						</Button>
 						<Button
+							disabled={notCustom}
 							style={{
 								right: 0,
 								position: 'absolute',
@@ -333,8 +337,14 @@ export default class FanCurve extends Component<Props, State> {
 				</Card>
 
 				<div style={{ height: '1rem', width: '100%' }} />
-				<canvas id="fanCurveChartCPU" className="Charto"></canvas>
-				<canvas id="fanCurveChartGPU" className="Charto"></canvas>
+				<canvas
+					style={{ visibility: notCustom ? 'hidden' : 'visible' }}
+					id="fanCurveChartCPU"
+					className="Charto"></canvas>
+				<canvas
+					style={{ visibility: notCustom ? 'hidden' : 'visible' }}
+					id="fanCurveChartGPU"
+					className="Charto"></canvas>
 				<div style={{ margin: '1rem' }}></div>
 				<Modal
 					visible={modalVisible}
