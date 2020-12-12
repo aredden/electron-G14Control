@@ -109,6 +109,7 @@ declare type G14Config = {
 	armouryPlan: ArmoryPlan;
 	fanCurves: Array<{
 		name: string;
+		plan: string;
 		cpu: number[];
 		gpu: number[];
 	}>;
@@ -117,6 +118,7 @@ declare type G14Config = {
 
 declare type FanCurveConfig = {
 	name: string;
+	plan: string;
 	cpu: number[];
 	gpu: number[];
 };

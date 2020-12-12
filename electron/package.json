@@ -7,6 +7,7 @@
 	"scripts": {
 		"build": "tsc --project ./tsconfig.prod.json",
 		"start": "electron .",
+		"do-rebuild": "electron-rebuild",
 		"tsc": "tsc --project ./tsconfig.dev.json",
 		"watch": "nodemon -e ts --ignore /build --ignore /node_modules --exec \"tsc --project ./tsconfig.dev.json && electron . || exit 1\" || exit 1"
 	},

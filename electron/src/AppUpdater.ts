@@ -1,13 +1,18 @@
 /** @format */
 
+import { BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import getLogger from './Logger';
 
 export default class AppUpdater {
-	constructor() {
-		autoUpdater.setFeedURL('https://github.com/aredden/electron-g14control');
+	constructor(browserWindow: BrowserWindow) {
 		const LOGGER = getLogger('AppUpdater');
-		autoUpdater.logger = LOGGER;
 		autoUpdater.checkForUpdatesAndNotify();
+		autoUpdater.on('update-available', () => {
+			browserWindow.webContents.send('update_available');
+		});
+		autoUpdater.on('update-downloaded', () => {
+			browserWindow.webContents.send('update_downloaded');
+		});
 	}
 }

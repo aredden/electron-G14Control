@@ -1,14 +1,17 @@
 {
 	"name": "g14controlv2",
 	"productName": "G14ControlV2",
-	"version": "v0.1.25",
+	"version": "v0.1.26",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
 		"url": "https://github.com/aredden"
 	},
 	"license": "MIT",
-	"repository": "https://github.com/aredden/electron-G14Control",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/aredden/electron-G14Control.git"
+	},
 	"homepage": "./",
 	"main": "build/electron.js",
 	"dependencies": {
@@ -47,7 +50,7 @@
 		"preelectron-pack": "prebuild-install",
 		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
-		"dist": "electron-builder --publish always",
+		"dist": "electron-builder --publish onTag",
 		"postinstall": "electron-builder install-app-deps",
 		"build-electron": "call \"./build-all.bat\"",
 		"build-github": "call \"./github-build.bat\""
@@ -94,7 +97,7 @@
 					"from": "./electron/src/config",
 					"to": "extraResources",
 					"filter": [
-						"**/*"
+						"*config.json"
 					]
 				},
 				{

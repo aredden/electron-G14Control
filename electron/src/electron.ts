@@ -178,6 +178,7 @@ export async function createWindow(
 			worldSafeExecuteJavaScript: true,
 			accessibleTitle: 'G14ControlV2',
 			preload: __dirname + '/Preload.js',
+			enableRemoteModule: true,
 		},
 		darkTheme: true,
 	});
@@ -249,7 +250,7 @@ export async function createWindow(
 	}
 	browserWindow.setMenu(null);
 	app.setAppLogsPath(app.getPath('home') + '/g14control_logs');
-	updateNote = new AppUpdater();
+	updateNote = new AppUpdater(browserWindow);
 	return { tray, browserWindow, g14Config, trayContext };
 }
 

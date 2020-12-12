@@ -41,22 +41,14 @@ export default class ArmoryPlanSettings extends Component<Props, State> {
 			});
 	};
 
-	componentDidUpdate() {
-		let { currentPlan, armouryActive } = this.props;
-		let { plan } = this.state;
-		if (!armouryActive && plan) {
-			this.setState({ plan: undefined });
-		} else if (armouryActive && !plan) {
-			this.setState({ plan: currentPlan });
-		}
-	}
+	componentDidUpdate() {}
 
 	render() {
 		let { plan } = this.state;
 		return (
 			<>
 				<Radio.Group
-					value={plan}
+					value={this.props.currentPlan}
 					onChange={this.handleRadioClick}
 					optionType={'default'}>
 					<Radio value="windows" name="windows">

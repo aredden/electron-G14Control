@@ -44,8 +44,8 @@
 				"fastLimit": 65,
 				"slowLimit": 54,
 				"stapmLimit": 35,
-				"stapmTime": 275,
-				"slowTime": 2,
+				"stapmTime": 200,
+				"slowTime": 5,
 				"tctlTemp": 97
 			},
 			{
@@ -53,7 +53,7 @@
 				"fastLimit": 68,
 				"slowLimit": 58,
 				"stapmLimit": 40,
-				"stapmTime": 100,
+				"stapmTime": 300,
 				"slowTime": 10,
 				"tctlTemp": 100
 			},
@@ -62,7 +62,7 @@
 				"fastLimit": 40,
 				"slowLimit": 35,
 				"stapmLimit": 25,
-				"stapmTime": 275,
+				"stapmTime": 200,
 				"slowTime": 2,
 				"tctlTemp": 85
 			}
@@ -80,6 +80,12 @@
 			"plan": "turbo",
 			"cpu": [24, 27, 31, 38, 51, 61, 62, 63],
 			"gpu": [20, 23, 35, 39, 51, 63, 65, 69]
+		},
+		{
+			"name": "Slow Fan",
+			"plan": "silent",
+			"cpu": [0, 0, 0, 0, 17, 23, 35, 40, 56],
+			"gpu": [0, 0, 0, 0, 17, 23, 35, 44, 60]
 		},
 		{
 			"name": "Medium Fan Performance",

@@ -40,7 +40,7 @@ const buildCommand = (cpu?: string, gpu?: string, plan?: string) => {
 		cmd += ` --gpu ${gpu}`;
 	}
 	if (plan && allowedPlans.includes(plan)) {
-		cmd += ` plan ${plan}`;
+		cmd += ` --plan ${plan}`;
 	}
 	return cmd;
 };
