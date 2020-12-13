@@ -33,14 +33,20 @@ export const buildG14ControlPlanListeners = (
 			}
 
 			LOGGER.info(`Recieved plan:\n${JSON.stringify(plan, null, 2)}`);
+			let curve: FanCurveConfig;
+			if (plan.fanCurve) {
+				curve = config.fanCurves.find((curv) => {
+					return curv.name === plan.fanCurve;
+				}) as FanCurveConfig;
+			}
+			let radj: RyzenadjConfigNamed;
+			if (plan.ryzenadj) {
+				radj = config.ryzenadj.options.find((rdj) => {
+					return rdj.name === plan.ryzenadj;
+				});
+			}
 
-			let curve = config.fanCurves.find((curv) => {
-				return curv.name === plan.fanCurve;
-			});
-			let radj = config.ryzenadj.options.find((rdj) => {
-				return rdj.name === plan.ryzenadj;
-			});
-			if (curve && radj) {
+			if ((curve || !plan.fanCurve) && (radj || !plan.ryzenadj)) {
 				let full: FullG14ControlPlan = {
 					name: plan.name,
 					fanCurve: curve,
@@ -118,13 +124,27 @@ export const switchWindowsPlanToActivateSettings = async (
 */
 export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let { ryzenadj, fanCurve, boost, armouryCrate, graphics, windowsPlan } = plan;
-	let boos = await setBoost(boost, windowsPlan.guid);
+	let boos: boolean;
+	let graphi: boolean;
+	if (boost || boost === 0) {
+		boos = await setBoost(boost, windowsPlan.guid);
+	}
 
-	let graphi = await setSwitchableDynamicGraphicsSettings(
-		graphics,
-		windowsPlan.guid
-	);
-	if (boos && graphi) {
+	if (graphics || graphics === 0) {
+		graphi = (await setSwitchableDynamicGraphicsSettings(
+			graphics,
+			windowsPlan.guid
+		)) as boolean;
+		if (graphi) {
+			LOGGER.info('Successfully set graphics values to: ' + graphics);
+		} else {
+			LOGGER.info('There was an issue setting graphics to: ' + graphics);
+		}
+	}
+
+	let b_g = boostOrGraphicsSet(boos, graphi, graphics, graphics);
+
+	if (b_g) {
 		let active = await getActivePlan();
 		if (active && active.guid === windowsPlan.guid) {
 			let switched = await switchWindowsPlanToActivateSettings(
@@ -137,25 +157,38 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 				return false;
 			}
 		}
-		let arm = await modifyArmoryCratePlan(armouryCrate);
-		if (arm) {
+		let arm = armouryCrate
+			? await modifyArmoryCratePlan(armouryCrate.toLowerCase() as ArmoryPlan)
+			: 'noarmoury';
+		if (arm || arm === 'noarmoury') {
 			LOGGER.info('Succeffully modified armory crate plan to: ' + armouryCrate);
 			let switchPlan = await setWindowsPlan(windowsPlan.guid);
 			if (switchPlan) {
 				LOGGER.info('Successfully switched windows plan to target plan.');
-				let ryzn = await setRyzenadj(ryzenadj);
+				let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
 				if (!ryzn) {
 					await setRyzenadj(ryzenadj);
 				}
-				let { cpu, gpu } = fanCurve;
-				let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
-				let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
-				let result = await modifyFanCurve(cpuCurve, gpuCurve);
-				if (result) {
-					return true;
+				if (fanCurve) {
+					let { cpu, gpu, plan } = fanCurve;
+					let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
+					let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
+					let armPlan = arm === 'noarmoury' ? plan : armouryCrate;
+					if (cpu || gpu || armPlan) {
+						let result = await modifyFanCurve(
+							cpuCurve,
+							gpuCurve,
+							armPlan ? armPlan.toLowerCase() : undefined
+						);
+						if (result) {
+							return true;
+						} else {
+							LOGGER.error('Failed to modify fan curve.');
+							return false;
+						}
+					}
 				} else {
-					LOGGER.error('Failed to modify fan curve.');
-					return false;
+					return true;
 				}
 			} else {
 				LOGGER.error('Failed to switch windows plan to target plan.');
@@ -169,4 +202,21 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 		LOGGER.error("Couldn't set boost & graphics preferences.");
 		return false;
 	}
+};
+
+export const boostOrGraphicsSet = (
+	boos: boolean,
+	graphi: boolean,
+	boost?: number,
+	graphics?: number
+) => {
+	let resultGraphics = true;
+	let resultBoost = true;
+	if (graphics) {
+		resultGraphics = graphi;
+	}
+	if (boost) {
+		resultBoost = boos;
+	}
+	return resultGraphics && resultBoost;
 };

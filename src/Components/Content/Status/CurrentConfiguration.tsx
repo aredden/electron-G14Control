@@ -1,8 +1,7 @@
 /** @format */
 
 import { message, Table } from 'antd';
-import _ from 'lodash';
-import { isNull } from 'lodash';
+import { isNull, capitalize } from 'lodash';
 import React, { Component } from 'react';
 import { store } from '../../../Store/ReduxStore';
 
@@ -165,7 +164,7 @@ export default class CurrentConfiguration extends Component<Props, State> {
 							value:
 								fanCurve.type === 'Custom'
 									? `Custom: ${fanCurve.name}`
-									: `Armoury: ${_.capitalize(this.state.armoury)}`,
+									: `Armoury: ${capitalize(this.state.armoury)}`,
 						},
 						{ name: 'Windows Power Plan', value: windowsPlan.name },
 						{

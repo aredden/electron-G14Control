@@ -16,6 +16,13 @@ declare type DisplayOptions = {
 	height?: number;
 };
 
+declare type FanCurveConfig = {
+	name: string;
+	plan: string;
+	cpu: number[];
+	gpu: number[];
+};
+
 declare type CpuBiosMapValues = {
 	processorData: {
 		Name: string;
@@ -115,26 +122,28 @@ declare type G14Config = {
 	}>;
 	displayOptions: DisplayOptionData[];
 };
+
 declare type G14ControlPlan = {
 	name: string;
-	ryzenadj: string;
-	fanCurve: string;
-	boost: number;
-	armouryCrate: ArmoryPlan;
-	graphics: number;
+	ryzenadj?: string;
+	fanCurve?: string;
+	boost?: number;
+	armouryCrate?: ArmoryPlan;
+	graphics?: number;
 	windowsPlan: { name: string; guid: string };
 };
 
 declare type FullG14ControlPlan = {
 	name: string;
-	ryzenadj: RyzenadjConfigNamed;
-	fanCurve: {
+	ryzenadj?: RyzenadjConfigNamed;
+	fanCurve?: {
 		name: string;
-		cpu: undefined | number[];
-		gpu: undefined | number[];
+		plan?: string;
+		cpu?: undefined | number[];
+		gpu?: undefined | number[];
 	};
-	boost: number;
-	armouryCrate: ArmoryPlan;
-	graphics: number;
+	boost?: number;
+	armouryCrate?: ArmoryPlan;
+	graphics?: number;
 	windowsPlan: { name: string; guid: string };
 };

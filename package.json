@@ -50,6 +50,7 @@
 		"preelectron-pack": "prebuild-install",
 		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
+		"electron-pub": "electron-builder build --publish always",
 		"dist": "electron-builder --publish onTag",
 		"postinstall": "electron-builder install-app-deps",
 		"build-electron": "call \"./build-all.bat\"",
@@ -68,7 +69,9 @@
 		},
 		"win": {
 			"target": "nsis",
-			"publish": "github",
+			"publish": {
+				"provider": "github"
+			},
 			"icon": "./electron/src/assets/icon.ico",
 			"requestedExecutionLevel": "requireAdministrator",
 			"extraResources": [

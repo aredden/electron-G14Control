@@ -153,26 +153,28 @@ declare type DisplayOptions = {
 
 declare type G14ControlPlan = {
 	name: string;
-	ryzenadj: string;
-	fanCurve: string;
-	boost: number;
-	armouryCrate: ArmoryPlan;
-	graphics: number;
+	ryzenadj?: string;
+	fanCurve?: string;
+	boost?: number;
+	armouryCrate?: ArmoryPlan;
+	graphics?: number;
 	windowsPlan: { name: string; guid: string };
 };
 
 declare type FullG14ControlPlan = {
 	name: string;
-	ryzenadj: RyzenadjConfigNamed;
-	fanCurve: {
+	ryzenadj?: RyzenadjConfigNamed;
+	fanCurve?: {
 		name: string;
-		cpu: undefined | number[];
-		gpu: undefined | number[];
+		cpu?: undefined | number[];
+		gpu?: undefined | number[];
 	};
-	boost: number;
-	armouryCrate: ArmoryPlan;
-	graphics: number;
-	windowsPlan: { name: string; guid: string };
+	boost?: number;
+	armouryCrate?: ArmoryPlan;
+	graphics?: number;
+	windowsPlan?: { name: string; guid: string };
 };
+
+declare type WindowsPlan = { name: string; guid: string };
 
 declare module 'wmi-client';

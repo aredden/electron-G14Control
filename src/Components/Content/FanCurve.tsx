@@ -40,7 +40,7 @@ export default class FanCurve extends Component<Props, State> {
 		let currentState = store.getState() as G14Config;
 
 		// Is armory plan active?
-		let arm = currentState.current.fanCurve.type;
+		// let arm = currentState.current.fanCurve.type;
 
 		// Find armoury plan only if armoury plan not active.
 		let val = currentState.fanCurves.find((value) => {

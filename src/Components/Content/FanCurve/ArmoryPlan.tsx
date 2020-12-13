@@ -44,7 +44,6 @@ export default class ArmoryPlanSettings extends Component<Props, State> {
 	componentDidUpdate() {}
 
 	render() {
-		let { plan } = this.state;
 		return (
 			<>
 				<Radio.Group

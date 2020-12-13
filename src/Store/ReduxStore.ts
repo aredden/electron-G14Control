@@ -103,6 +103,13 @@ export const updateG14Plans = createAction(
 	}
 );
 
+export const setCurrentG14ControlPlan = createAction(
+	'SET_CURRENT_G14PLAN',
+	(value: G14ControlPlan) => {
+		return { payload: value };
+	}
+);
+
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -258,6 +265,21 @@ const createRootReducer = (initialState: G14Config) => {
 				armouryPlan: action.payload,
 			});
 			state = newState;
+			return state;
+		});
+
+		reducer.addCase(setCurrentG14ControlPlan, (state, action) => {
+			let { ryzenadj: adj, fanCurve: crv, armouryCrate } = action.payload;
+			if (armouryCrate && !crv) {
+				state.current.fanCurve.type = 'Armoury';
+				state.current.fanCurve.name = armouryCrate;
+			} else if (crv) {
+				state.current.fanCurve.type = 'Custom';
+				state.current.fanCurve.name = crv;
+			}
+			if (adj) {
+				state.current.ryzenadj = adj;
+			}
 			return state;
 		});
 	});

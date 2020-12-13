@@ -2,8 +2,10 @@
 
 import { Button, Descriptions, message, Space } from 'antd';
 import React, { Component } from 'react';
-import { store } from '../../Store/ReduxStore';
+import { setCurrentG14ControlPlan, store } from '../../Store/ReduxStore';
 import { capitalize } from 'lodash';
+import PlanBuilder from './G14Plans/PlanBuilder';
+
 interface Props {}
 interface State {
 	plans: G14ControlPlan[];
@@ -40,26 +42,29 @@ const ControlPlan = (props: {
 		name,
 	} = props.plan;
 	let { apply } = props;
+	console.log(props.plan);
 	return (
 		<div>
 			<Descriptions title={name} bordered>
-				<Descriptions.Item span={2} label={'Windows Plan'}>
+				<Descriptions.Item span={3} label={'Windows Plan'}>
 					{windowsPlan.name}
 				</Descriptions.Item>
-				<Descriptions.Item span={2} label={'Fan Curve'}>
-					{fanCurve}
+				<Descriptions.Item span={3} label={'Fan Curve'}>
+					{fanCurve ? fanCurve : 'N/A'}
 				</Descriptions.Item>
-				<Descriptions.Item span={2} label={'Ryzenadj Config'}>
-					{ryzenadj}
+				<Descriptions.Item span={3} label={'Ryzenadj Config'}>
+					{ryzenadj ? ryzenadj : 'N/A'}
 				</Descriptions.Item>
-				<Descriptions.Item span={2} label={'Armoury Crate'}>
-					{capitalize(armouryCrate)}
+				<Descriptions.Item span={3} label={'Armoury Crate'}>
+					{armouryCrate ? capitalize(armouryCrate) : 'N/A'}
 				</Descriptions.Item>
-				<Descriptions.Item span={2} label={'CPU Boost'}>
-					{boostModeOptions[boost]}
+				<Descriptions.Item span={3} label={'CPU Boost'}>
+					{boost || boost === 0 ? boostModeOptions[boost] : 'N/A'}
 				</Descriptions.Item>
-				<Descriptions.Item span={2} label={'Graphics'}>
-					{dynamicGraphicsOptions[graphics]}
+				<Descriptions.Item span={3} label={'Graphics'}>
+					{graphics || graphics === 0
+						? dynamicGraphicsOptions[graphics]
+						: 'N/A'}
 				</Descriptions.Item>
 			</Descriptions>
 			<Button onClick={(evt) => apply(evt, props.plan)}>Apply This Plan</Button>
@@ -81,10 +86,15 @@ export default class G14ControlPlans extends Component<Props, State> {
 		let result = await window.ipcRenderer.invoke('setG14ControlPlan', plan);
 
 		if (result) {
+			store.dispatch(setCurrentG14ControlPlan(plan));
 			message.success('Successfully applied plan: ' + plan.name);
 		} else {
 			message.error('Failed to apply plan: ' + plan.name);
 		}
+	};
+
+	updatePlans = (plans: G14ControlPlan[]) => {
+		this.setState({ plans });
 	};
 
 	render() {
@@ -94,9 +104,13 @@ export default class G14ControlPlans extends Component<Props, State> {
 				{plans.map((plan) => {
 					return (
 						<ControlPlan
-							{...{ plan: plan, apply: this.handleApply }}></ControlPlan>
+							{...{
+								plan: plan,
+								apply: this.handleApply,
+							}}></ControlPlan>
 					);
 				})}
+				<PlanBuilder updatePlans={this.updatePlans} />
 			</Space>
 		);
 	}
