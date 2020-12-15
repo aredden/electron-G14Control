@@ -249,10 +249,12 @@ export async function createWindow(
 		}
 	}
 	browserWindow.setMenu(null);
-	app.setAppLogsPath(app.getPath('home') + '/g14control_logs');
-	updateNote = new AppUpdater(browserWindow);
 	return { tray, browserWindow, g14Config, trayContext };
 }
+
+ipcMain.once('isLoaded', () => {
+	updateNote = new AppUpdater(browserWindow, ipcMain);
+});
 
 powerMonitor.on('shutdown', () => {
 	let w = remote.getCurrentWindow();

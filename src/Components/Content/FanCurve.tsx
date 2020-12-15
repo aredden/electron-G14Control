@@ -88,6 +88,15 @@ export default class FanCurve extends Component<Props, State> {
 	deletePlan = () => {
 		let { currentCurves, fanCurves, currentPlanName } = this.state;
 		let reduxState = store.getState() as G14Config;
+		let planChoiceInG14ControlPlans = reduxState.plans.find(
+			(pln) => pln.fanCurve === currentPlanName
+		);
+		if (planChoiceInG14ControlPlans) {
+			message.error(
+				'Cannot delete a fan curve that is a part of a G14Control Plan!'
+			);
+			return;
+		}
 		if (reduxState.current.fanCurve.name === currentPlanName) {
 			message.error(
 				"Don't murder the plan you're currently using ya' dum dum."

@@ -70,7 +70,8 @@
 		"win": {
 			"target": "nsis",
 			"publish": {
-				"provider": "github"
+				"provider": "github",
+				"private": false
 			},
 			"icon": "./electron/src/assets/icon.ico",
 			"requestedExecutionLevel": "requireAdministrator",

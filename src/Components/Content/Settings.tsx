@@ -245,11 +245,19 @@ then restart your computer, so that the processes get spun up the
 way they are supposed to. 
 
 `;
+
+		let aboutmkd = '';
+		// let aboutmkd = `
+		// G14ControlV2 is the successor of some buggy software I made a while ago (G14ControlR3)[${window.shell.openExternal('https://github.com/aredden/G14ControlR3')}].
+		// After struggling with that software and coming to the conclusion that it wasn't ever going to perform well, I decided to embark on making a new version
+		// ${window.shell.openExternal('https://github.com/aredden/electron-G14Control')}. This app doesn't yet have auto-updates, to to check for updates check out the most recent
+		// releases [here](${window.shell.openExternal('https://github.com/aredden/electron-g14control/releases')})`
 		return (
 			<div>
 				<PageHeader
 					title="G14Control Settings"
-					subTitle="Edit G14ControlV2 related settings & shortcuts."></PageHeader>
+					subTitle="Edit G14ControlV2 related settings & shortcuts."
+				/>
 				<Space direction="vertical">
 					<Card
 						title="Shortcut: Bring to front or minimize"
@@ -314,6 +322,9 @@ way they are supposed to.
 							</Space>
 						</Space>
 					</Card>
+					{/* <Card title={'About G14ControlV2'}>
+						<ReactMarkdown>{aboutmkd}</ReactMarkdown>
+					</Card> */}
 				</Space>
 			</div>
 		);

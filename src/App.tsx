@@ -8,6 +8,7 @@ import { message, Modal, Spin } from 'antd';
 import { initStore } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
+import ReactMarkdown from 'react-markdown';
 
 declare global {
 	interface Window {
@@ -24,6 +25,8 @@ interface State {
 	store: EnhancedStore<G14Config> | undefined;
 	boostVisible: boolean;
 	showModal: boolean;
+	updateText: string | undefined;
+	updateVisible: boolean;
 }
 
 export default class App extends Component<Props, State> {
@@ -34,6 +37,8 @@ export default class App extends Component<Props, State> {
 			store: undefined,
 			boostVisible: true,
 			showModal: false,
+			updateText: '',
+			updateVisible: false,
 		};
 	}
 
@@ -68,10 +73,42 @@ export default class App extends Component<Props, State> {
 
 	componentDidMount() {
 		this.loadConfig();
+		window.ipcRenderer.on('updateAvailable', this.handleUpdateAvailable);
+		window.ipcRenderer.on('updateDownloaded', this.handleUpdateDownloaded);
+		window.ipcRenderer.send('isLoaded');
+	}
+
+	handleUpdateAvailable = (evt: any, logs: string) => {
+		message.info('New update available, downloading...');
+		this.setState({ updateText: logs, updateVisible: true });
+	};
+
+	handleUpdateDownloaded = () => {
+		message.info('New update downloaded!');
+		this.setState({ updateVisible: true });
+	};
+
+	handleExitAndUpdate = () => {
+		window.ipcRenderer.send('exitAndUpdate');
+	};
+
+	cancelExitAndUpdate = () => {
+		this.setState({ updateVisible: false });
+	};
+
+	componentWillUnmount() {
+		window.ipcRenderer.off('updateAvailable', this.handleUpdateAvailable);
+		window.ipcRenderer.off('updateDownloaded', this.handleUpdateDownloaded);
 	}
 
 	render() {
-		let { config, boostVisible, showModal } = this.state;
+		let {
+			config,
+			boostVisible,
+			showModal,
+			updateVisible,
+			updateText,
+		} = this.state;
 		console.log(process.env.DEBUG_DROPMENU);
 		if (config) {
 			return (
@@ -89,6 +126,16 @@ export default class App extends Component<Props, State> {
 						<AppLayout></AppLayout>
 					</div>
 					<BoostEnable {...{ boostVisible, show: showModal }}></BoostEnable>
+					<Modal
+						title="Update Info"
+						visible={updateVisible}
+						onOk={this.handleExitAndUpdate}
+						okButtonProps={{ title: 'Exit and update when available' }}
+						onCancel={this.cancelExitAndUpdate}>
+						<ReactMarkdown>
+							{updateText ? updateText : 'No release notes available.'}
+						</ReactMarkdown>
+					</Modal>
 				</>
 			);
 		} else {

@@ -6,6 +6,8 @@
 
 /// <reference types="@reduxjs/toolkit"/>
 
+/// <reference types="electron-updater"/>
+
 declare module 'chartjs-plugin-draggable' {}
 declare module 'chartjs-plugin-dragdata' {}
 declare type RyzenadjConfig = {

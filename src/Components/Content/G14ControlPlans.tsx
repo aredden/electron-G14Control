@@ -41,11 +41,39 @@ const boostModeOptions = [
 	'',
 ];
 
+let dummyPlan: GPlan = {
+	fanCurve: undefined,
+	ryzenadj: undefined,
+	armouryCrate: undefined,
+	boost: undefined,
+	graphics: undefined,
+	windowsPlan: undefined,
+	name: 'Empty',
+};
+
+declare type GPlan = {
+	name?: string;
+	ryzenadj?: string;
+	fanCurve?: string;
+	boost?: number;
+	armouryCrate?: ArmoryPlan;
+	graphics?: number;
+	windowsPlan?: { name: string; guid: string };
+};
+
 const ControlPlan = (props: {
 	plan: G14ControlPlan;
 	apply: (event: any, plan: G14ControlPlan) => void;
 	delet: (event: any, plan: G14ControlPlan) => void;
 }) => {
+	let gPlan: GPlan = {};
+	let noPlan = false;
+	if (!props.plan) {
+		gPlan = dummyPlan;
+		noPlan = true;
+	} else {
+		gPlan = props.plan;
+	}
 	let {
 		fanCurve,
 		ryzenadj,
@@ -54,7 +82,7 @@ const ControlPlan = (props: {
 		graphics,
 		windowsPlan,
 		name,
-	} = props.plan;
+	} = gPlan;
 	let { apply, delet } = props;
 	console.log(props.plan);
 	return (
@@ -67,7 +95,7 @@ const ControlPlan = (props: {
 			<div style={{ width: '70%' }}>
 				<Descriptions title={name} style={{ width: '100%' }} bordered>
 					<Descriptions.Item span={3} label={'Windows Plan'}>
-						{windowsPlan.name}
+						{windowsPlan ? windowsPlan.name : 'No plans'}
 					</Descriptions.Item>
 					<Descriptions.Item span={3} label={'Fan Curve'}>
 						{fanCurve ? fanCurve : 'N/A'}
@@ -90,10 +118,10 @@ const ControlPlan = (props: {
 			</div>
 			<Card style={{ width: '30%', marginTop: '2.8rem' }}>
 				<Space direction="vertical">
-					<Button onClick={(evt) => apply(evt, props.plan)}>
+					<Button disabled={noPlan} onClick={(evt) => apply(evt, props.plan)}>
 						Apply This Plan
 					</Button>
-					<Button onClick={(evt) => delet(evt, props.plan)}>
+					<Button disabled={noPlan} onClick={(evt) => delet(evt, props.plan)}>
 						Delete This Plan
 					</Button>
 				</Space>
@@ -137,15 +165,14 @@ export default class G14ControlPlans extends Component<Props, State> {
 	deletePlan = (evt: any, plan: G14ControlPlan) => {
 		let { plans } = this.state;
 		let newListOfPlans = plans.filter((planI) => planI.name !== plan.name);
-		if (!newListOfPlans) {
-			message.warning('Not allowed to delete all plans.');
-		}
 		store.dispatch(updateG14Plans(newListOfPlans));
 		this.setState({ plans: newListOfPlans, selectedToView: newListOfPlans[0] });
 	};
 
 	render() {
 		let { plans, selectedToView } = this.state;
+		if (plans.length === 0) {
+		}
 		return (
 			<Space direction="vertical" style={{ width: '100%' }}>
 				<PageHeader
