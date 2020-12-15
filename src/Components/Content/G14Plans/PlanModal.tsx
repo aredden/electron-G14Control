@@ -32,7 +32,6 @@ export default class PlanModal extends Component<Props, State> {
 	};
 
 	checkIfValidAndSubmit = (val: any) => {
-		let { name } = this.state;
 		let el = document.getElementById('planmodalinput') as HTMLInputElement;
 		if (el.value.length > 0) {
 			this.props.submit(val, el.value);

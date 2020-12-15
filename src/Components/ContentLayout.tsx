@@ -17,6 +17,7 @@ const { Header, Content, Footer } = Layout;
 
 interface Props {
 	currentPage: MenuListOption;
+	version: string;
 }
 
 interface State {}
@@ -82,7 +83,7 @@ export default class ContentLayout extends Component<Props, State> {
 								}}>
 								G14ControlV2 ©2020 Created by Alex Redden
 								<br />
-								Version 0.1.27
+								Version {this.props.version.replace('v', '')}
 							</Footer>
 						</div>
 					</div>

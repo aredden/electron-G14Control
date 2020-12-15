@@ -27,6 +27,7 @@ interface State {
 	showModal: boolean;
 	updateText: string | undefined;
 	updateVisible: boolean;
+	version: string;
 }
 
 export default class App extends Component<Props, State> {
@@ -39,6 +40,7 @@ export default class App extends Component<Props, State> {
 			showModal: false,
 			updateText: '',
 			updateVisible: false,
+			version: '',
 		};
 	}
 
@@ -71,8 +73,14 @@ export default class App extends Component<Props, State> {
 		}
 	};
 
+	getVersion = async () => {
+		let version = await window.ipcRenderer.invoke('getVersion');
+		this.setState({ version });
+	};
+
 	componentDidMount() {
 		this.loadConfig();
+		this.getVersion();
 		window.ipcRenderer.on('updateAvailable', this.handleUpdateAvailable);
 		window.ipcRenderer.on('updateDownloaded', this.handleUpdateDownloaded);
 		window.ipcRenderer.send('isLoaded');
@@ -123,7 +131,7 @@ export default class App extends Component<Props, State> {
 								height: '20px',
 							}}></div>
 
-						<AppLayout></AppLayout>
+						<AppLayout version={this.state.version}></AppLayout>
 					</div>
 					<BoostEnable {...{ boostVisible, show: showModal }}></BoostEnable>
 					<Modal

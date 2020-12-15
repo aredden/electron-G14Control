@@ -252,6 +252,10 @@ export async function createWindow(
 	return { tray, browserWindow, g14Config, trayContext };
 }
 
+ipcMain.handle('getVersion', () => {
+	return app.getVersion();
+});
+
 ipcMain.once('isLoaded', () => {
 	updateNote = new AppUpdater(browserWindow, ipcMain);
 });

@@ -246,12 +246,10 @@ way they are supposed to.
 
 `;
 
-		let aboutmkd = '';
-		// let aboutmkd = `
-		// G14ControlV2 is the successor of some buggy software I made a while ago (G14ControlR3)[${window.shell.openExternal('https://github.com/aredden/G14ControlR3')}].
-		// After struggling with that software and coming to the conclusion that it wasn't ever going to perform well, I decided to embark on making a new version
-		// ${window.shell.openExternal('https://github.com/aredden/electron-G14Control')}. This app doesn't yet have auto-updates, to to check for updates check out the most recent
-		// releases [here](${window.shell.openExternal('https://github.com/aredden/electron-g14control/releases')})`
+		let aboutmkd = `
+G14ControlV2 is the successor of some buggy software I made a while ago, called G14ControlR3.
+After struggling with that software and coming to the conclusion that it wasn't ever going
+to perform well, I decided to embark on making a new version, and this is the result!`;
 		return (
 			<div>
 				<PageHeader
@@ -322,9 +320,29 @@ way they are supposed to.
 							</Space>
 						</Space>
 					</Card>
-					{/* <Card title={'About G14ControlV2'}>
+					<Card title={'About G14ControlV2'}>
 						<ReactMarkdown>{aboutmkd}</ReactMarkdown>
-					</Card> */}
+						<Space>
+							<button
+								onClick={(e) => {
+									e.preventDefault();
+									window.shell.openExternal(
+										'https://github.com/aredden/electron-g14control'
+									);
+								}}>
+								Check out the repository
+							</button>
+							<button
+								onClick={(e) => {
+									e.preventDefault();
+									window.shell.openExternal(
+										'https://www.paypal.com/pools/c/8uiaar8Sl9'
+									);
+								}}>
+								Buy me a coffee!
+							</button>
+						</Space>
+					</Card>
 				</Space>
 			</div>
 		);

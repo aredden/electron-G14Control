@@ -10,7 +10,9 @@ import { MenuListMapper, MenuListOption } from '../Utilities/Constants';
 import icn from './icon_light.png';
 const { Sider, Header } = Layout;
 
-interface Props {}
+interface Props {
+	version: string;
+}
 
 interface State {
 	currentSubMenu: MenuListOption;
@@ -53,7 +55,10 @@ export default class AppLayout extends Component<Props, State> {
 						</Header>
 						<SiderMenu onChooseSubmenu={this.onChooseSubmenu} />
 					</Sider>
-					<ContentLayout currentPage={currentSubMenu} />
+					<ContentLayout
+						version={this.props.version}
+						currentPage={currentSubMenu}
+					/>
 				</Layout>
 			</>
 		);
