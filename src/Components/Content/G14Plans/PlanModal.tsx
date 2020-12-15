@@ -33,9 +33,9 @@ export default class PlanModal extends Component<Props, State> {
 
 	checkIfValidAndSubmit = (val: any) => {
 		let { name } = this.state;
-
-		if (name.length > 0) {
-			this.props.submit(val, name);
+		let el = document.getElementById('planmodalinput') as HTMLInputElement;
+		if (el.value.length > 0) {
+			this.props.submit(val, el.value);
 		} else {
 			this.setState({
 				validateStat: 'error',
@@ -53,7 +53,7 @@ export default class PlanModal extends Component<Props, State> {
 					visible={show}
 					onOk={(e) => this.checkIfValidAndSubmit(e)}
 					onCancel={(e) => cancel(e)}>
-					<Input onKeyDown={(e) => this.handleType(e)} />
+					<Input id="planmodalinput" onKeyDown={(e) => this.handleType(e)} />
 				</Modal>
 			</div>
 		);

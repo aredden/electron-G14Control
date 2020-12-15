@@ -1,4 +1,4 @@
 cd ./electron
 call npm run build
 cd ../
-call npm run dist
+call npm run electron-build

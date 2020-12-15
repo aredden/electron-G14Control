@@ -6,7 +6,7 @@ import {
 	createReducer,
 	EnhancedStore,
 } from '@reduxjs/toolkit';
-import _ from 'lodash';
+import { capitalize } from 'lodash';
 
 export let store: EnhancedStore;
 
@@ -116,7 +116,6 @@ const createRootReducer = (initialState: G14Config) => {
 		 * Fan Config Store
 		 */
 		reducer.addCase(updateLoopTimes, (state, action) => {
-			console.log(action, state);
 			let { temp, load } = action.payload;
 			state.loopTimes = {
 				temp: temp ? temp : state.loopTimes.temp,
@@ -128,7 +127,6 @@ const createRootReducer = (initialState: G14Config) => {
 		 * Loop Times Store
 		 */
 		reducer.addCase(updateFanConfig, (state, action) => {
-			console.log(action, state);
 			state.fanCurves = action.payload;
 			return state;
 		});
@@ -256,7 +254,7 @@ const createRootReducer = (initialState: G14Config) => {
 					ryzenadj,
 					fanCurve: {
 						type: 'Armoury',
-						name: _.capitalize(action.payload),
+						name: capitalize(action.payload),
 					},
 					batteryLimit,
 					shortcuts,

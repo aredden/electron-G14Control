@@ -161,7 +161,9 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 			? await modifyArmoryCratePlan(armouryCrate.toLowerCase() as ArmoryPlan)
 			: 'noarmoury';
 		if (arm || arm === 'noarmoury') {
-			LOGGER.info('Succeffully modified armory crate plan to: ' + armouryCrate);
+			LOGGER.info(
+				'Successfully modified armory crate plan to: ' + armouryCrate
+			);
 			let switchPlan = await setWindowsPlan(windowsPlan.guid);
 			if (switchPlan) {
 				LOGGER.info('Successfully switched windows plan to target plan.');

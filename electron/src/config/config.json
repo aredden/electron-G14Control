@@ -17,16 +17,28 @@
 	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": false },
 	"plans": [
 		{
+			"name": "Omega Saver",
 			"windowsPlan": {
 				"name": "Power saver",
 				"guid": "64a64f24-65b9-4b56-befd-5ec1eaced9b3"
 			},
-			"ryzenadj": "Default",
-			"fanCurve": "Performance",
+			"ryzenadj": "Power saver",
+			"fanCurve": "Slow Fan",
+			"armouryCrate": "Silent",
+			"boost": 0,
+			"graphics": 0
+		},
+		{
+			"name": "Danger Plan",
+			"windowsPlan": {
+				"name": "High performance",
+				"guid": "6fecc5ae-f350-48a5-b669-b472cb895ccf"
+			},
+			"fanCurve": "Super Benchmarking",
+			"ryzenadj": "Performance",
+			"armouryCrate": "Turbo",
 			"boost": 2,
-			"armouryCrate": "silent",
-			"graphics": 0,
-			"name": "Standard Saver"
+			"graphics": 3
 		}
 	],
 	"ryzenadj": {

@@ -13,7 +13,7 @@ import isAccelerator from 'electron-is-accelerator';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import React, { Component } from 'react';
 import { store, updateROGKey, updateShortcuts } from '../../Store/ReduxStore';
-import _ from 'lodash';
+import { capitalize } from 'lodash';
 import ReactMarkdown from 'react-markdown';
 
 interface Props {}
@@ -76,11 +76,11 @@ export default class Settings extends Component<Props, State> {
 			newKey = 'Space';
 		}
 		if (keys.includes('+')) {
-			newKeys = keys + '+' + _.capitalize(newKey);
+			newKeys = keys + '+' + capitalize(newKey);
 		} else if (keys.length === 0) {
-			newKeys = _.capitalize(newKey);
+			newKeys = capitalize(newKey);
 		} else {
-			newKeys = keys + '+' + _.capitalize(newKey);
+			newKeys = keys + '+' + capitalize(newKey);
 		}
 		this.setState({ keys: newKeys });
 	};
