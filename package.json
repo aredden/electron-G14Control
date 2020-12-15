@@ -10,7 +10,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/aredden/electron-G14Control.git"
+		"url": "https://github.com/aredden/test-electron-update.git"
 	},
 	"homepage": "./",
 	"main": "build/electron.js",
@@ -51,7 +51,7 @@
 		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
 		"electron-pub": "electron-builder build --publish always",
-		"dist": "electron-builder",
+		"dist": "electron-builder --publish always",
 		"postinstall": "electron-builder install-app-deps",
 		"build-electron": "call \"./build-all.bat\"",
 		"build-github": "call \"./github-build.bat\""
