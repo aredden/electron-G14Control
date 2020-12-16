@@ -80,10 +80,10 @@ export default class App extends Component<Props, State> {
 
 	componentDidMount() {
 		this.loadConfig();
-		this.getVersion();
 		window.ipcRenderer.on('updateAvailable', this.handleUpdateAvailable);
 		window.ipcRenderer.on('updateDownloaded', this.handleUpdateDownloaded);
 		window.ipcRenderer.send('isLoaded');
+		this.getVersion();
 	}
 
 	handleUpdateAvailable = (evt: any, logs: string) => {

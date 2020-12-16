@@ -188,7 +188,9 @@ export default class G14ControlPlans extends Component<Props, State> {
 					<Select
 						style={{ width: '30%' }}
 						onSelect={this.handleViewPlan}
-						value={this.state.selectedToView.name}
+						value={
+							this.state.selectedToView ? this.state.selectedToView.name : 'N/A'
+						}
 						options={plans.map((val, idx) => {
 							return { value: val.name };
 						})}></Select>

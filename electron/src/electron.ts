@@ -31,7 +31,7 @@ import { mapperBuilder } from './IPCEvents/RogKeyRemapperListener';
 import { buildTrayIcon } from './TrayIcon';
 import installExtension from 'electron-devtools-installer';
 import forceFocus from 'forcefocus';
-import AppUpdater from './AppUpdater';
+import AutoUpdater from './AppUpdater';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -61,7 +61,7 @@ export let showIconEnabled = false;
 export let tray: Tray;
 export let trayContext: Menu;
 export let hid: HID;
-export let updateNote: AppUpdater;
+export let updateNote: AutoUpdater<{}>;
 if (is_dev) {
 	LOGGER.info('Running in development');
 } else {
@@ -217,7 +217,14 @@ export async function createWindow(
 	browserWindow = results.browserWindow;
 
 	buildBrowserListeners(browserWindow);
+	ipcMain.handle('getVersion', () => {
+		return app.getVersion();
+	});
 
+	ipcMain.once('isLoaded', () => {
+		LOGGER.info('Renderer process built and updater being initialized...');
+		updateNote = new AutoUpdater<{}>(browserWindow, ipcMain);
+	});
 	let { shortcuts, rogKey } = g14Config.current;
 
 	// Register global shortcut ctrl + space
@@ -251,14 +258,6 @@ export async function createWindow(
 	browserWindow.setMenu(null);
 	return { tray, browserWindow, g14Config, trayContext };
 }
-
-ipcMain.handle('getVersion', () => {
-	return app.getVersion();
-});
-
-ipcMain.once('isLoaded', () => {
-	updateNote = new AppUpdater(browserWindow, ipcMain);
-});
 
 powerMonitor.on('shutdown', () => {
 	let w = remote.getCurrentWindow();
