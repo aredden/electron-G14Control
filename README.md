@@ -79,7 +79,7 @@ File setup:
 * ```
 ATRO_LOC=***\atrofac-cli\atrofac-cli.exe
 RADJ_LOC=***\ryzenadj\ryzenadj.exe
-CONFIG_LOC=***\src\config\config.json
+CONFIG_LOC=***\src\config\config.dev.json
 SCREEN_REF_LOC=***\screen-resolution\ChangeScreenResolution.exe
 RESTART_GPU_LOC=***\restartgpu\RestartGPU.exe
 
