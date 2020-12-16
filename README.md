@@ -67,18 +67,22 @@ Be aware that **I have no idea what I'm doing**. All of this stuff works for me,
 
 ## Prerequisites for Development
 
-The `/electron` directory requires a `.env` file with two entries for the executables under `electron/atrofac-cli/` and `electron/ryzenadj/`. It should be structured as follows:
+Getting Node, Python, and Visual Studio setup:
+* Install Nodejs 14 for Windows: https://nodejs.org/en/
+* Verify installed correctly through command prompt `node -v` and `npm -v`
+* Install Python from the Windows Store: https://www.microsoft.com/en-us/p/python-39/9p7qfqmjrfp7
+* Run an elevated (as administrator) command prompt, and run: `npm install --global windows-build-tools`
 
-**There are currently other requirements, but not many people helping, so I'm going to update this list later.**
+File setup:
+* The `/electron` directory requires a `.env` file for paths to the included executables. Create this file and find and replace the `***` with the path to your \electron folder in this repo (e.g. `C:\dev\electron-G14Control\electron`)
 
-```
-# Remove carrot braces
+* ```
+ATRO_LOC=***\atrofac-cli\atrofac-cli.exe
+RADJ_LOC=***\ryzenadj\ryzenadj.exe
+CONFIG_LOC=***\src\config\config.json
+SCREEN_REF_LOC=***\screen-resolution\ChangeScreenResolution.exe
+RESTART_GPU_LOC=***\restartgpu\RestartGPU.exe
 
-ATRO_LOC=<C:/path/to/atrofac-cli.exe>
-RADJ_LOC=<C:/path/to/ryzenadj.exe>
-CONFIG_LOC=<C:/path/to/electron/src/config.json>
-SCREEN_REF_LOC=<C:/path/to/ChangeScreenResolution.exe>
-RESTART_GPU_LOC=<C:/path/to/RestartGPU.exe>
 ```
 
 ## Dev Startup
