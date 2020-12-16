@@ -74,15 +74,15 @@ Getting Node, Python, and Visual Studio setup:
 * Run an elevated (as administrator) command prompt, and run: `npm install --global windows-build-tools`
 
 File setup:
-* The `/electron` directory requires a `.env` file for paths to the included executables. Create this file and find and replace the `***` with the path to your \electron folder in this repo (e.g. `C:\dev\electron-G14Control\electron`)
 
-* ```
+The `/electron` directory requires a `.env` file for paths to the included executables. Create this file and find and replace the `***` with the path to your \electron folder in this repo (e.g. `C:\dev\electron-G14Control\electron`)
+
+```
 ATRO_LOC=***\atrofac-cli\atrofac-cli.exe
 RADJ_LOC=***\ryzenadj\ryzenadj.exe
 CONFIG_LOC=***\src\config\config.dev.json
 SCREEN_REF_LOC=***\screen-resolution\ChangeScreenResolution.exe
 RESTART_GPU_LOC=***\restartgpu\RestartGPU.exe
-
 ```
 
 ## Dev Startup
