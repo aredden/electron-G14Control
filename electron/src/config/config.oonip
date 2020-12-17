@@ -6,7 +6,10 @@
 			"name": "Performance"
 		},
 		"shortcuts": {
-			"minmax": { "enabled": false, "accelerator": "Control+Space" }
+			"minmax": {
+				"enabled": false,
+				"accelerator": "Control+Space"
+			}
 		},
 		"rogKey": {
 			"enabled": false,
@@ -14,7 +17,10 @@
 			"func": "minmax"
 		}
 	},
-	"startup": { "checkBoostVisibility": true, "autoLaunchEnabled": false },
+	"startup": {
+		"checkBoostVisibility": true,
+		"autoLaunchEnabled": false
+	},
 	"plans": [
 		{
 			"name": "Omega Saver",
@@ -84,49 +90,195 @@
 		{
 			"name": "Performance",
 			"plan": "performance",
-			"cpu": [21, 25, 28, 30, 31, 57, 58, 61],
-			"gpu": [20, 23, 28, 34, 51, 61, 61, 69]
+			"cpu": [
+				21,
+				25,
+				28,
+				30,
+				31,
+				57,
+				58,
+				61
+			],
+			"gpu": [
+				20,
+				23,
+				28,
+				34,
+				51,
+				61,
+				61,
+				69
+			]
 		},
 		{
 			"name": "Gaming",
 			"plan": "turbo",
-			"cpu": [24, 27, 31, 38, 51, 61, 62, 63],
-			"gpu": [20, 23, 35, 39, 51, 63, 65, 69]
+			"cpu": [
+				24,
+				27,
+				31,
+				38,
+				51,
+				61,
+				62,
+				63
+			],
+			"gpu": [
+				20,
+				23,
+				35,
+				39,
+				51,
+				63,
+				65,
+				69
+			]
 		},
 		{
 			"name": "Slow Fan",
 			"plan": "silent",
-			"cpu": [0, 0, 0, 0, 17, 23, 35, 40, 56],
-			"gpu": [0, 0, 0, 0, 17, 23, 35, 44, 60]
+			"cpu": [
+				0,
+				0,
+				0,
+				0,
+				17,
+				23,
+				35,
+				40,
+				56
+			],
+			"gpu": [
+				0,
+				0,
+				0,
+				0,
+				17,
+				23,
+				35,
+				44,
+				60
+			]
 		},
 		{
 			"name": "Medium Fan Performance",
-			"cpu": [28, 30, 32, 36, 42, 49, 60, 62],
-			"gpu": [21, 23, 24, 28, 34, 51, 61, 61],
+			"cpu": [
+				28,
+				30,
+				32,
+				36,
+				42,
+				49,
+				60,
+				62
+			],
+			"gpu": [
+				21,
+				23,
+				24,
+				28,
+				34,
+				51,
+				61,
+				61
+			],
 			"plan": "performance"
 		},
 		{
 			"name": "Performance Programming",
-			"cpu": [33, 38, 43, 46, 51, 61, 62, 63],
-			"gpu": [28, 32, 35, 39, 51, 63, 65, 69],
+			"cpu": [
+				33,
+				38,
+				43,
+				46,
+				51,
+				61,
+				62,
+				63
+			],
+			"gpu": [
+				28,
+				32,
+				35,
+				39,
+				51,
+				63,
+				65,
+				69
+			],
 			"plan": "performance"
 		},
 		{
 			"name": "Benchmarking",
-			"cpu": [44, 46, 49, 54, 61, 64, 76, 79],
-			"gpu": [20, 23, 35, 39, 51, 63, 65, 69],
+			"cpu": [
+				44,
+				46,
+				49,
+				54,
+				61,
+				64,
+				76,
+				79
+			],
+			"gpu": [
+				20,
+				23,
+				35,
+				39,
+				51,
+				63,
+				65,
+				69
+			],
 			"plan": "turbo"
 		},
 		{
 			"name": "Super Benchmarking",
-			"cpu": [45, 51, 63, 69, 76, 80, 85, 86],
-			"gpu": [20, 23, 35, 39, 51, 63, 65, 69],
+			"cpu": [
+				45,
+				51,
+				63,
+				69,
+				76,
+				80,
+				85,
+				86
+			],
+			"gpu": [
+				20,
+				23,
+				35,
+				39,
+				51,
+				63,
+				65,
+				69
+			],
 			"plan": "turbo"
 		},
 		{
 			"name": "Faster - Performance",
-			"cpu": [33, 41, 43, 46, 51, 61, 62, 63],
-			"gpu": [35, 38, 44, 47, 51, 63, 65, 69],
+			"cpu": [
+				33,
+				41,
+				43,
+				46,
+				51,
+				61,
+				62,
+				63
+			],
+			"gpu": [
+				35,
+				38,
+				44,
+				47,
+				51,
+				63,
+				65,
+				69
+			],
 			"plan": "performance"
 		}
 	]

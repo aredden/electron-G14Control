@@ -1,6 +1,6 @@
 /** @format */
 
-import { Card, message, Space, Switch } from 'antd';
+import { Card, Checkbox, message, Space } from 'antd';
 import React, { Component } from 'react';
 import { store, updateG14Plans } from '../../../Store/ReduxStore';
 import ReactMarkdown from 'react-markdown';
@@ -15,10 +15,15 @@ interface State {
 	ryzen: RyzenadjConfigNamed[];
 	curves: FanCurveConfig[];
 	windowsPlans: { name: string; guid: string }[];
-	fanInclude: boolean;
-	adjInclude: boolean;
 	setPlan: G14ControlPlan;
 	showModal: boolean;
+	toInclude: {
+		ryzen: boolean;
+		fan: boolean;
+		boost: boolean;
+		graphics: boolean;
+		armoury: boolean;
+	};
 }
 
 export default class PlanBuilder extends Component<Props, State> {
@@ -31,8 +36,6 @@ export default class PlanBuilder extends Component<Props, State> {
 			ryzen: [...ryzen],
 			curves: [...curve],
 			windowsPlans: [],
-			fanInclude: true,
-			adjInclude: true,
 			setPlan: {
 				name: '',
 				windowsPlan: {
@@ -41,18 +44,15 @@ export default class PlanBuilder extends Component<Props, State> {
 				},
 			},
 			showModal: false,
+			toInclude: {
+				ryzen: true,
+				fan: true,
+				graphics: true,
+				boost: true,
+				armoury: true,
+			},
 		};
 	}
-
-	onFanIncludeChange = () => {
-		let { fanInclude } = this.state;
-		this.setState({ fanInclude: !fanInclude });
-	};
-
-	onAdjIncludeChange = () => {
-		let { adjInclude } = this.state;
-		this.setState({ adjInclude: !adjInclude });
-	};
 
 	handleSelectChoice = (
 		value: string | number | LabeledValue,
@@ -147,10 +147,66 @@ export default class PlanBuilder extends Component<Props, State> {
 		this.getWindowsPlans();
 	}
 
+	toggleCheck(value: any, option: any) {
+		let { toInclude, setPlan } = this.state;
+		switch (option) {
+			case 'armoury': {
+				if (toInclude.armoury) {
+					delete setPlan.armouryCrate;
+				}
+				this.setState({
+					toInclude: Object.assign(toInclude, { armoury: !toInclude.armoury }),
+					setPlan,
+				});
+				break;
+			}
+			case 'ryzen': {
+				if (toInclude.ryzen) {
+					delete setPlan.ryzenadj;
+				}
+				this.setState({
+					toInclude: Object.assign(toInclude, { ryzen: !toInclude.ryzen }),
+					setPlan,
+				});
+				break;
+			}
+			case 'fan': {
+				if (toInclude.fan) {
+					delete setPlan.fanCurve;
+				}
+				this.setState({
+					toInclude: Object.assign(toInclude, { fan: !toInclude.fan }),
+					setPlan,
+				});
+				break;
+			}
+			case 'boost': {
+				if (toInclude.boost) {
+					delete setPlan.boost;
+				}
+				this.setState({
+					toInclude: Object.assign(toInclude, { boost: !toInclude.boost }),
+					setPlan,
+				});
+				break;
+			}
+			case 'graphics': {
+				if (toInclude.graphics) {
+					delete setPlan.graphics;
+				}
+				this.setState({
+					toInclude: Object.assign(toInclude, {
+						graphics: !toInclude.graphics,
+					}),
+					setPlan,
+				});
+				break;
+			}
+		}
+	}
+
 	render() {
-		let thinger = `
-### **Plan Builder**
-		`;
+		let thinger = `### **Plan Builder**`;
 
 		const itemStyle: React.CSSProperties = {
 			display: 'flex',
@@ -166,14 +222,7 @@ export default class PlanBuilder extends Component<Props, State> {
 			width: '11rem',
 		};
 
-		let {
-			curves,
-			ryzen,
-			windowsPlans,
-			fanInclude,
-			adjInclude,
-			showModal,
-		} = this.state;
+		let { curves, ryzen, windowsPlans, showModal, toInclude } = this.state;
 		console.log(this.state.setPlan);
 		return (
 			<Card
@@ -184,110 +233,137 @@ export default class PlanBuilder extends Component<Props, State> {
 				}>
 				<Space direction="vertical" style={containerStyle}>
 					<Space direction={'horizontal'} style={itemStyle}>
+						<label>Choose Windows Plan</label>
+						<Space direction="horizontal">
+							<Select
+								style={selectChoice}
+								defaultValue={'Choice'}
+								options={windowsPlans.map((crv, idx) => {
+									return { name: crv.name, value: crv.name };
+								})}
+								onSelect={(e, d) =>
+									this.handleSelectChoice(e, d, 'windo')
+								}></Select>
+						</Space>
+					</Space>
+					<Space direction={'horizontal'} style={itemStyle}>
 						<label>Fan Curve</label>
-						<Select
-							style={selectChoice}
-							defaultValue={'Choice'}
-							options={curves.map((crv, idx) => {
-								return { name: crv.name, value: crv.name };
-							})}
-							disabled={!fanInclude}
-							onSelect={(e, d) =>
-								this.handleSelectChoice(e, d, 'fan')
-							}></Select>
+						<Space direction="horizontal">
+							<small>Include:</small>
+							<Checkbox
+								onClick={(e) =>
+									this.toggleCheck(this.state.toInclude.fan, 'fan')
+								}
+								checked={this.state.toInclude.fan}></Checkbox>
+							<Select
+								style={selectChoice}
+								defaultValue={'Choice'}
+								options={curves.map((crv, idx) => {
+									return { name: crv.name, value: crv.name };
+								})}
+								disabled={!toInclude.fan}
+								onSelect={(e, d) =>
+									this.handleSelectChoice(e, d, 'fan')
+								}></Select>
+						</Space>
 					</Space>
 					<Space direction={'horizontal'} style={itemStyle}>
 						<label>CPU Tuning Setting</label>
-						<Select
-							disabled={!adjInclude}
-							style={selectChoice}
-							defaultValue={'Choice'}
-							options={ryzen.map((crv, idx) => {
-								return { name: crv.name, value: crv.name };
-							})}
-							onSelect={(e, d) =>
-								this.handleSelectChoice(e, d, 'ryzen')
-							}></Select>
+						<Space direction="horizontal">
+							<small>Include:</small>
+							<Checkbox
+								onClick={(e) =>
+									this.toggleCheck(this.state.toInclude.ryzen, 'ryzen')
+								}
+								checked={this.state.toInclude.ryzen}></Checkbox>
+							<Select
+								disabled={!toInclude.ryzen}
+								style={selectChoice}
+								defaultValue={'Choice'}
+								options={ryzen.map((crv, idx) => {
+									return { name: crv.name, value: crv.name };
+								})}
+								onSelect={(e, d) =>
+									this.handleSelectChoice(e, d, 'ryzen')
+								}></Select>
+						</Space>
 					</Space>
-					<Space direction={'horizontal'} style={itemStyle}>
-						<label>Choose Windows Plan</label>
-						<Select
-							style={selectChoice}
-							defaultValue={'Choice'}
-							options={windowsPlans.map((crv, idx) => {
-								return { name: crv.name, value: crv.name };
-							})}
-							onSelect={(e, d) =>
-								this.handleSelectChoice(e, d, 'windo')
-							}></Select>
-					</Space>
+
 					<Space direction={'horizontal'} style={itemStyle}>
 						<label>Armoury Crate Plan</label>
-						<Select
-							style={selectChoice}
-							defaultValue={'Choice'}
-							options={['windows', 'silent', 'performance', 'turbo'].map(
-								(crv, idx) => {
-									return { name: crv, value: capitalize(crv) };
+						<Space direction="horizontal">
+							<small>Include:</small>
+							<Checkbox
+								onClick={(e) =>
+									this.toggleCheck(this.state.toInclude.armoury, 'armoury')
 								}
-							)}
-							onSelect={(e, d) =>
-								this.handleSelectChoice(e, d, 'armor')
-							}></Select>
+								checked={this.state.toInclude.armoury}></Checkbox>
+							<Select
+								disabled={!toInclude.armoury}
+								style={selectChoice}
+								defaultValue={'Choice'}
+								options={['windows', 'silent', 'performance', 'turbo'].map(
+									(crv, idx) => {
+										return { name: crv, value: capitalize(crv) };
+									}
+								)}
+								onSelect={(e, d) =>
+									this.handleSelectChoice(e, d, 'armor')
+								}></Select>
+						</Space>
 					</Space>
 					<Space direction={'horizontal'} style={itemStyle}>
 						<label>Boost</label>
-						<Select
-							style={selectChoice}
-							defaultValue={'Choice'}
-							options={['Aggressive', 'Efficient Aggressive', 'Disabled'].map(
-								(crv, idx) => {
-									return { name: crv, value: capitalize(crv) };
+						<Space direction="horizontal">
+							<small>Include:</small>
+							<Checkbox
+								onClick={(e) =>
+									this.toggleCheck(this.state.toInclude.boost, 'boost')
 								}
-							)}
-							onSelect={(e, d) =>
-								this.handleSelectChoice(e, d, 'boos')
-							}></Select>
+								checked={this.state.toInclude.boost}></Checkbox>
+							<Select
+								style={selectChoice}
+								disabled={!toInclude.boost}
+								defaultValue={'Choice'}
+								options={['Aggressive', 'Efficient Aggressive', 'Disabled'].map(
+									(crv, idx) => {
+										return { name: crv, value: capitalize(crv) };
+									}
+								)}
+								onSelect={(e, d) =>
+									this.handleSelectChoice(e, d, 'boos')
+								}></Select>
+						</Space>
 					</Space>
 					<Space direction={'horizontal'} style={itemStyle}>
 						<label>Graphics Preference</label>
-						<Select
-							style={selectChoice}
-							defaultValue={'Choice'}
-							options={[
-								'Force power-saving graphics',
-								'Optimize power savings',
-								'Optimize performance',
-								'Maximize performance',
-							].map((crv, idx) => {
-								return { name: crv, value: capitalize(crv) };
-							})}
-							onSelect={(e, d) =>
-								this.handleSelectChoice(e, d, 'graphi')
-							}></Select>
+						<Space direction="horizontal">
+							<small>Include:</small>
+							<Checkbox
+								onClick={(e) =>
+									this.toggleCheck(this.state.toInclude.graphics, 'graphics')
+								}
+								checked={this.state.toInclude.graphics}></Checkbox>
+							<Select
+								disabled={!toInclude.graphics}
+								style={selectChoice}
+								defaultValue={'Choice'}
+								allowClear
+								options={[
+									'Force power-saving graphics',
+									'Optimize power savings',
+									'Optimize performance',
+									'Maximize performance',
+								].map((crv, idx) => {
+									return { name: crv, value: capitalize(crv) };
+								})}
+								onSelect={(e, d) =>
+									this.handleSelectChoice(e, d, 'graphi')
+								}></Select>
+						</Space>
 					</Space>
 				</Space>
 				<br></br>
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'start',
-						padding: '1rem',
-					}}>
-					<Space direction="vertical">
-						<label>Use Fan or just Armoury Crate Setting.</label>
-						<Switch
-							onClick={this.onFanIncludeChange}
-							checked={fanInclude}
-							title="Includes Fan Curve"></Switch>
-						<label>Include CPU tuning.</label>
-						<Switch
-							onClick={this.onAdjIncludeChange}
-							checked={adjInclude}
-							title="Include CPU Tuning"></Switch>
-						<button onClick={this.handleSaveConfig}>Save Plan</button>
-					</Space>
-				</div>
 				<PlanModal
 					cancel={this.handleCancelSave}
 					show={showModal}

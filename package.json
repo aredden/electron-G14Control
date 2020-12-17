@@ -1,7 +1,7 @@
 {
 	"name": "g14controlv2",
 	"productName": "G14ControlV2",
-	"version": "v0.1.29",
+	"version": "v0.1.30",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",
@@ -102,7 +102,7 @@
 					"from": "./electron/src/config",
 					"to": "extraResources",
 					"filter": [
-						"*config.json"
+						"*config.oonip"
 					]
 				},
 				{

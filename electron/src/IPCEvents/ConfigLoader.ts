@@ -20,7 +20,7 @@ const location = is_dev
 			'../',
 			'resources',
 			'extraResources',
-			'config.json'
+			'config.oonip'
 	  );
 let LOGGER = getLogger('ConfigLoader');
 
