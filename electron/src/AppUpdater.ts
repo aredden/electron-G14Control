@@ -3,7 +3,7 @@
 import { BrowserWindow, IpcMain } from 'electron';
 import { autoUpdater, AppUpdater, UpdateInfo } from 'electron-updater';
 import getLogger from './Logger';
-
+import is_dev from 'electron-is-dev';
 interface Updater {}
 
 const LOGGER = getLogger('AppUpdater');
@@ -35,19 +35,24 @@ export default class AutoUpdater<Updater> {
 	checkForUpdate = async () => {
 		LOGGER.info('Checking for update.');
 		let { updater } = this.state;
-		updater
-			.checkForUpdatesAndNotify({
-				title: 'G14ControlV2',
-				body: 'New update available!',
-			})
-			.then((r) => {
-				this.state.updateAvailable = true;
-				this.state.version = r.updateInfo.version;
-				this.state.updateInfo = r.updateInfo;
-				LOGGER.info(
-					`Got update info:\n${JSON.stringify(r.updateInfo, null, 2)}`
-				);
-			});
+		if (!is_dev)
+			updater
+				.checkForUpdatesAndNotify({
+					title: 'G14ControlV2',
+					body: 'New update available!',
+				})
+				.then((r) => {
+					if (r) {
+						this.state.version = r.updateInfo.version;
+						this.state.updateAvailable = true;
+						this.state.updateInfo = r.updateInfo;
+						LOGGER.info(
+							`Got update info:\n${JSON.stringify(r.updateInfo, null, 2)}`
+						);
+					} else {
+						LOGGER.info('Current update info: ' + JSON.stringify(r, null, 2));
+					}
+				});
 	};
 
 	getAllInfo = () => {

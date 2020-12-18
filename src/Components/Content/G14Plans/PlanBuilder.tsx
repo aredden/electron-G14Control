@@ -1,6 +1,6 @@
 /** @format */
 
-import { Card, Checkbox, message, Space } from 'antd';
+import { Button, Card, Checkbox, message, Space } from 'antd';
 import React, { Component } from 'react';
 import { store, updateG14Plans } from '../../../Store/ReduxStore';
 import ReactMarkdown from 'react-markdown';
@@ -362,8 +362,10 @@ export default class PlanBuilder extends Component<Props, State> {
 								}></Select>
 						</Space>
 					</Space>
+					<Button onClick={this.handleSaveConfig}>Save Plan</Button>
 				</Space>
 				<br></br>
+
 				<PlanModal
 					cancel={this.handleCancelSave}
 					show={showModal}

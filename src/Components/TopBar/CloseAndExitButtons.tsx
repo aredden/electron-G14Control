@@ -67,6 +67,12 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 					message.error('There was trouble setting start on boot option.');
 				}
 				break;
+			case 'imConf':
+				window.ipcRenderer.send('importConfig');
+				break;
+			case 'exConf':
+				window.ipcRenderer.send('exportConfig');
+				break;
 		}
 	};
 
@@ -91,6 +97,12 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 					</Select.Option>
 					<Select.Option title="Start on boot" value="setBoot">
 						{launchEnabled ? 'Disable start on boot' : 'Enable start on boot'}
+					</Select.Option>
+					<Select.Option title="Export Config" value="exConf">
+						Export Config
+					</Select.Option>
+					<Select.Option title="Import Config" value="imConf">
+						Import Config
 					</Select.Option>
 					<Select.Option title="Exit App" value="exit">
 						Exit App

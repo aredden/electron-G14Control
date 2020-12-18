@@ -24,6 +24,11 @@
 - Displays most related (ASUS / AMD / NVIDIA / Realtek / Dolby) software.
 - Displays the current G14ControlV2 configuration.
 
+### **Plans page:**
+
+- Allows you to create full plans which include CPU Tuning, Fan Curve, Armoury Crate profile, Windows power plans, Switchable Dynamic Graphics settings, and processor performance boost which you can enable with a single click.
+- Plan builder with select dropdowns to choose between profiles for each category.
+
 ### **Fan Curve page:**
 
 - Allows you to choose a manual fan curve using two graphs for CPU / GPU which you can save or apply.
@@ -57,6 +62,7 @@
 
 - Option to open the location where logs are stored so you can send them to me if you experience issues! : )
 - Option to have the app start on boot using task scheduler to avoid UAC.
+- Option to import / export configuration so you don't lose your configurations between updates.
 </ul>
 
 If you like the app, and would like to support me, [donate](https://www.paypal.com/pools/c/8uiaar8Sl9) : ) <3
@@ -68,10 +74,11 @@ Be aware that **I have no idea what I'm doing**. All of this stuff works for me,
 ## Prerequisites for Development
 
 Getting Node, Python, and Visual Studio setup:
-* Install Nodejs 14 for Windows: https://nodejs.org/en/
-* Verify installed correctly through command prompt `node -v` and `npm -v`
-* Install Python from the Windows Store: https://www.microsoft.com/en-us/p/python-39/9p7qfqmjrfp7
-* Run an elevated (as administrator) command prompt, and run: `npm install --global windows-build-tools`
+
+- Install Nodejs 14 for Windows: https://nodejs.org/en/
+- Verify installed correctly through command prompt `node -v` and `npm -v`
+- Install Python from the Windows Store: https://www.microsoft.com/en-us/p/python-39/9p7qfqmjrfp7
+- Run an elevated (as administrator) command prompt, and run: `npm install --global windows-build-tools`
 
 File setup:
 
@@ -108,29 +115,10 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 This is just a starting list. I'm sure there is much more to do.
 
-- ~~Functionality for the electron tray icon similar to the original in G14ControlR3, but initially without G14Control preset plans.~~
-- ~~Main window styling and suggestions.~~
-- ~~Allow user to choose temperature polling time. \*_In progess_\*
-- ~~Improved code commenting.~~
-- ~~FanCurve page front end logic -- the ipcRenderer listener functions under /electron are already built.~~
-  - ~~Atrofac command building.~~
-  - ~~Integrating interactive draggable graph nodes on front end for building fan curve.~~
-  - ~~Persistent storage of commonly used fan curves that can be saved / edited / loaded from a configuration file.~~
-  - ~~Command validation.~~
-- ~~Persistent storage for configuration and runtime events.~~
-  - ~~config.json file for configuration loaded into electron process & sent to react renderer process.~~
-  - ~~Saving / Editing / Adding configurations during runtime. ~~
-  - ~~Give all components the ability to modify redux as necessary.~~
-- ~~Ability for users to create new, remove, edit configuration options using the implemented redux store. (Fan curve profiles / atrofac profiles / loop speeds /armory crate plans~~)
-- ~~Status page design and relevent data to show.~~
-  - ~~Collect data from WMI & Windows PerformanceCounters such as BIOS version, ram, names of hardware vendors, important software versions, etc...~~
 - Add settings page for more options such as "exit on window close" vs "run as icon app on window close", etc.
-- Header main page ~~custom exit and minimize buttons~~, as well as possible dropdown menu (could use this as a 'settings page')
 - Low level hardware monitoring \*_In progress_\*
 - Bug fixing. \*_In progress_\*
   ...
-
-- Eventually add G14Control plans configuration.
 
 ## License
 

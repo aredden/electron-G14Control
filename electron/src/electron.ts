@@ -224,6 +224,7 @@ export async function createWindow(
 	ipcMain.once('isLoaded', () => {
 		LOGGER.info('Renderer process built and updater being initialized...');
 		updateNote = new AutoUpdater<{}>(browserWindow, ipcMain);
+		updateNote.checkForUpdate();
 	});
 	let { shortcuts, rogKey } = g14Config.current;
 

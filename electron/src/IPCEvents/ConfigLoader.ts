@@ -1,13 +1,13 @@
 /** @format */
 
 import dotenv from 'dotenv';
-import { IpcMain } from 'electron';
+import { dialog, IpcMain } from 'electron';
 import fs from 'fs';
 import is_dev from 'electron-is-dev';
 import getLogger from '../Logger';
 import path from 'path';
 import { app } from 'electron';
-import { setG14Config } from '../electron';
+import { browserWindow, getConfig, setG14Config } from '../electron';
 
 dotenv.config();
 
@@ -82,5 +82,67 @@ export const buildConfigLoaderListeners = (ipc: IpcMain) => {
 		} else {
 			return false;
 		}
+	});
+
+	ipc.on('importConfig', () => {
+		dialog
+			.showOpenDialog({
+				title: 'Load Config',
+				defaultPath: app.getPath('home'),
+				properties: ['openFile'],
+				filters: [{ name: 'G14Config', extensions: ['datas'] }],
+			})
+			.then((val) => {
+				if (val.canceled) {
+					return;
+				}
+				if (val.filePaths) {
+					let path2file = val.filePaths[0];
+					fs.readFile(path2file, 'utf-8', (err, datas) => {
+						if (err) {
+							LOGGER.error('Error importing config file.');
+						} else {
+							LOGGER.info('Successfully read config file.');
+							writeConfig(JSON.parse(datas) as G14Config).then((ok) => {
+								if (ok) {
+									browserWindow.reload();
+								} else {
+									LOGGER.info('Issue writing new configuration file.');
+								}
+							});
+						}
+					});
+				}
+			});
+	});
+
+	ipc.on('exportConfig', () => {
+		dialog
+			.showOpenDialog({
+				title: 'Save Config',
+				defaultPath: app.getPath('home'),
+				properties: ['openDirectory'],
+			})
+			.then((val) => {
+				if (val.canceled) {
+					return;
+				}
+				if (val.filePaths) {
+					let dir = val.filePaths[0];
+					fs.writeFile(
+						path.join(dir, 'G14Config.datas'),
+						JSON.stringify(getConfig()),
+						(e) => {
+							if (e) {
+								LOGGER.error(
+									'Error writing config to directory: \n' + JSON.stringify(e)
+								);
+							} else {
+								LOGGER.info('Successfully exported config file.');
+							}
+						}
+					);
+				}
+			});
 	});
 };
