@@ -9,7 +9,6 @@ import {
 	powerMonitor,
 	ipcMain,
 	Notification,
-	remote,
 } from 'electron';
 
 import getLogger from './Logger';
@@ -42,7 +41,7 @@ export const setG14Config = (g14conf: G14Config) => {
 
 if (!gotTheLock) {
 	LOGGER.info('Another process had the lock, quitting!');
-	app.quit();
+	app.exit();
 }
 
 const ICONPATH = is_dev
@@ -261,9 +260,23 @@ export async function createWindow(
 }
 
 powerMonitor.on('shutdown', () => {
-	let w = remote.getCurrentWindow();
-	w.close();
-	app.quit();
+	globalShortcut.unregisterAll();
+	if (hid) {
+		hid.close();
+	}
+	if (!tray.isDestroyed()) {
+		tray.destroy();
+	}
+	if (!browserWindow.isDestroyed()) {
+		browserWindow.destroy();
+	}
+	if (loopsAreRunning()) {
+		killEmitters().then((ok) => {
+			app.quit();
+		});
+	} else {
+		app.quit();
+	}
 });
 
 powerMonitor.on('suspend', () => {
@@ -278,34 +291,39 @@ app.on('window-all-closed', async () => {
 });
 
 app.on('before-quit', async () => {
-	globalShortcut.unregisterAll();
-	if (hid) {
-		hid.close();
+	if (gotTheLock) {
+		globalShortcut.unregisterAll();
+		if (hid) {
+			hid.close();
+		}
+		LOGGER.info('Keyboard shortcuts unregistered.');
+		LOGGER.info('Preparing to quit.');
+		killEmitters();
 	}
-	LOGGER.info('Keyboard shortcuts unregistered.');
-	LOGGER.info('Preparing to quit.');
-	killEmitters();
 });
 
 app.on('quit', async (evt, e) => {
 	LOGGER.info(`Quitting with exit code. ${e}`);
-	process.exit();
 });
 
 app.on('ready', async () => {
-	let results = await createWindow(
-		gotTheLock,
-		g14Config,
-		browserWindow,
-		tray,
-		trayContext,
-		ICONPATH,
-		hid
-	);
-	g14Config = results.g14Config;
-	tray = results.tray;
-	browserWindow = results.browserWindow;
-	trayContext = results.trayContext;
+	if (!gotTheLock) {
+		app.quit();
+	} else {
+		let results = await createWindow(
+			gotTheLock,
+			g14Config,
+			browserWindow,
+			tray,
+			trayContext,
+			ICONPATH,
+			hid
+		);
+		g14Config = results.g14Config;
+		tray = results.tray;
+		browserWindow = results.browserWindow;
+		trayContext = results.trayContext;
+	}
 });
 
 app.on('renderer-process-crashed', (event, webcontents, killed) => {
@@ -316,10 +334,12 @@ app.on('renderer-process-crashed', (event, webcontents, killed) => {
 			2
 		)}\nWas killed? ${killed} ... ${killed ? 'RIP' : ''}`
 	);
+	app.quit();
 });
 
 app.on('render-process-gone', (event, contents, details) => {
 	LOGGER.info(`Renderer Process is Gone:\n${details.reason}`);
+	app.quit();
 });
 
 app.on('second-instance', () => {
@@ -328,5 +348,7 @@ app.on('second-instance', () => {
 	if (browserWindow) {
 		if (browserWindow.isMinimized()) browserWindow.restore();
 		browserWindow.focus();
+	} else {
+		app.exit();
 	}
 });

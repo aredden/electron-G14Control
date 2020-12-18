@@ -11,10 +11,9 @@ const ps = new Shell({
 	inputEncoding: 'utf-8',
 	outputEncoding: 'utf-8',
 });
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const BATTERY_AC_USBC = '0x0012006C';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const BATTERY_AC = '0x00120061';
+
+export const BATTERY_AC_USBC = '0x0012006C';
+export const BATTERY_AC = '0x00120061';
 
 const parseWmiObjectResult = (res: string, targetProperty?: string) => {
 	//@ts-ignore
