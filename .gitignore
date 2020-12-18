@@ -32,3 +32,4 @@ yarn-error.log*
 # others
 
 electron-builder.yml
+.idea/

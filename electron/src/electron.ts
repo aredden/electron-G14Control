@@ -33,6 +33,7 @@ import forceFocus from 'forcefocus';
 import AutoUpdater from './AppUpdater';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
+let startWithFocus = true;
 
 export let g14Config: G14Config;
 export const setG14Config = (g14conf: G14Config) => {
@@ -42,6 +43,11 @@ export const setG14Config = (g14conf: G14Config) => {
 if (!gotTheLock) {
 	LOGGER.info('Another process had the lock, quitting!');
 	app.exit();
+}
+
+if(app.commandLine.hasSwitch('hide')){
+	LOGGER.info('Starting with hidden browser Window');
+	startWithFocus = false
 }
 
 const ICONPATH = is_dev
@@ -79,7 +85,7 @@ export const minMaxFunc = () => {
 			forceFocus.focusWindow(browserWindow);
 			browserWindow.show();
 		} else {
-			LOGGER.info("browserWinow didn't exist.");
+			LOGGER.info("browserWindow didn't exist.");
 		}
 	}
 };
@@ -149,7 +155,8 @@ export async function createWindow(
 	tray: Tray,
 	trayContext: any,
 	ICONPATH: string,
-	hid: HID
+	hid: HID,
+	show: boolean
 ) {
 	// Create the browser window.
 	if (!gotTheLock) {
@@ -172,6 +179,7 @@ export async function createWindow(
 		autoHideMenuBar: true,
 		frame: false,
 		icon: ICONPATH,
+		show,
 		webPreferences: {
 			allowRunningInsecureContent: false,
 			worldSafeExecuteJavaScript: true,
@@ -317,7 +325,8 @@ app.on('ready', async () => {
 			tray,
 			trayContext,
 			ICONPATH,
-			hid
+			hid,
+			startWithFocus
 		);
 		g14Config = results.g14Config;
 		tray = results.tray;
