@@ -10,7 +10,7 @@ const LOGGER = getLogger('AutoLaunch');
 
 const startupCommand = (enabled: boolean) =>
 	enabled
-		? `$Action = New-ScheduledTaskAction -Execute ${process.execPath} -Argument -hide
+		? `$Action = New-ScheduledTaskAction -Execute "${process.execPath}" -Argument -hide
 	$Trigger = New-ScheduledTaskTrigger -AtLogOn
 	$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 	Register-ScheduledTask G14ControlSkipUAC -Action $Action -Trigger $Trigger -Settings $Settings -RunLevel Highest`
