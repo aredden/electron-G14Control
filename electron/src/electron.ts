@@ -23,7 +23,7 @@ import {
 import { HID } from 'node-hid';
 import { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import url from 'url';
-import { loadConfig } from './IPCEvents/ConfigLoader';
+import { loadConfig, writeConfig } from './IPCEvents/ConfigLoader';
 import { setUpNewG14ControlKey } from './IPCEvents/HID/HIDDevice';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { mapperBuilder } from './IPCEvents/RogKeyRemapperListener';
@@ -31,9 +31,9 @@ import { buildTrayIcon } from './TrayIcon';
 import installExtension from 'electron-devtools-installer';
 import forceFocus from 'forcefocus';
 import AutoUpdater from './AppUpdater';
+import { isUndefined } from 'lodash';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
-let startWithFocus = true;
 
 export let g14Config: G14Config;
 export const setG14Config = (g14conf: G14Config) => {
@@ -43,11 +43,6 @@ export const setG14Config = (g14conf: G14Config) => {
 if (!gotTheLock) {
 	LOGGER.info('Another process had the lock, quitting!');
 	app.exit();
-}
-
-if(app.commandLine.hasSwitch('hide')){
-	LOGGER.info('Starting with hidden browser Window');
-	startWithFocus = false
 }
 
 const ICONPATH = is_dev
@@ -155,18 +150,31 @@ export async function createWindow(
 	tray: Tray,
 	trayContext: any,
 	ICONPATH: string,
-	hid: HID,
-	show: boolean
+	hid: HID
 ) {
 	// Create the browser window.
 	if (!gotTheLock) {
 		app.quit();
 	}
 
+	// load the config
 	try {
 		g14Config = JSON.parse((await loadConfig()).toString()) as G14Config;
 	} catch (err) {
 		LOGGER.error('Error loading config at startup');
+	}
+
+	// logic for start on boot minimized
+	let startWithFocus = true;
+	if (app.commandLine.hasSwitch('hide')) {
+		LOGGER.info('Starting with hidden browser Window');
+		if (isUndefined(g14Config.startup.startMinimized)) {
+			g14Config.startup.startMinimized = true;
+			writeConfig(g14Config);
+		}
+		if (g14Config.startup.startMinimized) {
+			startWithFocus = false;
+		}
 	}
 
 	browserWindow = new BrowserWindow({
@@ -179,7 +187,7 @@ export async function createWindow(
 		autoHideMenuBar: true,
 		frame: false,
 		icon: ICONPATH,
-		show,
+		show: startWithFocus,
 		webPreferences: {
 			allowRunningInsecureContent: false,
 			worldSafeExecuteJavaScript: true,
@@ -189,6 +197,8 @@ export async function createWindow(
 		},
 		darkTheme: true,
 	});
+
+	// install dev tools
 	if (is_dev) {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name: any) => console.log(`Added Extension:  ${name}`))
@@ -196,12 +206,15 @@ export async function createWindow(
 				console.log('An error occurred adding devtools: ', err)
 			);
 	}
+
+	// create ipc and modify listeners
 	const ipc = ipcMain;
 	ipc.setMaxListeners(35);
 	browserWindow.setMaxListeners(35);
 	app.setMaxListeners(35);
 	buildIpcConnection(ipc, browserWindow);
 	buildEmitters(ipc, browserWindow);
+
 	// and load the index.html of the app.
 	let loadurl = 'http://localhost:3000/';
 	if (!is_dev) {
@@ -325,8 +338,7 @@ app.on('ready', async () => {
 			tray,
 			trayContext,
 			ICONPATH,
-			hid,
-			startWithFocus
+			hid
 		);
 		g14Config = results.g14Config;
 		tray = results.tray;

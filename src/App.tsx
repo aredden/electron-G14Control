@@ -9,6 +9,7 @@ import { initStore } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
 import ReactMarkdown from 'react-markdown';
+import { UpdateInfo } from 'electron-updater';
 
 declare global {
 	interface Window {
@@ -39,7 +40,7 @@ export default class App extends Component<Props, State> {
 			boostVisible: true,
 			showModal: false,
 			updateText: '',
-			updateVisible: false,
+			updateVisible: true,
 			version: '',
 		};
 	}
@@ -86,9 +87,11 @@ export default class App extends Component<Props, State> {
 		this.getVersion();
 	}
 
-	handleUpdateAvailable = (evt: any, logs: string) => {
+	handleUpdateAvailable = (evt: any, logs: UpdateInfo) => {
 		message.info('New update available, downloading...');
-		this.setState({ updateText: logs, updateVisible: true });
+		this.setState({
+			updateText: (logs.releaseNotes as string).toString(),
+		});
 	};
 
 	handleUpdateDownloaded = () => {
@@ -135,13 +138,21 @@ export default class App extends Component<Props, State> {
 					</div>
 					<BoostEnable {...{ boostVisible, show: showModal }}></BoostEnable>
 					<Modal
-						title="Update Info"
+						cancelText={'Update Later'}
+						title="Update Downloaded"
 						visible={updateVisible}
 						onOk={this.handleExitAndUpdate}
-						okButtonProps={{ title: 'Exit and update when available' }}
+						okText="Exit and Update"
+						okButtonProps={{
+							title: 'Exit and update when available',
+						}}
 						onCancel={this.cancelExitAndUpdate}>
-						<ReactMarkdown>
-							{updateText ? updateText : 'No release notes available.'}
+						<ReactMarkdown skipHtml={false}>
+							{updateText
+								? updateText +
+								  "\n\nMake sure to export config using the dropdown menu if you don't want to lose your settings!"
+								: 'No release notes available.' +
+								  "\n\nMake sure to export config using the dropdown menu if you don't want to lose your settings!"}
 						</ReactMarkdown>
 					</Modal>
 				</>

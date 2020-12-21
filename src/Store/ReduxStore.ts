@@ -110,6 +110,13 @@ export const setCurrentG14ControlPlan = createAction(
 	}
 );
 
+export const setStartMinimized = createAction(
+	'START_MINIMIZED',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
+
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -190,6 +197,7 @@ const createRootReducer = (initialState: G14Config) => {
 				startup: {
 					checkBoostVisibility: state.startup.checkBoostVisibility,
 					autoLaunchEnabled: payload,
+					startMinimized: state.startup.startMinimized,
 				},
 			});
 			state = newState;
@@ -278,6 +286,11 @@ const createRootReducer = (initialState: G14Config) => {
 			if (adj) {
 				state.current.ryzenadj = adj;
 			}
+			return state;
+		});
+
+		reducer.addCase(setStartMinimized, (state, action) => {
+			state.startup.startMinimized = action.payload;
 			return state;
 		});
 	});

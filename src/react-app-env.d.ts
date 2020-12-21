@@ -82,6 +82,7 @@ declare type G14Config = {
 	startup: {
 		checkBoostVisibility: boolean;
 		autoLaunchEnabled: boolean;
+		startMinimized?: boolean;
 	};
 	current: {
 		ryzenadj: string;

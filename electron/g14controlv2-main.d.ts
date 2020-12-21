@@ -84,10 +84,12 @@ declare type RogKeyConfig = {
 	func: string;
 	armoryCrate: boolean;
 };
+
 declare type G14Config = {
 	startup: {
 		checkBoostVisibility: boolean;
 		autoLaunchEnabled: boolean;
+		startMinimized?: boolean;
 	};
 	current: {
 		ryzenadj: string;
@@ -117,6 +119,7 @@ declare type G14Config = {
 	armouryPlan: ArmoryPlan;
 	fanCurves: Array<{
 		name: string;
+		plan: string;
 		cpu: number[];
 		gpu: number[];
 	}>;

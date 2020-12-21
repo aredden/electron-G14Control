@@ -5,6 +5,7 @@ import React, { Component, createRef } from 'react';
 import './CloseAndExitButtons.scss';
 import { store, updateStartOnBoot } from '../../Store/ReduxStore';
 import { RefSelectProps } from 'antd/lib/select';
+import { DownOutlined } from '@ant-design/icons';
 interface Props {}
 
 interface State {
@@ -80,12 +81,14 @@ export default class CloseAndExitButtons extends Component<Props, State> {
 		let { launchEnabled, menuRef } = this.state;
 		return (
 			<>
+				<div className="dropdown-arrow">
+					<DownOutlined />
+				</div>
 				<Select
 					className="titlebar-menu-dropdown"
-					placeholder="Menu"
 					style={{ zIndex: 1000 }}
 					optionLabelProp={'Menu'}
-					defaultValue="Menu"
+					// defaultValue="Menu"
 					ref={menuRef}
 					value="Menu"
 					onMouseLeave={this.handleMenuEvents}

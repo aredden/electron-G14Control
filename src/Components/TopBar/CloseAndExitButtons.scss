@@ -41,6 +41,7 @@
 	border-radius: none;
 	background-color: #001529;
 	border: 1px solid #1890ff;
+	border-bottom: 2px solid #1890ff;
 	padding: 0;
 	color: white !important;
 	&:hover {
@@ -81,9 +82,9 @@
 	position: fixed;
 	top: 0;
 	border-top: 2px solid #1890ff;
-	height: 22px;
+	height: 20px;
 	border-left: 1px solid #1890ff;
-	border-bottom: 1px solid #1890ff;
+	border-bottom: 2px solid #1890ff !important;
 	color: white;
 	font-size: smaller;
 	width: 15%;
@@ -101,9 +102,25 @@
 		background-color: #001529 !important;
 		padding: 0;
 		height: 20px !important;
+		border-bottom: 1px solid darken(#1890ff, 10) !important;
 		.ant-select-selection-item {
 			padding-left: 0.4rem;
 			line-height: 1.1rem;
 		}
 	}
+}
+
+.dropdown-arrow {
+	color: white;
+	z-index: 100000000 !important;
+	width: 30px;
+	text-align: center;
+	pointer-events: none;
+	line-height: 1.4rem;
+	border-left: none;
+	border-bottom: none;
+	position: fixed;
+	right: 10%;
+	top: 0;
+	height: 22px;
 }

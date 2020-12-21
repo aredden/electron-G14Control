@@ -15,6 +15,7 @@ import React, { Component } from 'react';
 import { store, updateROGKey, updateShortcuts } from '../../Store/ReduxStore';
 import { capitalize } from 'lodash';
 import ReactMarkdown from 'react-markdown';
+import StartMinimized from './Settings/StartMinimized';
 
 interface Props {}
 
@@ -343,6 +344,7 @@ to perform well, I decided to embark on making a new version, and this is the re
 							</button>
 						</Space>
 					</Card>
+					<StartMinimized></StartMinimized>
 				</Space>
 			</div>
 		);

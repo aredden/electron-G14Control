@@ -3,6 +3,7 @@
 import { BrowserWindow, IpcMain } from 'electron';
 import { autoUpdater, AppUpdater, UpdateInfo } from 'electron-updater';
 import getLogger from './Logger';
+
 import is_dev from 'electron-is-dev';
 interface Updater {}
 
@@ -30,6 +31,14 @@ export default class AutoUpdater<Updater> {
 
 		ipc.on('exitAndUpdate', this.quitAndUpdate);
 		LOGGER.info('Updater Initialized.');
+		updater.on('update-available', (event: UpdateInfo) => {
+			this.state.updateAvailable = true;
+			this.state.updateInfo = event;
+			browserWindow.webContents.send('updateAvailable', event);
+		});
+		updater.on('update-downloaded', (event) => {
+			browserWindow.webContents.send('updateDownloaded');
+		});
 	}
 
 	checkForUpdate = async () => {
