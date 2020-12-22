@@ -2,9 +2,8 @@
 
 import { Card, Space } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
-import { isUndefined } from 'lodash';
 import React, { Component } from 'react';
-import { store, updateStartOnBoot } from '../../../Store/ReduxStore';
+import { setStartMinimized, store } from '../../../Store/ReduxStore';
 
 interface Props {}
 interface State {
@@ -20,14 +19,14 @@ export default class StartMinimized extends Component<Props, State> {
 			autoLaunchEnabled,
 		} = (store.getState() as G14Config).startup;
 		this.state = {
-			startBoot: !isUndefined(startMinimized) ? startMinimized : false,
+			startBoot: Boolean(startMinimized),
 			enabled: autoLaunchEnabled,
 		};
 	}
 	handleClick = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
 		let { startBoot } = this.state;
 		this.setState({ startBoot: !startBoot }, () => {
-			store.dispatch(updateStartOnBoot(this.state.startBoot));
+			store.dispatch(setStartMinimized(this.state.startBoot));
 		});
 	};
 	render() {

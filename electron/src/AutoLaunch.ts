@@ -10,7 +10,7 @@ const LOGGER = getLogger('AutoLaunch');
 
 const startupCommand = (enabled: boolean) =>
 	enabled
-		? `$Action = New-ScheduledTaskAction -Execute "${process.execPath}" -Argument -hide
+		? `$Action = New-ScheduledTaskAction -Execute "${process.execPath}" -Argument hide
 	$Trigger = New-ScheduledTaskTrigger -AtLogOn
 	$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 	Register-ScheduledTask G14ControlSkipUAC -Action $Action -Trigger $Trigger -Settings $Settings -RunLevel Highest`
@@ -42,31 +42,34 @@ export const setAutoLaunch = async (enabled: boolean) => {
 	return new Promise(async (resolve) => {
 		removeOldStartupFile();
 		let taskAlreadyExists = await checkTaskExists('G14ControlSkipUAC');
-		if (!taskAlreadyExists) {
-			ps.addCommand(startupCommand(enabled));
-			ps.invoke()
-				.then((response: string) => {
-					if (
-						(enabled && response.includes('Ready')) ||
-						(!enabled && response.length === 0)
-					) {
-						LOGGER.info('Startup modification completed.');
-						resolve(true);
-					} else {
-						LOGGER.error(`Error creating startup Task : ${response}`);
-						resolve(false);
-					}
-				})
-				.catch((error) => {
-					LOGGER.error(
-						`There was an error thrown when trying to sett autolaunch ${enabled}..\nError: ${error}`
-					);
-					resolve(false);
-				});
-		} else {
-			LOGGER.info('Task already existed.');
-			resolve(true);
+		if (taskAlreadyExists) {
+			ps.addCommand(startupCommand(false));
+			try {
+				await ps.invoke();
+			} catch (err) {
+				LOGGER.info('Error removing old startup task:\n' + err);
+			}
 		}
+		ps.addCommand(startupCommand(enabled));
+		ps.invoke()
+			.then((response: string) => {
+				if (
+					(enabled && response.includes('Ready')) ||
+					(!enabled && response.length === 0)
+				) {
+					LOGGER.info('Startup modification completed.');
+					resolve(true);
+				} else {
+					LOGGER.error(`Error creating startup Task : ${response}`);
+					resolve(false);
+				}
+			})
+			.catch((error) => {
+				LOGGER.error(
+					`There was an error thrown when trying to sett autolaunch ${enabled}..\nError: ${error}`
+				);
+				resolve(false);
+			});
 	});
 };
 

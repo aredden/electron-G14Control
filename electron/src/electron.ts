@@ -9,7 +9,6 @@ import {
 	powerMonitor,
 	ipcMain,
 	Notification,
-	// nativeImage,
 } from 'electron';
 
 import getLogger from './Logger';
@@ -34,18 +33,18 @@ import forceFocus from 'forcefocus';
 import AutoUpdater from './AppUpdater';
 import { isUndefined } from 'lodash';
 import { buildTaskbarMenu } from './Taskbar';
+import { NotificationConstructorOptions } from 'electron/main';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+	LOGGER.info('Another process had the lock, quitting!');
+	app.exit();
+}
 
 export let g14Config: G14Config;
 export const setG14Config = (g14conf: G14Config) => {
 	g14Config = g14conf;
 };
-
-if (!gotTheLock) {
-	LOGGER.info('Another process had the lock, quitting!');
-	app.exit();
-}
 
 const ICONPATH = is_dev
 	? path.join(__dirname, '../', 'src', 'assets', 'icon.ico')
@@ -56,27 +55,6 @@ const ICONPATH = is_dev
 			'extraResources',
 			'icon.ico'
 	  );
-
-// const EXIT_ICON = is_dev
-// 	? path.join(__dirname, '../', 'src', 'assets', 'exit-white.png')
-// 	: path.join(
-// 			app.getPath('exe'),
-// 			'../',
-// 			'resources',
-// 			'extraResources',
-// 			'exit-white.png'
-// 	  );
-
-// const MIN_TRAY_ICON = is_dev
-// 	? path.join(__dirname, '../', 'src', 'assets', 'trayminimize-white.png')
-// 	: path.join(
-// 			app.getPath('exe'),
-// 			'../',
-// 			'resources',
-// 			'extraResources',
-// 			'trayminimize-white.png'
-// 	  );
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
@@ -124,14 +102,19 @@ export const updateMenuVisible = (minimized?: boolean) => {
 	}
 };
 
-function showNotification(title: string, body: string) {
-	const notification = {
+const args = process.argv;
+
+// eslint-disable-next-line
+const showNotification = (title: string, body: string) => {
+	const notification: NotificationConstructorOptions = {
 		icon: ICONPATH,
 		title: title,
 		body: body,
+		silent: false,
+		timeoutType: 'default',
 	};
 	new Notification(notification).show();
-}
+};
 
 export const buildBrowserListeners = (browserWindow: BrowserWindow) => {
 	// set up renderer process events.
@@ -165,21 +148,6 @@ export const buildBrowserListeners = (browserWindow: BrowserWindow) => {
 	});
 };
 
-// const mintray = () => {
-// 	LOGGER.info('Clicked minimize to tray.');
-// 	browserWindow.hide();
-// };
-
-// const showwin = () => {
-// 	LOGGER.info('Clicked bring to front.');
-// 	browserWindow.show();
-// };
-
-// const exitapp = () => {
-// 	LOGGER.info('Clicked exit app.');
-// 	app.quit();
-// };
-
 export async function createWindow(
 	gotTheLock: any,
 	g14Config: G14Config,
@@ -200,13 +168,12 @@ export async function createWindow(
 	} catch (err) {
 		LOGGER.error('Error loading config at startup');
 	}
-
 	// logic for start on boot minimized
 	let startWithFocus = true;
-	if (app.commandLine.hasSwitch('hide')) {
+	if (args.length > 1 && args[1] === 'hide') {
 		LOGGER.info('Starting with hidden browser Window');
 		if (isUndefined(g14Config.startup.startMinimized)) {
-			g14Config.startup.startMinimized = true;
+			g14Config.startup['startMinimized'] = true;
 			writeConfig(g14Config);
 		}
 		if (g14Config.startup.startMinimized) {
@@ -234,32 +201,6 @@ export async function createWindow(
 		},
 		darkTheme: true,
 	});
-
-	// let success = browserWindow.setThumbarButtons([
-	// 	{
-	// 		icon: nativeImage.createFromPath(ICONPATH),
-	// 		click() {
-	// 			showwin();
-	// 		},
-	// 		tooltip: 'Bring to front',
-	// 	},
-	// 	{
-	// 		icon: nativeImage.createFromPath(MIN_TRAY_ICON),
-	// 		click() {
-	// 			mintray();
-	// 		},
-	// 		tooltip: 'Minimize to tray',
-	// 	},
-	// 	{
-	// 		icon: nativeImage.createFromPath(EXIT_ICON),
-	// 		click() {
-	// 			exitapp();
-	// 		},
-	// 		tooltip: 'Exit G14ControlV2',
-	// 	},
-	// ]);
-
-	// LOGGER.info('thumb bar buttons completed: ' + success);
 
 	// install dev tools
 	if (is_dev) {
@@ -384,6 +325,7 @@ app.on('before-quit', async () => {
 		LOGGER.info('Preparing to quit.');
 		killEmitters();
 	}
+	app.exit();
 });
 
 app.on('quit', async (evt, e) => {
@@ -432,12 +374,19 @@ app.on('render-process-gone', (event, contents, details) => {
 });
 
 app.on('second-instance', () => {
-	LOGGER.info('Another process interupted my thoughts, how dare he!');
-	showNotification('G14ControlV2', 'Only one instance allowed at a time!');
 	if (browserWindow) {
 		if (browserWindow.isMinimized()) browserWindow.restore();
 		browserWindow.focus();
-	} else {
+	}
+	if (!gotTheLock) {
 		app.exit();
+	} else {
+		LOGGER.info('Another process interupted my thoughts, how dare he!');
+		new Notification({
+			title: 'G14ControlV2',
+			body: 'Only one process allowed at a time!',
+			timeoutType: 'default',
+			hasReply: false,
+		}).show();
 	}
 });

@@ -290,7 +290,9 @@ const createRootReducer = (initialState: G14Config) => {
 		});
 
 		reducer.addCase(setStartMinimized, (state, action) => {
-			state.startup.startMinimized = action.payload;
+			state.startup = Object.assign(state.startup, {
+				startMinimized: action.payload,
+			});
 			return state;
 		});
 	});
