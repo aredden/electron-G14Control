@@ -40,7 +40,7 @@ export default class App extends Component<Props, State> {
 			boostVisible: true,
 			showModal: false,
 			updateText: '',
-			updateVisible: true,
+			updateVisible: false,
 			version: '',
 		};
 	}
@@ -120,7 +120,6 @@ export default class App extends Component<Props, State> {
 			updateVisible,
 			updateText,
 		} = this.state;
-		console.log(process.env.DEBUG_DROPMENU);
 		if (config) {
 			return (
 				<>

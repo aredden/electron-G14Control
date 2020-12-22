@@ -9,6 +9,7 @@ import {
 	powerMonitor,
 	ipcMain,
 	Notification,
+	// nativeImage,
 } from 'electron';
 
 import getLogger from './Logger';
@@ -32,6 +33,7 @@ import installExtension from 'electron-devtools-installer';
 import forceFocus from 'forcefocus';
 import AutoUpdater from './AppUpdater';
 import { isUndefined } from 'lodash';
+import { buildTaskbarMenu } from './Taskbar';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -54,6 +56,26 @@ const ICONPATH = is_dev
 			'extraResources',
 			'icon.ico'
 	  );
+
+// const EXIT_ICON = is_dev
+// 	? path.join(__dirname, '../', 'src', 'assets', 'exit-white.png')
+// 	: path.join(
+// 			app.getPath('exe'),
+// 			'../',
+// 			'resources',
+// 			'extraResources',
+// 			'exit-white.png'
+// 	  );
+
+// const MIN_TRAY_ICON = is_dev
+// 	? path.join(__dirname, '../', 'src', 'assets', 'trayminimize-white.png')
+// 	: path.join(
+// 			app.getPath('exe'),
+// 			'../',
+// 			'resources',
+// 			'extraResources',
+// 			'trayminimize-white.png'
+// 	  );
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export let browserWindow: BrowserWindow;
@@ -143,6 +165,21 @@ export const buildBrowserListeners = (browserWindow: BrowserWindow) => {
 	});
 };
 
+// const mintray = () => {
+// 	LOGGER.info('Clicked minimize to tray.');
+// 	browserWindow.hide();
+// };
+
+// const showwin = () => {
+// 	LOGGER.info('Clicked bring to front.');
+// 	browserWindow.show();
+// };
+
+// const exitapp = () => {
+// 	LOGGER.info('Clicked exit app.');
+// 	app.quit();
+// };
+
 export async function createWindow(
 	gotTheLock: any,
 	g14Config: G14Config,
@@ -197,6 +234,32 @@ export async function createWindow(
 		},
 		darkTheme: true,
 	});
+
+	// let success = browserWindow.setThumbarButtons([
+	// 	{
+	// 		icon: nativeImage.createFromPath(ICONPATH),
+	// 		click() {
+	// 			showwin();
+	// 		},
+	// 		tooltip: 'Bring to front',
+	// 	},
+	// 	{
+	// 		icon: nativeImage.createFromPath(MIN_TRAY_ICON),
+	// 		click() {
+	// 			mintray();
+	// 		},
+	// 		tooltip: 'Minimize to tray',
+	// 	},
+	// 	{
+	// 		icon: nativeImage.createFromPath(EXIT_ICON),
+	// 		click() {
+	// 			exitapp();
+	// 		},
+	// 		tooltip: 'Exit G14ControlV2',
+	// 	},
+	// ]);
+
+	// LOGGER.info('thumb bar buttons completed: ' + success);
 
 	// install dev tools
 	if (is_dev) {
@@ -344,6 +407,11 @@ app.on('ready', async () => {
 		tray = results.tray;
 		browserWindow = results.browserWindow;
 		trayContext = results.trayContext;
+		browserWindow = await buildTaskbarMenu(browserWindow);
+		browserWindow.on('close', (ev) => {
+			ev.preventDefault();
+			browserWindow.hide();
+		});
 	}
 });
 
