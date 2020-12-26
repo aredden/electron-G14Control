@@ -337,7 +337,7 @@ to perform well, I decided to embark on making a new version, and this is the re
 								onClick={(e) => {
 									e.preventDefault();
 									window.shell.openExternal(
-										'https://www.paypal.com/pools/c/8uiaar8Sl9'
+										'https://www.buymeacoffee.com/aredden'
 									);
 								}}>
 								Buy me a coffee!

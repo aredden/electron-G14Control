@@ -90,6 +90,7 @@ declare type G14Config = {
 			type: 'Custom' | 'Armoury';
 			name: string;
 		};
+		minToTray?: boolean;
 		batteryLimit: number | undefined;
 		shortcuts: {
 			minmax: {

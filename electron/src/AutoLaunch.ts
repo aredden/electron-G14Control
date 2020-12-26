@@ -40,14 +40,22 @@ const removeOldStartupFile = async () => {
 
 export const setAutoLaunch = async (enabled: boolean) => {
 	return new Promise(async (resolve) => {
-		removeOldStartupFile();
+		await removeOldStartupFile();
 		let taskAlreadyExists = await checkTaskExists('G14ControlSkipUAC');
 		if (taskAlreadyExists) {
 			ps.addCommand(startupCommand(false));
 			try {
 				await ps.invoke();
+				if (!enabled) {
+					resolve(true);
+					return;
+				}
 			} catch (err) {
 				LOGGER.info('Error removing old startup task:\n' + err);
+				if (!enabled) {
+					resolve(true);
+					return;
+				}
 			}
 		}
 		ps.addCommand(startupCommand(enabled));

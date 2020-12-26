@@ -117,6 +117,13 @@ export const setStartMinimized = createAction(
 	}
 );
 
+export const setMinToTray = createAction(
+	'SET_MIN_TO_TRAY',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
+
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -292,6 +299,13 @@ const createRootReducer = (initialState: G14Config) => {
 		reducer.addCase(setStartMinimized, (state, action) => {
 			state.startup = Object.assign(state.startup, {
 				startMinimized: action.payload,
+			});
+			return state;
+		});
+
+		reducer.addCase(setMinToTray, (state, action) => {
+			state.current = Object.assign(state.current, {
+				minToTray: action.payload,
 			});
 			return state;
 		});

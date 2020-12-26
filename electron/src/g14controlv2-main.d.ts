@@ -93,6 +93,7 @@ declare type G14Config = {
 	};
 	current: {
 		ryzenadj: string;
+		minToTray?: boolean;
 		fanCurve: {
 			type: 'Custom' | 'Armoury';
 			name: string;

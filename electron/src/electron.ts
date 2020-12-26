@@ -72,9 +72,9 @@ export const getConfig = () => g14Config;
 
 export const minMaxFunc = () => {
 	if (browserWindow.isVisible() && browserWindow.isFocused()) {
-		g14Config.startup.startMinimized ? // TODO: Add separate redux variable (another GUI tickBox) for the rog button and/or user defined shortcut? :)
-			browserWindow.hide():
-			browserWindow.minimize()
+		g14Config.current.minToTray
+			? browserWindow.hide()
+			: browserWindow.minimize();
 	} else {
 		LOGGER.info('Attempting to force focus to the browserWindow');
 		if (browserWindow) {
