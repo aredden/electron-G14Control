@@ -8,8 +8,8 @@ import { message, Modal, Spin } from 'antd';
 import { initStore } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
-import ReactMarkdown from 'react-markdown';
 import { UpdateInfo } from 'electron-updater';
+import ReactMarkdownWithHtml from 'react-markdown/with-html';
 
 declare global {
 	interface Window {
@@ -146,13 +146,13 @@ export default class App extends Component<Props, State> {
 							title: 'Exit and update when available',
 						}}
 						onCancel={this.cancelExitAndUpdate}>
-						<ReactMarkdown skipHtml={false}>
+						<ReactMarkdownWithHtml skipHtml={false}>
 							{updateText
 								? updateText +
 								  "\n\nMake sure to export config using the dropdown menu if you don't want to lose your settings!"
 								: 'No release notes available.' +
 								  "\n\nMake sure to export config using the dropdown menu if you don't want to lose your settings!"}
-						</ReactMarkdown>
+						</ReactMarkdownWithHtml>
 					</Modal>
 				</>
 			);
