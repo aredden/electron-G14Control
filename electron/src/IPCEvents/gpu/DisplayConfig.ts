@@ -21,11 +21,6 @@ const screenrefloc = is_dev
 
 const LOGGER = getLogger('DisplayConfig');
 
-const ps = new Shell({
-	executionPolicy: 'Bypass',
-	noProfile: true,
-});
-
 const buildCommandString = (
 	display: number,
 	refresh?: number,
@@ -55,11 +50,16 @@ export const setDisplayConfig = async (
 	) {
 		return false;
 	}
+	const ps = new Shell({
+		executionPolicy: 'Bypass',
+		noProfile: true,
+	});
 	let cmdString = buildCommandString(display, refresh, width, height);
 	return new Promise((resolve) => {
 		ps.addCommand(`& '${screenrefloc}' ${cmdString}`);
 		ps.invoke()
 			.then((result) => {
+				ps.dispose();
 				LOGGER.info(
 					`Successfully changed screen resolution with ChangeScreenResolution.exe command:\n${JSON.stringify(
 						cmdString
@@ -68,6 +68,7 @@ export const setDisplayConfig = async (
 				resolve(result);
 			})
 			.catch((err) => {
+				ps.dispose();
 				LOGGER.error(
 					`Error with ChangeScreenResolution.exe command:\n${JSON.stringify({
 						display,
@@ -151,14 +152,20 @@ export const parseDisplayOptions = (stringOpts: string) => {
 };
 
 export const getDisplays = async () => {
+	const ps = new Shell({
+		executionPolicy: 'Bypass',
+		noProfile: true,
+	});
 	return new Promise((resolve) => {
 		ps.addCommand(`& "${screenrefloc}" /m`);
 		ps.invoke()
 			.then(async (result) => {
+				ps.dispose();
 				let displays = await parseDisplayOptions(result);
 				resolve(displays);
 			})
 			.catch((err) => {
+				ps.dispose();
 				LOGGER.info('Error parsing display options:\n' + err);
 				resolve(false);
 			});

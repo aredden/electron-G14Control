@@ -23,20 +23,21 @@ let restartGPULoc = is_dev
 			'RestartGPU.exe'
 	  );
 
-const ps = new Shell({
-	executionPolicy: 'Bypass',
-	noProfile: true,
-});
-
 export const resetGPU = async () => {
+	const ps = new Shell({
+		executionPolicy: 'Bypass',
+		noProfile: true,
+	});
 	return new Promise((resolve) => {
 		ps.addCommand(`& "${restartGPULoc}" cli`);
 		ps.invoke()
 			.then((result) => {
+				ps.dispose();
 				LOGGER.info('Result resetting GPU:\n' + result);
 				resolve(true);
 			})
 			.catch((err) => {
+				ps.dispose();
 				resolve(false);
 				LOGGER.error(
 					'Error recieved after running command:\n' + err.toString()
@@ -79,6 +80,10 @@ const parseCurrentDynamicGraphicsValues = (answer: string) => {
 };
 
 export const getSwitchableDynamicGraphicsSettings = async () => {
+	const ps = new Shell({
+		executionPolicy: 'Bypass',
+		noProfile: true,
+	});
 	return new Promise(async (resolve) => {
 		let result = await getActivePlan();
 		if (result) {
@@ -87,10 +92,12 @@ export const getSwitchableDynamicGraphicsSettings = async () => {
 			);
 			ps.invoke()
 				.then((answer) => {
+					ps.dispose();
 					let ACDCValues = parseCurrentDynamicGraphicsValues(answer);
 					resolve({ plan: result, result: ACDCValues });
 				})
 				.catch((err) => {
+					ps.dispose();
 					LOGGER.error(err);
 					resolve(false);
 				});
@@ -105,6 +112,10 @@ export const setSwitchableDynamicGraphicsSettings = async (
 	setting: number,
 	guid?: string
 ) => {
+	const ps = new Shell({
+		executionPolicy: 'Bypass',
+		noProfile: true,
+	});
 	return new Promise(async (resolve) => {
 		let result: { name: string; guid: string } | false;
 		if (guid) {
@@ -126,9 +137,11 @@ export const setSwitchableDynamicGraphicsSettings = async (
 					);
 					ps.invoke()
 						.then((result) => {
+							ps.dispose();
 							resolve(true);
 						})
 						.catch((err) => {
+							ps.dispose();
 							LOGGER.info(
 								`Error setting AC value for switchable dynamic graphics...\n${err}`
 							);
@@ -136,12 +149,14 @@ export const setSwitchableDynamicGraphicsSettings = async (
 						});
 				})
 				.catch((err) => {
+					ps.dispose();
 					LOGGER.info(
 						`Error setting AC value for switchable dynamic graphics...\n${err}`
 					);
 					resolve(false);
 				});
 		} else {
+			ps.dispose();
 			LOGGER.error(`Trouble getting active plan from powercfg.`);
 			resolve(false);
 		}
