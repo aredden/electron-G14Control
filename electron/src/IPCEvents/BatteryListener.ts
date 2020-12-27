@@ -1,14 +1,14 @@
 /** @format */
 
 import {BrowserWindow, IpcMain} from 'electron';
-import {buildAtkWmi, setBatteryLimiter, whichCharger,} from './WMI/HardwareControl';
+import {buildAtkWmi, setBatteryLimiter,removeBatteryLimiter, whichCharger,} from './WMI/HardwareControl';
 import getLogger from '../Logger';
 import Shell from 'node-powershell';
 import {checkTaskExists} from '../AutoLaunch';
 
 const LOGGER = getLogger('BatteryListener');
 
-const batteryCommand = (enabled: boolean, comnd: string) =>
+const batteryCommand = (enabled: boolean, comnd?: string) =>
 	enabled
 		? `$Action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-NoProfile -WindowStyle Hidden -command "${comnd}"'
 	$Trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -23,17 +23,20 @@ export const buildBatterySaverListener = (win: BrowserWindow, ipc: IpcMain) => {
 		return (await setLimit(value)) as boolean;
 	});
 
+	ipc.handle('removeBatteryLimiter', async (event) => {
+		await removeBatteryLimiter();
+		return (await removeLimit());
+	});
+
 	ipc.handle('isPlugged', async (event) => {
 		return await whichCharger();
 	});
 };
 
-const removeTask = async () => {
+const removeLimit = async () => {
 	return new Promise((resolve) => {
 		let shell = new Shell({ executionPolicy: 'Bypass', noProfile: true });
-		shell.addCommand(
-			`Unregister-ScheduledTask -TaskName G14ControlBatteryLimit -Confirm:$false`
-		);
+		shell.addCommand(batteryCommand(false))
 		shell
 			.invoke()
 			.then((resul) => {
@@ -65,7 +68,7 @@ const setLimit = async (amt: number) => {
 	return new Promise(async (resolve) => {
 		let exist = await checkTaskExists('G14ControlBatteryLimit');
 		if (exist) {
-			await removeTask();
+			await removeLimit();
 		}
 		let command = buildAtkWmi('DEVS', '0x00120057', amt);
 		let addCommand = batteryCommand(true, command);

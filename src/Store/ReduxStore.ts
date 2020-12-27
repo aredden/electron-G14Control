@@ -36,6 +36,13 @@ export const updateBatteryLimit = createAction(
 	}
 );
 
+export const updateBatteryLimitStatus = createAction(
+	'UPDATE_BATTERY_LIMIT_STATUS',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
+
 export const updateArmouryPlan = createAction(
 	'UPDATE_ARMOURY_PLAN',
 	(value: ArmoryPlan) => {
@@ -218,6 +225,7 @@ const createRootReducer = (initialState: G14Config) => {
 					fanCurve: state.current.fanCurve,
 					rogKey: state.current.rogKey,
 					batteryLimit: action.payload,
+					batteryLimitStatus: state.current.batteryLimitStatus,
 					shortcuts: state.current.shortcuts,
 				},
 			});
@@ -225,14 +233,15 @@ const createRootReducer = (initialState: G14Config) => {
 			return state;
 		});
 
-		reducer.addCase(updateShortcuts, (state, action) => {
+		reducer.addCase(updateBatteryLimitStatus, (state, action) => {
 			let newState: G14Config = Object.assign(state, {
 				current: {
 					ryzenadj: state.current.ryzenadj,
 					fanCurve: state.current.fanCurve,
-					batteryLimit: state.current.batteryLimit,
 					rogKey: state.current.rogKey,
-					shortcuts: action.payload,
+					batteryLimit: state.current.batteryLimitStatus,
+					batteryLimitStatus: action.payload,
+					shortcuts: state.current.shortcuts,
 				},
 			});
 			state = newState;
