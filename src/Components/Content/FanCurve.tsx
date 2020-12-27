@@ -4,7 +4,16 @@ import React, { Component } from 'react';
 import cjs, { Chart } from 'chart.js';
 import * as dragData from 'chartjs-plugin-dragdata';
 import { buildDataSet, createChart } from './FanCurve/FanCurveChartConfig';
-import { Button, Card, Input, message, Modal, PageHeader, Tag } from 'antd';
+import {
+	Button,
+	Card,
+	Input,
+	message,
+	Modal,
+	PageHeader,
+	Tag,
+	Form,
+} from 'antd';
 import ArmoryPlanSettings from './FanCurve/ArmoryPlan';
 import {
 	store,
@@ -32,6 +41,8 @@ interface State {
 	newName: string;
 	armoury: ArmoryPlan;
 	armouryActive: boolean;
+	validHelp: string;
+	validStatus: '' | 'success' | 'warning' | 'error' | 'validating' | undefined;
 }
 
 export default class FanCurve extends Component<Props, State> {
@@ -82,6 +93,8 @@ export default class FanCurve extends Component<Props, State> {
 			newName: '',
 			armoury: armplan,
 			armouryActive: true,
+			validHelp: '',
+			validStatus: '',
 		};
 	}
 
@@ -203,7 +216,7 @@ export default class FanCurve extends Component<Props, State> {
 				}
 			})
 			.catch((error: any) => {
-				message.error('Failed to set fan curves because of error.');
+				message.error('Failed to set fan curves because of error. Check Logs.');
 			});
 	};
 
@@ -250,13 +263,29 @@ export default class FanCurve extends Component<Props, State> {
 	};
 
 	handleModalOk = () => {
-		this.setState({ modalLoading: true }, () => {
-			this.savePlan();
-		});
+		let { newName, fanCurves } = this.state;
+		let names = fanCurves.map((plan) => plan.name);
+		if (names.includes(newName)) {
+			this.setState({
+				validHelp: 'Fan curve names must be unique.',
+				validStatus: 'error',
+			});
+			return;
+		} else if (newName === '') {
+			this.setState({
+				validHelp: 'Fan curve name cannot be empty.',
+				validStatus: 'error',
+			});
+			return;
+		} else {
+			this.setState({ modalLoading: true }, () => {
+				this.savePlan();
+			});
+		}
 	};
 
 	handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.setState({ newName: e.target.value });
+		this.setState({ newName: e.target.value, validHelp: '', validStatus: '' });
 	};
 
 	handleModalCancel = () => {
@@ -276,9 +305,17 @@ export default class FanCurve extends Component<Props, State> {
 			currentPlanName,
 			armoury,
 			armouryActive,
+			validHelp,
+			validStatus,
+			currentCurves,
 		} = this.state;
 
 		let notCustom = false;
+
+		if (currentPlanName === '' || currentCurves.cpu.length < 8) {
+			notCustom = true;
+		}
+
 		return (
 			<div>
 				<PageHeader
@@ -380,13 +417,16 @@ export default class FanCurve extends Component<Props, State> {
 						</Button>,
 					]}>
 					<div>Configuration Name:</div>
-
-					<Input
-						type="text"
-						title="Configuration Name:"
-						aria-label="Configuration Name"
-						value={newName}
-						onChange={(e) => this.handleChangeName(e)}></Input>
+					<Form>
+						<Form.Item validateStatus={validStatus} help={validHelp}>
+							<Input
+								type="text"
+								title="Configuration Name:"
+								aria-label="Configuration Name"
+								value={newName}
+								onChange={(e) => this.handleChangeName(e)}></Input>
+						</Form.Item>
+					</Form>
 				</Modal>
 			</div>
 		);

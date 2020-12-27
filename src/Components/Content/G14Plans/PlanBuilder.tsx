@@ -24,6 +24,7 @@ interface State {
 		graphics: boolean;
 		armoury: boolean;
 	};
+	g14plans: G14ControlPlan[];
 }
 
 export default class PlanBuilder extends Component<Props, State> {
@@ -32,6 +33,7 @@ export default class PlanBuilder extends Component<Props, State> {
 		let currentState = store.getState() as G14Config;
 		let curve = [...currentState.fanCurves] as FanCurveConfig[];
 		let ryzen = [...currentState.ryzenadj.options];
+		let g14plans = currentState.plans;
 		this.state = {
 			ryzen: [...ryzen],
 			curves: [...curve],
@@ -51,6 +53,7 @@ export default class PlanBuilder extends Component<Props, State> {
 				boost: true,
 				armoury: true,
 			},
+			g14plans,
 		};
 	}
 
@@ -367,6 +370,7 @@ export default class PlanBuilder extends Component<Props, State> {
 				<br></br>
 
 				<PlanModal
+					plans={this.state.g14plans}
 					cancel={this.handleCancelSave}
 					show={showModal}
 					submit={this.handleSubmitSaveConfig}></PlanModal>

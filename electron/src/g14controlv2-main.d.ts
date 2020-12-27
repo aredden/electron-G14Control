@@ -99,6 +99,7 @@ declare type G14Config = {
 			name: string;
 		};
 		batteryLimit: number | undefined;
+		batteryLimitStatus: boolean;
 		shortcuts: {
 			minmax: {
 				enabled: boolean;
