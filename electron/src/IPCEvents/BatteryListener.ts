@@ -8,7 +8,7 @@ import {checkTaskExists} from '../AutoLaunch';
 
 const LOGGER = getLogger('BatteryListener');
 
-const batteryCommand = (enabled: boolean, comnd: string) =>
+const batteryCommand = (enabled: boolean, comnd?: string) =>
 	enabled
 		? `$Action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-NoProfile -WindowStyle Hidden -command "${comnd}"'
 	$Trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -30,33 +30,29 @@ export const buildBatterySaverListener = (win: BrowserWindow, ipc: IpcMain) => {
 
 const removeTask = async () => {
 	return new Promise((resolve) => {
-		let shell = new Shell({ executionPolicy: 'Bypass', noProfile: true });
-		shell.addCommand(
-			`Unregister-ScheduledTask -TaskName G14ControlBatteryLimit -Confirm:$false`
-		);
-		shell
-			.invoke()
+		let ps = new Shell({ executionPolicy: 'Bypass', noProfile: true });
+		ps.addCommand(batteryCommand(false));
+		ps.invoke()
 			.then((resul) => {
+				ps.dispose();
 				if (resul) {
 					LOGGER.error(
 						'There was a problem removing battery limit Task Scheduler command.\n' +
 							JSON.stringify(resul, null, 2)
 					);
 					resolve(false);
-					shell.dispose();
 				} else {
 					LOGGER.info(`Successfully removed previous task:\n${resul}`);
 					resolve(true);
-					shell.dispose();
 				}
 			})
 			.catch((err) => {
+				ps.dispose();
 				LOGGER.error(
 					'There was a problem removing battery limit Task Scheduler command.\n' +
 						JSON.stringify(err, null, 2)
 				);
 				resolve(false);
-				shell.dispose();
 			});
 	});
 };
@@ -69,31 +65,30 @@ const setLimit = async (amt: number) => {
 		}
 		let command = buildAtkWmi('DEVS', '0x00120057', amt);
 		let addCommand = batteryCommand(true, command);
-		let sh = new Shell({
+		let ps = new Shell({
 			executionPolicy: 'Bypass',
 			noProfile: true,
 		});
-		sh.addCommand(addCommand);
-		sh.invoke()
+		ps.addCommand(addCommand);
+		ps.invoke()
 			.then((result) => {
+				ps.dispose();
 				if (result) {
 					LOGGER.info('Result of limit command: \n' + result);
 					resolve(true);
-					sh.dispose();
 				} else {
 					LOGGER.error(
 						'There was a problem setting battery limit Task Scheduler command.'
 					);
 					resolve(false);
-					sh.dispose();
 				}
 			})
 			.catch((err) => {
+				ps.dispose();
 				LOGGER.error(
 					'There was an error setting Task Scheduler task: \n' + err
 				);
 				resolve(false);
-				sh.dispose();
 			});
 	});
 };

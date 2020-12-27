@@ -16,13 +16,6 @@ const startupCommand = (enabled: boolean) =>
 	Register-ScheduledTask G14ControlSkipUAC -Action $Action -Trigger $Trigger -Settings $Settings -RunLevel Highest`
 		: `Unregister-ScheduledTask -TaskName G14ControlSkipUAC  -Confirm:$false`;
 
-const ps = new Shell({
-	noProfile: true,
-	executionPolicy: 'bypass',
-	inputEncoding: 'utf-8',
-	outputEncoding: 'utf-8',
-});
-
 const removeOldStartupFile = async () => {
 	const userPath = app.getPath('appData');
 	let filePath = path.join(
@@ -39,6 +32,12 @@ const removeOldStartupFile = async () => {
 };
 
 export const setAutoLaunch = async (enabled: boolean) => {
+	const ps = new Shell({
+		noProfile: true,
+		executionPolicy: 'bypass',
+		inputEncoding: 'utf-8',
+		outputEncoding: 'utf-8',
+	});
 	return new Promise(async (resolve) => {
 		await removeOldStartupFile();
 		let taskAlreadyExists = await checkTaskExists('G14ControlSkipUAC');
@@ -47,12 +46,14 @@ export const setAutoLaunch = async (enabled: boolean) => {
 			try {
 				await ps.invoke();
 				if (!enabled) {
+					ps.dispose();
 					resolve(true);
 					return;
 				}
 			} catch (err) {
 				LOGGER.info('Error removing old startup task:\n' + err);
 				if (!enabled) {
+					ps.dispose();
 					resolve(true);
 					return;
 				}
@@ -61,6 +62,7 @@ export const setAutoLaunch = async (enabled: boolean) => {
 		ps.addCommand(startupCommand(enabled));
 		ps.invoke()
 			.then((response: string) => {
+				ps.dispose();
 				if (
 					(enabled && response.includes('Ready')) ||
 					(!enabled && response.length === 0)
@@ -74,8 +76,9 @@ export const setAutoLaunch = async (enabled: boolean) => {
 			})
 			.catch((error) => {
 				LOGGER.error(
-					`There was an error thrown when trying to sett autolaunch ${enabled}..\nError: ${error}`
+					`There was an error thrown when trying to set autolaunch ${enabled}..\nError: ${error}`
 				);
+				ps.dispose();
 				resolve(false);
 			});
 	});
@@ -93,6 +96,7 @@ export const checkTaskExists = async (name: string) => {
 	return new Promise<boolean>((resolve) => {
 		ps.invoke()
 			.then((result) => {
+				ps.dispose();
 				if (result.length > 0) {
 					LOGGER.info(
 						`Results were returned from task exists query, meaning task was not in list.`
@@ -109,6 +113,7 @@ export const checkTaskExists = async (name: string) => {
 				LOGGER.error(
 					`An error was thrown while checking if task: ${name} existed`
 				);
+				ps.dispose();
 				resolve(false);
 			});
 	});
