@@ -92,6 +92,7 @@ declare type G14Config = {
 		};
 		minToTray?: boolean;
 		batteryLimit: number | undefined;
+		batteryLimitStatus: boolean;
 		shortcuts: {
 			minmax: {
 				enabled: boolean;
