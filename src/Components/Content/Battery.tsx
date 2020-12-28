@@ -11,7 +11,11 @@ import {
 	Switch,
 } from 'antd';
 import React, { Component } from 'react';
-import { store, updateBatteryLimit, updateBatteryLimitStatus } from '../../Store/ReduxStore';
+import {
+	store,
+	updateBatteryLimit,
+	updateBatteryLimitStatus,
+} from '../../Store/ReduxStore';
 
 interface Props {}
 
@@ -112,27 +116,29 @@ export default class Battery extends Component<Props, State> {
 
 	handleSubmitBatteryLimitStatus = () => {
 		const { batteryLimit, batteryLimitStatus } = this.state;
-		if(batteryLimitStatus){
-			message.loading('Removing battery limit...')
+		if (batteryLimitStatus) {
+			message.loading('Removing battery limit...');
 			window.ipcRenderer
 				.invoke('removeBatteryLimiter')
 				.then((result: boolean) => {
 					if (result) {
 						message.success('Successfully removed Battery limit.');
-						this.setState({batteryLimitStatus: false})
-						store.dispatch(updateBatteryLimitStatus(false))
+						this.setState({ batteryLimitStatus: false });
+						store.dispatch(updateBatteryLimitStatus(false));
 					}
-				})
-		}else {
+				});
+		} else {
 			if (!batteryLimitStatus && batteryLimit && batteryLimit >= 20) {
 				message.loading('Submitting battery charge limit...');
 				window.ipcRenderer
 					.invoke('setBatteryLimiter', batteryLimit)
 					.then((result: boolean) => {
 						if (result) {
-							message.success('Successfully set battery limit to: ' + batteryLimit + '%');
-							this.setState({batteryLimitStatus: true});
-							store.dispatch(updateBatteryLimitStatus(true))
+							message.success(
+								'Successfully set battery limit to: ' + batteryLimit + '%'
+							);
+							this.setState({ batteryLimitStatus: true });
+							store.dispatch(updateBatteryLimitStatus(true));
 						}
 					});
 			} else {
@@ -147,7 +153,8 @@ export default class Battery extends Component<Props, State> {
 			<>
 				<PageHeader
 					title="Battery Configuration"
-					subTitle="power delivery, charge limits & drain"/>
+					subTitle="power delivery, charge limits & drain"
+				/>
 
 				<Badge.Ribbon text="Battery Charge Limiter">
 					<Card headStyle={{ background: '#B7B8BA' }}>
@@ -162,7 +169,7 @@ export default class Battery extends Component<Props, State> {
 									style={{ marginLeft: '1rem', marginTop: '.6rem' }}
 									title={'Modify Battery Charge Limit'}
 									size="small"
-									checked={batteryLimitStatus? batteryLimitStatus : false}
+									checked={batteryLimitStatus ? batteryLimitStatus : false}
 									onChange={this.handleSubmitBatteryLimitStatus}
 								/>
 							</div>
@@ -178,15 +185,21 @@ export default class Battery extends Component<Props, State> {
 									min={0}
 									max={100}
 									step={5}
-									onAfterChange={(batteryLimit : number) => store.dispatch(updateBatteryLimit(batteryLimit))}
-									value={batteryLimit ? batteryLimit : 0}/>
+									onAfterChange={(batteryLimit: number) =>
+										store.dispatch(updateBatteryLimit(batteryLimit))
+									}
+									value={batteryLimit ? batteryLimit : 0}
+								/>
 								<Statistic
 									title="Battery Limit"
 									style={{ marginTop: '-.3rem', width: '15%' }}
 									valueStyle={{ fontSize: '15px' }}
 									value={
-										batteryLimit ? `${batteryLimit}%` : 'Unset'
-									}/>
+										batteryLimit && (batteryLimit as unknown) !== true
+											? `${batteryLimit}%`
+											: 'Unset'
+									}
+								/>
 							</div>
 						</Space>
 					</Card>
@@ -205,7 +218,8 @@ export default class Battery extends Component<Props, State> {
 							prefix={this.state.drain > 0 ? '-' : ''}
 							valueStyle={{ fontSize: '22px' }}
 							value={this.state.drain}
-							suffix=" mW"/>
+							suffix=" mW"
+						/>
 						<div
 							style={{
 								fontWeight: 'normal',

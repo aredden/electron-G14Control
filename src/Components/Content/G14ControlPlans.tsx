@@ -17,6 +17,7 @@ import {
 } from '../../Store/ReduxStore';
 import { capitalize } from 'lodash';
 import PlanBuilder from './G14Plans/PlanBuilder';
+import AutoPowerSwitch from './G14Plans/AutoPowerSwitch';
 
 interface Props {}
 interface State {
@@ -203,6 +204,7 @@ export default class G14ControlPlans extends Component<Props, State> {
 						delet: this.deletePlan,
 					}}></ControlPlan>
 				<PlanBuilder updatePlans={this.updatePlans} />
+				<AutoPowerSwitch></AutoPowerSwitch>
 			</Space>
 		);
 	}

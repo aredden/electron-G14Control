@@ -1,5 +1,11 @@
 /** @format */
 
+declare type SMUData = {
+	description: string;
+	offset: string;
+	value: string;
+};
+
 declare type RyzenadjConfig = {
 	stapmLimit?: number;
 	fastLimit?: number;
@@ -86,6 +92,12 @@ declare type RogKeyConfig = {
 };
 
 declare type G14Config = {
+	special?: boolean;
+	autoSwitch?: {
+		enabled: boolean;
+		acPlan: G14ControlPlan;
+		dcPlan: G14ControlPlan;
+	};
 	startup: {
 		checkBoostVisibility: boolean;
 		autoLaunchEnabled: boolean;

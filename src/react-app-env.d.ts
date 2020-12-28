@@ -84,6 +84,11 @@ declare type G14Config = {
 		autoLaunchEnabled: boolean;
 		startMinimized?: boolean;
 	};
+	autoSwitch?: {
+		enabled: boolean;
+		acPlan: G14ControlPlan;
+		dcPlan: G14ControlPlan;
+	};
 	current: {
 		ryzenadj: string;
 		fanCurve: {

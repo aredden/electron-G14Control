@@ -85,16 +85,20 @@ export const switchWindowsPlanToActivateSettings = async (
 			LOGGER.info(`Found other plan: ${otherPlan.name}`);
 			let other = await setWindowsPlan(otherPlan.guid);
 			if (other) {
-				LOGGER.info(`Switched to other plan: ${otherPlan.name}`);
-				let back = await setWindowsPlan(activeGuid);
-				if (back) {
-					return true;
-				} else {
-					LOGGER.error(
-						`There was an issue switching back from off plan to previous active plan.\nprevious: ${activeGuid}\noff: ${otherPlan.guid}`
-					);
-					return false;
-				}
+				return new Promise((resolve) => {
+					setTimeout(async () => {
+						LOGGER.info(`Switched to other plan: ${otherPlan.name}`);
+						let back = await setWindowsPlan(activeGuid);
+						if (back) {
+							resolve(true);
+						} else {
+							LOGGER.error(
+								`There was an issue switching back from off plan to previous active plan.\nprevious: ${activeGuid}\noff: ${otherPlan.guid}`
+							);
+							resolve(false);
+						}
+					}, 500);
+				});
 			} else {
 				LOGGER.error(
 					`There was an issue setting the active plan to off plan:\ncurrent: ${activeGuid}\noff: ${otherPlan.guid} `
@@ -145,64 +149,115 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let b_g = boostOrGraphicsSet(boos, graphi, graphics, graphics);
 
 	if (b_g) {
-		let active = await getActivePlan();
-		if (active && active.guid === windowsPlan.guid) {
-			let switched = await switchWindowsPlanToActivateSettings(
-				windowsPlan.guid
-			);
-			if (!switched) {
-				LOGGER.error(
-					"Couldn't activate G14Control plan because couldn't shuffle windows plan to activate boost / graphics settings"
-				);
-				return false;
-			}
-		}
-		let arm = armouryCrate
-			? await modifyArmoryCratePlan(armouryCrate.toLowerCase() as ArmoryPlan)
-			: 'noarmoury';
-		if (arm || arm === 'noarmoury') {
-			LOGGER.info(
-				'Successfully modified armory crate plan to: ' + armouryCrate
-			);
-			let switchPlan = await setWindowsPlan(windowsPlan.guid);
-			if (switchPlan) {
-				LOGGER.info('Successfully switched windows plan to target plan.');
-				let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
-				if (!ryzn) {
-					await setRyzenadj(ryzenadj);
-				}
-				if (fanCurve) {
-					let { cpu, gpu, plan } = fanCurve;
-					let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
-					let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
-					let armPlan = arm === 'noarmoury' ? plan : armouryCrate;
-					if (cpu || gpu || armPlan) {
-						let result = await modifyFanCurve(
-							cpuCurve,
-							gpuCurve,
-							armPlan ? armPlan.toLowerCase() : undefined
+		return new Promise((resolve) => {
+			setTimeout(async () => {
+				let active = await getActivePlan();
+				if (active && active.guid === windowsPlan.guid) {
+					let switched = await switchWindowsPlanToActivateSettings(
+						windowsPlan.guid
+					);
+					if (!switched) {
+						LOGGER.error(
+							"Couldn't activate G14Control plan because couldn't shuffle windows plan to activate boost / graphics settings"
 						);
-						if (result) {
-							return true;
-						} else {
-							LOGGER.error('Failed to modify fan curve.');
-							return false;
-						}
+						resolve(false);
+						return;
 					}
-				} else {
-					return true;
 				}
-			} else {
-				LOGGER.error('Failed to switch windows plan to target plan.');
-				return false;
-			}
-		} else {
-			LOGGER.error('Failed to set Armoury Crate plan.');
-			return false;
-		}
+				let result = await new Promise(async (resolve) => {
+					setTimeout(async () => {
+						let arm = armouryCrate
+							? await modifyArmoryCratePlan(
+									armouryCrate.toLowerCase() as ArmoryPlan
+							  )
+							: 'noarmoury';
+						if (arm || arm === 'noarmoury') {
+							LOGGER.info(
+								'Successfully modified armory crate plan to: ' + armouryCrate
+							);
+							let switchPlan = true;
+							if (active && active.guid !== windowsPlan.guid) {
+								switchPlan = await setWindowsPlan(windowsPlan.guid);
+							}
+							if (switchPlan) {
+								LOGGER.info(
+									'Successfully switched windows plan to target plan.'
+								);
+								if (ryzenadj) {
+									let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
+									ryzenadj = Object.assign(ryzenadj, {
+										fastLimit: fastLimit * 1000,
+										slowLimit: slowLimit * 1000,
+										stapmLimit: stapmLimit * 1000,
+									});
+								}
+								let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
+								if (!ryzn) {
+									let final = await keepAttemptRyzenADJ(ryzenadj, 6);
+									if (!final) {
+										resolve(false);
+										return;
+									}
+								}
+								if (fanCurve) {
+									let { cpu, gpu, plan } = fanCurve;
+									let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
+									let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
+									let armPlan = arm === 'noarmoury' ? plan : armouryCrate;
+									if (cpu || gpu || armPlan) {
+										let result = await modifyFanCurve(
+											cpuCurve,
+											gpuCurve,
+											armPlan ? armPlan.toLowerCase() : undefined
+										);
+										if (result) {
+											LOGGER.info('Sucessfully applied G14ControlPlan');
+											resolve(true);
+										} else {
+											LOGGER.error('Failed to modify fan curve.');
+											resolve(false);
+										}
+									}
+								} else {
+									LOGGER.info('Sucessfully applied G14ControlPlan');
+									resolve(true);
+								}
+							} else {
+								LOGGER.error('Failed to switch windows plan to target plan.');
+								resolve(false);
+							}
+						} else {
+							LOGGER.error('Failed to set Armoury Crate plan.');
+							resolve(false);
+						}
+					}, 1000);
+				});
+				resolve(result);
+			}, 1000);
+		});
 	} else {
 		LOGGER.error("Couldn't set boost & graphics preferences.");
 		return false;
+	}
+};
+
+export const keepAttemptRyzenADJ = async (
+	plan: RyzenadjConfig,
+	tries: number
+) => {
+	if (tries <= 0) {
+		return false;
+	} else {
+		let attempt = await setRyzenadj(plan);
+		if (!attempt) {
+			return new Promise((resolve) => {
+				setTimeout(() => {
+					resolve(keepAttemptRyzenADJ(plan, tries - 1));
+				}, 500);
+			});
+		} else {
+			return true;
+		}
 	}
 };
 

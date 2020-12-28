@@ -3,7 +3,6 @@
 import { Affix, Layout } from 'antd';
 import React, { Component } from 'react';
 import { MenuListOption } from '../Utilities/Constants';
-import AutoPowerSwitch from './Content/AutoPowerSwitch';
 import Battery from './Content/Battery';
 import CPUTuning from './Content/CPUTuning';
 import DiscreteGPU from './Content/DiscreteGPU';
@@ -41,9 +40,6 @@ export default class ContentLayout extends Component<Props, State> {
 				break;
 			case 'Discrete GPU':
 				displayPage = <DiscreteGPU />;
-				break;
-			case 'Auto Power Switching':
-				displayPage = <AutoPowerSwitch />;
 				break;
 			case 'Battery':
 				displayPage = <Battery />;
