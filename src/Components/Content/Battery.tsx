@@ -36,7 +36,7 @@ export default class Battery extends Component<Props, State> {
 		let redux = store.getState() as G14Config;
 		this.state = {
 			batteryLimit: redux.current.batteryLimit,
-			batteryLimitStatus: redux.current.batteryLimitStatus,
+			batteryLimitStatus: Boolean(redux.current.batteryLimitStatus),
 			drain: 0,
 			chargerState: 'RIP idk *shrug*',
 		};

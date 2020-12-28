@@ -1,7 +1,7 @@
 {
 	"name": "g14controlv2",
 	"productName": "G14ControlV2",
-	"version": "v0.1.33",
+	"version": "v0.1.34",
 	"description": "Management Tools for the Zephyrus G14",
 	"author": {
 		"name": "Alex Redden",

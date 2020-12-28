@@ -1,7 +1,7 @@
 {
 	"name": "g14controlv2-main",
 	"productName": "G14ControlV2-Main",
-	"version": "0.1.33",
+	"version": "0.1.34",
 	"description": "",
 	"main": "./build/electron.js",
 	"scripts": {
