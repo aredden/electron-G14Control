@@ -2,14 +2,25 @@
 
 import cp from 'child_process';
 import dotenv from 'dotenv';
+import is_dev from 'electron-is-dev';
+import { EventEmitter } from 'events';
 import getLogger from '../../Logger';
+import path from 'path';
 dotenv.config();
 
 const LOGGER = getLogger('SMULoop');
 
-// const RMOB_LOC = process.env.RMOB_LOC;
+const RMOB_LOC = is_dev
+	? process.env.RMOB_LOC
+	: path.join(
+			process.execPath,
+			'..',
+			'resources',
+			'renoirMobile',
+			'renoir-mobile.exe'
+	  );
 
-export class SMULoop extends NodeJS.EventEmitter {
+export class SMULoop extends EventEmitter {
 	loop: cp.ChildProcessWithoutNullStreams;
 	constructor() {
 		super();
@@ -18,9 +29,9 @@ export class SMULoop extends NodeJS.EventEmitter {
 
 	start = () => {
 		if (!this.alive()) {
-			// this.loop = cp.spawn(RMOB_LOC);
-			// this.loop.stdout.on('data', this.handleData);
-			// this.loop.stderr.on('data', this.handleError);
+			this.loop = cp.spawn(RMOB_LOC);
+			this.loop.stdout.on('data', this.handleData);
+			this.loop.stderr.on('data', this.handleError);
 		}
 	};
 

@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import RyzenADJ from './CPUTuning/RyzenADJ';
+import Monitoring from './CPUTuning/Monitoring';
 interface Props {}
 
 interface State {}
@@ -18,6 +19,7 @@ export default class CPUTuning extends Component<Props, State> {
 		return (
 			<>
 				<RyzenADJ />
+				<Monitoring />
 			</>
 		);
 	}

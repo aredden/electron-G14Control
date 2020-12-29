@@ -8,6 +8,7 @@ import { buildCPUBoostListeners } from './CPUBoostListeners';
 import { buildElectronListeners } from './ElectronConfigListeners';
 import { buildG14ControlPlanListeners } from './G14ControlPlans';
 import { buildGPUListeners } from './GpuEventListeners';
+import { buildMonitoringListeners } from './Monitoring';
 import { buildRogKeyRemapperListener } from './RogKeyRemapperListener';
 import { buildRyzenADJListeners } from './RyzenADJListener';
 import { buildStartupListeners } from './StartupChecks';
@@ -27,4 +28,5 @@ export function buildIpcConnection(ipc: IpcMain, win: BrowserWindow) {
 	buildBatterySaverListener(win, ipc);
 	buildRogKeyRemapperListener(win, ipc);
 	buildG14ControlPlanListeners(win, ipc);
+	buildMonitoringListeners(win, ipc);
 }

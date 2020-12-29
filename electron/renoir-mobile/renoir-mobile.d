@@ -1,1 +1,0 @@
-C:\Users\alexa\Documents\G14UI\renoir-mobile\target\debug\renoir-mobile.exe: C:\Users\alexa\Documents\G14UI\renoir-mobile\build.rs C:\Users\alexa\Documents\G14UI\renoir-mobile\src\main.rs C:\Users\alexa\Documents\G14UI\renoir-mobile\src\ols.rs C:\Users\alexa\Documents\G14UI\renoir-mobile\src\smu.rs

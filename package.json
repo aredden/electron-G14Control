@@ -125,6 +125,13 @@
 					"filter": [
 						"**/*"
 					]
+				},
+				{
+					"from": "./electron/renoir-mobile",
+					"to": "renoirMobile",
+					"filter": [
+						"**/*"
+					]
 				}
 			]
 		}

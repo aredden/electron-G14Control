@@ -131,7 +131,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let boos: boolean;
 	let graphi: boolean;
 	if (boost || boost === 0) {
-		boos = await setBoost(boost, windowsPlan.guid);
+		boos = (await setBoost(boost, windowsPlan.guid)) as boolean;
 	}
 
 	if (graphics || graphics === 0) {

@@ -59,8 +59,8 @@ export default class CPUBoost extends Component<Props, State> {
 				if (result.result) {
 					let { chosenBoost } = this.state;
 					if (this.props.active) {
-						message.info(
-							'Switch to another plan and back to enable / disable boost. #WindowsThings',
+						message.success(
+							'Activated boost via modify boost & shuffle Windows plan.',
 							5
 						);
 					}

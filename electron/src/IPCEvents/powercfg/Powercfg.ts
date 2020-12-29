@@ -3,6 +3,7 @@
 import { exec } from 'child_process';
 import getLogger from '../../Logger';
 import { parsePlans } from '../../Utilities';
+import { switchWindowsPlanToActivateSettings } from '../G14ControlPlans';
 
 const LOGGER = getLogger('Powercfg');
 
@@ -166,5 +167,12 @@ export const setBoost = async (value: string | number, guid?: string) => {
 			resultSuccess = false;
 		}
 	});
-	return resultSuccess;
+	let current = await getActivePlan();
+	if (current && (!guid || guid === current.guid) && resultSuccess) {
+		LOGGER.info('Need to switch windows plan to activate boost.');
+		let hok = await switchWindowsPlanToActivateSettings(current.guid);
+		return hok;
+	} else {
+		return resultSuccess;
+	}
 };

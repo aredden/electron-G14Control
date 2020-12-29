@@ -8,6 +8,12 @@
 
 /// <reference types="electron-updater"/>
 
+declare type SMUData = {
+	description: string;
+	offset: string;
+	value: string;
+};
+
 declare module 'chartjs-plugin-draggable' {}
 declare module 'chartjs-plugin-dragdata' {}
 declare type RyzenadjConfig = {

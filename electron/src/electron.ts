@@ -287,6 +287,7 @@ export async function createWindow(
 }
 
 powerMonitor.on('shutdown', () => {
+	LOGGER.info('Windows is shutting down (sent from powermonitor)');
 	globalShortcut.unregisterAll();
 	if (hid) {
 		hid.close();
@@ -307,6 +308,7 @@ powerMonitor.on('shutdown', () => {
 });
 
 powerMonitor.on('suspend', () => {
+	LOGGER.info('Windows is suspending (sent from powermonitor)');
 	browserWindow.hide();
 });
 
