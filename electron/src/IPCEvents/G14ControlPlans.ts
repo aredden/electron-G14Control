@@ -117,12 +117,12 @@ export const switchWindowsPlanToActivateSettings = async (
 
 /**
  * 1. Set Boost & Graphics at target windows plan since they are sensitive to changes.
- * 2. switch to target windows plan
- * 3. switch to target windows plan 
-2. set  because they need to change and are sensitive
-3. switch to new plan if different, or switch off and on if same
-4. set ryzenadj
-5. set fan curve
+ * 2. Switch to target windows plan
+ * 3. Switch to target windows plan 
+2. Set  because they need to change and are sensitive
+3. Switch to new plan if different, or switch off and on if same
+4. Set ryzenadj
+5. Set fan curve
 @param FullG14ControlPlan
 @returns Boolean
 */
@@ -131,7 +131,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let boos: boolean;
 	let graphi: boolean;
 	if (boost || boost === 0) {
-		boos = (await setBoost(boost, windowsPlan.guid)) as boolean;
+		boos = (await setBoost(boost, windowsPlan.guid, false)) as boolean;
 	}
 
 	if (graphics || graphics === 0) {
@@ -186,9 +186,12 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 								if (ryzenadj) {
 									let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
 									ryzenadj = Object.assign(ryzenadj, {
-										fastLimit: fastLimit * 1000,
-										slowLimit: slowLimit * 1000,
-										stapmLimit: stapmLimit * 1000,
+										fastLimit:
+											fastLimit % 1000 === 0 ? fastLimit : fastLimit * 1000,
+										slowLimit:
+											slowLimit % 1000 === 0 ? slowLimit : slowLimit * 1000,
+										stapmLimit:
+											stapmLimit % 1000 === 0 ? stapmLimit : stapmLimit * 1000,
 									});
 								}
 								let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;

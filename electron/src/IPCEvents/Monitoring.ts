@@ -5,12 +5,11 @@ import { SMULoop } from './renoir-mobile/SMULoop';
 
 import getLogger from '../Logger';
 
-const LOGGER = getLogger('MonitoringSMU');
+const LOGGER = getLogger('SMUMonitoringListener');
 
 let monitor = new SMULoop();
 
 const handleData = (data: SMUData[], win: BrowserWindow) => {
-	LOGGER.info('Data recieved.' + data.length);
 	win.webContents.send('smuData', data);
 };
 

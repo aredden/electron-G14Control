@@ -10,6 +10,13 @@ import { capitalize } from 'lodash';
 
 export let store: EnhancedStore;
 
+export const updateStore = async (newConfig: G14Config) => {
+	store = configureStore({
+		reducer: createRootReducer(newConfig),
+		devTools: process.env.NODE_ENV !== 'production',
+	});
+};
+
 export const initStore = async (initialState: G14Config) => {
 	store = configureStore({
 		reducer: createRootReducer(initialState),
@@ -126,6 +133,27 @@ export const setStartMinimized = createAction(
 
 export const setMinToTray = createAction(
 	'SET_MIN_TO_TRAY',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
+
+export const setACAutoPowerSwitching = createAction(
+	'SET_AUTO_SWITCH_AC',
+	(value: G14ControlPlan) => {
+		return { payload: value };
+	}
+);
+
+export const setDCAutoPowerSwitching = createAction(
+	'SET_AUTO_SWITCH_DC',
+	(value: G14ControlPlan) => {
+		return { payload: value };
+	}
+);
+
+export const setAutoSwitchingEnabled = createAction(
+	'SET_AUTO_SWITCH_ENABLED',
 	(value: boolean) => {
 		return { payload: value };
 	}
@@ -316,6 +344,36 @@ const createRootReducer = (initialState: G14Config) => {
 			state.current = Object.assign(state.current, {
 				minToTray: action.payload,
 			});
+			return state;
+		});
+
+		reducer.addCase(setAutoSwitchingEnabled, (state, action) => {
+			let { autoSwitch } = state;
+			state.autoSwitch = autoSwitch
+				? Object.assign(state.autoSwitch, {
+						enabled: action.payload,
+				  })
+				: { enabled: action.payload };
+			return state;
+		});
+
+		reducer.addCase(setACAutoPowerSwitching, (state, action) => {
+			let { autoSwitch } = state;
+			state.autoSwitch = autoSwitch
+				? Object.assign(state.autoSwitch, {
+						acPlan: action.payload,
+				  })
+				: { acPlan: action.payload };
+			return state;
+		});
+
+		reducer.addCase(setDCAutoPowerSwitching, (state, action) => {
+			let { autoSwitch } = state;
+			state.autoSwitch = autoSwitch
+				? Object.assign(state.autoSwitch, {
+						dcPlan: action.payload,
+				  })
+				: { dcPlan: action.payload };
 			return state;
 		});
 	});

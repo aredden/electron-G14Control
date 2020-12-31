@@ -38,13 +38,14 @@ export class SMULoop extends EventEmitter {
 	private handleData = (data: Buffer) => {
 		let arr = data.toString();
 		if (arr.indexOf('StapmTimeConstant') !== -1) {
-			let o = arr
-				.replace(/\\/gim, '')
-				.replace(/\}","\{/gim, '},{')
-				.replace(/\["/gim, '[')
-				.replace(/"\]/gim, ']');
-			let smuresponse: SMUData[] = JSON.parse(o);
-			this.emit('smuData', smuresponse);
+			try{
+				let smuresponse: {values:SMUData[]} = JSON.parse(arr);
+				this.emit('smuData', smuresponse.values);
+			}catch(e){
+				LOGGER.info(`Error parsing SMU data. ${e}`)
+			}
+			
+			
 		}
 	};
 

@@ -2,7 +2,12 @@
 
 import { Card, Checkbox, Select, Space } from 'antd';
 import React, { Component } from 'react';
-import { store } from '../../../Store/ReduxStore';
+import {
+	setACAutoPowerSwitching,
+	setAutoSwitchingEnabled,
+	setDCAutoPowerSwitching,
+	store,
+} from '../../../Store/ReduxStore';
 import './AutoPowerSwitch.scss';
 interface Props {}
 
@@ -18,11 +23,21 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 		super(props);
 		let curState = store.getState() as G14Config;
 		let { autoSwitch } = curState;
+		let acPlan = undefined,
+			dcPlan = undefined,
+			enabled = false;
+
+		if (autoSwitch) {
+			acPlan = Object.assign({}, autoSwitch.acPlan);
+			dcPlan = Object.assign({}, autoSwitch.dcPlan);
+			enabled = autoSwitch.enabled ? autoSwitch.enabled : false;
+		}
+		console.log('is enabled: ' + enabled);
 		this.state = {
 			allPlans: [...curState.plans],
-			acPlan: undefined,
-			dcPlan: undefined,
-			enabled: Boolean(autoSwitch),
+			acPlan,
+			dcPlan,
+			enabled,
 		};
 	}
 
@@ -31,7 +46,11 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 		let chosen = allPlans.find((plan) => {
 			return plan.name === value;
 		});
-		console.log(`chose ac plan: ` + chosen);
+		if (chosen) {
+			this.setState({ acPlan: chosen }, () => {
+				store.dispatch(setACAutoPowerSwitching(chosen as G14ControlPlan));
+			});
+		}
 	};
 
 	onChooseDC = (value: any, option: any) => {
@@ -39,7 +58,18 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 		let chosen = allPlans.find((plan) => {
 			return plan.name === value;
 		});
-		console.log(`chose dc plan: ` + chosen);
+		if (chosen) {
+			this.setState({ dcPlan: chosen }, () => {
+				store.dispatch(setDCAutoPowerSwitching(chosen as G14ControlPlan));
+			});
+		}
+	};
+
+	chooseEnabled = () => {
+		let { enabled } = this.state;
+		this.setState({ enabled: !enabled }, () => {
+			store.dispatch(setAutoSwitchingEnabled(!enabled));
+		});
 	};
 
 	render() {
@@ -48,16 +78,26 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 			return { value: val.name };
 		});
 
+		let { enabled, acPlan, dcPlan } = this.state;
+
 		return (
 			<>
 				<Card title={'Auto Power Switching - Coming soon'}>
 					<Space direction="horizontal" className="powersw-container">
-						<label htmlFor="checkAutoSwitch">Enable Auto Power Switching</label>
-						<Checkbox disabled id="checkAutoSwitch"></Checkbox>
+						<div>
+							<label style={{ marginRight: '.5rem' }} htmlFor="checkAutoSwitch">
+								Enable Auto Power Switching
+							</label>
+							<Checkbox
+								onClick={this.chooseEnabled}
+								checked={enabled}
+								id="checkAutoSwitch"></Checkbox>
+						</div>
+
 						<Space direction="vertical" className="powersw-select-container">
 							<label>AC Plan</label>
 							<Select
-								disabled
+								defaultValue={acPlan ? acPlan.name : ''}
 								className="powersw-select"
 								onSelect={this.onChooseAC}
 								options={possiblePlanOptions}></Select>
@@ -65,7 +105,7 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 						<Space direction="vertical" className="powersw-select-container">
 							<label>DC Plan</label>
 							<Select
-								disabled
+								defaultValue={dcPlan ? dcPlan.name : ''}
 								className="powersw-select"
 								onSelect={this.onChooseDC}
 								options={possiblePlanOptions}></Select>

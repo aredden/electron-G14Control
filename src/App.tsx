@@ -5,7 +5,7 @@ import './App.scss';
 import 'antd/dist/antd.css';
 import AppLayout from './Components/Layout';
 import { message, Modal, Spin } from 'antd';
-import { initStore } from './Store/ReduxStore';
+import { initStore, updateStore } from './Store/ReduxStore';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import CloseAndExitButtons from './Components/TopBar/CloseAndExitButtons';
 import { UpdateInfo } from 'electron-updater';
@@ -84,6 +84,9 @@ export default class App extends Component<Props, State> {
 		window.ipcRenderer.on('updateAvailable', this.handleUpdateAvailable);
 		window.ipcRenderer.on('updateDownloaded', this.handleUpdateDownloaded);
 		window.ipcRenderer.send('isLoaded');
+		window.ipcRenderer.on('updateConfig', async (evt, newConfig: G14Config) => {
+			await updateStore(newConfig);
+		});
 		this.getVersion();
 	}
 

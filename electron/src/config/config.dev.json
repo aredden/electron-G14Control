@@ -2,10 +2,9 @@
 	"special": true,
 	"current": {
 		"ryzenadj": "Performance",
-		"fanCurve": { "type": "Armoury", "name": "Turbo" },
+		"fanCurve": { "type": "Custom", "name": "Gaming" },
 		"rogKey": { "enabled": true, "func": "minmax", "armouryCrate": false },
 		"batteryLimit": 70,
-		"batteryLimitStatus": true,
 		"shortcuts": {
 			"minmax": { "enabled": false, "accelerator": "Control+Space" }
 		}
@@ -37,6 +36,17 @@
 			"armouryCrate": "Turbo",
 			"boost": 2,
 			"graphics": 2
+		},
+		{
+			"name": "Medium Saver",
+			"windowsPlan": {
+				"name": "Balanced",
+				"guid": "381b4222-f694-41f0-9685-ff5bb260df2e"
+			},
+			"ryzenadj": "Power saver",
+			"armouryCrate": "Performance",
+			"boost": 0,
+			"graphics": 0
 		}
 	],
 	"ryzenadj": {
@@ -472,5 +482,30 @@
 			"format": "default"
 		}
 	],
-	"armouryPlan": "turbo"
+	"armouryPlan": "turbo",
+	"autoSwitch": {
+		"enabled": true,
+		"acPlan": {
+			"name": "Hot Plan",
+			"windowsPlan": {
+				"name": "High performance",
+				"guid": "6fecc5ae-f350-48a5-b669-b472cb895ccf"
+			},
+			"ryzenadj": "Performance",
+			"armouryCrate": "Turbo",
+			"boost": 2,
+			"graphics": 2
+		},
+		"dcPlan": {
+			"name": "SaverSaver",
+			"windowsPlan": {
+				"name": "Power saver",
+				"guid": "64a64f24-65b9-4b56-befd-5ec1eaced9b3"
+			},
+			"ryzenadj": "Power saver",
+			"armouryCrate": "Silent",
+			"boost": 0,
+			"graphics": 0
+		}
+	}
 }

@@ -28,7 +28,9 @@ export default class MonitoringList extends Component<Props, State> {
 	};
 
 	smuDataListener = (_evt: any, data: SMUData[]) => {
-		this.setState({ smuData: data });
+		if(data instanceof Array){
+			this.setState({ smuData: data });
+		}
 	};
 
 	handleListen = (_evt: any) => {

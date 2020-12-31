@@ -114,7 +114,11 @@ export const getCPUBoostRawResult = async (
 	}
 };
 
-export const setBoost = async (value: string | number, guid?: string) => {
+export const setBoost = async (
+	value: string | number,
+	guid?: string,
+	doSwitch = true
+) => {
 	let activeGuid: string = guid as string;
 	if (!guid) {
 		let plan = await getActivePlan();
@@ -168,7 +172,12 @@ export const setBoost = async (value: string | number, guid?: string) => {
 		}
 	});
 	let current = await getActivePlan();
-	if (current && (!guid || guid === current.guid) && resultSuccess) {
+	if (
+		current &&
+		(!guid || guid === current.guid) &&
+		resultSuccess &&
+		doSwitch
+	) {
 		LOGGER.info('Need to switch windows plan to activate boost.');
 		let hok = await switchWindowsPlanToActivateSettings(current.guid);
 		return hok;

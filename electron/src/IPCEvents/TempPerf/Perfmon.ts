@@ -4,7 +4,6 @@ import { BrowserWindow } from 'electron';
 import perfmon from 'perfmon';
 
 import getLogger from '../../Logger';
-import { checkForAutoSwitching } from '../../AutoPowerSwitching';
 
 const LOGGER = getLogger('Perfmon');
 
@@ -26,7 +25,6 @@ export const buildPerfmonThermalProcess = (win: BrowserWindow) => {
 					win.webContents.send('cpuTemperature', resultingTemp);
 				}
 				let discharge = data.counters['\\Power Meter(_Total)\\Power'];
-				checkForAutoSwitching(discharge);
 				win.webContents.send('dischargeRate', discharge);
 			} else {
 				LOGGER.info(

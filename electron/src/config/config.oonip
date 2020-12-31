@@ -45,6 +45,17 @@
 			"armouryCrate": "Turbo",
 			"boost": 2,
 			"graphics": 3
+		},
+		{
+			"name": "Hot Plan",
+			"windowsPlan": {
+				"name": "High performance",
+				"guid": "6fecc5ae-f350-48a5-b669-b472cb895ccf"
+			},
+			"ryzenadj": "Performance",
+			"armouryCrate": "Turbo",
+			"boost": 2,
+			"graphics": 2
 		}
 	],
 	"ryzenadj": {

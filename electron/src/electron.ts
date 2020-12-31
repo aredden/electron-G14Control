@@ -34,6 +34,7 @@ import AutoUpdater from './AppUpdater';
 import { isUndefined } from 'lodash';
 import { buildTaskbarMenu } from './Taskbar';
 import { NotificationConstructorOptions } from 'electron/main';
+import { initSwitch } from './AutoPowerSwitching';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -55,6 +56,11 @@ const ICONPATH = is_dev
 			'extraResources',
 			'icon.ico'
 	  );
+
+export let powerDelivery: 'battery' | 'ac' = 'ac';
+export const getPowerDelivery = () => powerDelivery;
+export const setPowerDelivery = (val: 'battery' | 'ac') =>
+	(powerDelivery = val);
 
 export let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
@@ -310,6 +316,26 @@ powerMonitor.on('shutdown', () => {
 powerMonitor.on('suspend', () => {
 	LOGGER.info('Windows is suspending (sent from powermonitor)');
 	browserWindow.hide();
+});
+
+powerMonitor.on('on-ac', () => {
+	if (
+		g14Config.autoSwitch &&
+		g14Config.autoSwitch.enabled &&
+		g14Config.autoSwitch.acPlan
+	) {
+		initSwitch('ac');
+	}
+});
+
+powerMonitor.on('on-battery', () => {
+	if (
+		g14Config.autoSwitch &&
+		g14Config.autoSwitch.enabled &&
+		g14Config.autoSwitch.dcPlan
+	) {
+		initSwitch('battery');
+	}
 });
 
 app.on('window-all-closed', async () => {
