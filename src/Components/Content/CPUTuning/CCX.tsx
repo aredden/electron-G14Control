@@ -53,12 +53,15 @@ const CPUPill = ({
 						margin: '.01rem',
 						backgroundColor: '#6974A6',
 					}}></Divider>
-				{/* <hr style={{ padding: '0', margin: '.1rem', color: '#1890FF' }} /> */}
 				<div style={{ display: 'flex', color: 'unset' }}>
-					<div style={{ color: buildColorFreq(speed) }}>
+					<div
+						style={{
+							width: '100%',
+
+							color: buildColorFreq(speed),
+						}}>
 						{speed.toFixed(2) + ' GHz'}
 					</div>
-					{/* <div style={{ color: 'white', paddingLeft: '.2rem' }}>{' GHz'}</div> */}
 				</div>
 			</div>
 		</div>
@@ -79,10 +82,11 @@ export default class CCX extends Component<Props, State> {
 				headStyle={{ borderBottom: 0, color: 'white' }}
 				title={'CCX ' + title}
 				style={{
-					width: '50%',
-					backgroundColor: '#11263a',
+					margin: '.5rem',
+					width: '46%',
+					backgroundColor: '#556a7e',
 					borderRadius: '1rem',
-					border: '2px solid darkgray',
+					border: '2px solid silver',
 				}}>
 				<Row>
 					<CPUPill {...values[0]} />

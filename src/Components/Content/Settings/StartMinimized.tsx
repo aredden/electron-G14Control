@@ -14,6 +14,7 @@ interface State {
 	startBoot: boolean;
 	enabled: boolean;
 	minToTray: boolean;
+	rog: boolean;
 }
 
 export default class StartMinimized extends Component<Props, State> {
@@ -21,9 +22,10 @@ export default class StartMinimized extends Component<Props, State> {
 		super(props);
 		let currentState = store.getState() as G14Config;
 		let { startMinimized, autoLaunchEnabled } = currentState.startup;
-		let { minToTray } = currentState.current;
+		let { minToTray, rogKey } = currentState.current;
 
 		this.state = {
+			rog: rogKey.enabled,
 			startBoot: Boolean(startMinimized),
 			enabled: autoLaunchEnabled,
 			minToTray: Boolean(minToTray),
@@ -44,14 +46,18 @@ export default class StartMinimized extends Component<Props, State> {
 	};
 
 	render() {
-		let { startBoot, enabled, minToTray } = this.state;
+		let { startBoot, enabled, minToTray, rog } = this.state;
 		return (
 			<>
 				<Card>
 					<Space direction="vertical">
 						<Space direction="horizontal">
 							<label>Minimize to tray (checked), or taskbar (unchecked)</label>
-							<Checkbox checked={minToTray} onClick={this.handleMinToTray} />
+							<Checkbox
+								checked={minToTray}
+								disabled={!rog}
+								onClick={this.handleMinToTray}
+							/>
 						</Space>
 						<Space direction="horizontal">
 							<label>Start on boot minimized? &nbsp;</label>

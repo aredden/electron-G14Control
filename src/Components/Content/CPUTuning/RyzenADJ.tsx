@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { Card, message, PageHeader, Select, Space } from 'antd';
+import { Card, message, Select, Space } from 'antd';
 import { store, updateCurrentConfig } from '../../../Store/ReduxStore';
 import RyzenForm from './RyzenForm';
 import './Ryzenadj.scss';
@@ -293,9 +293,6 @@ export default class RyzenADJ extends Component<Props, State> {
 
 		return (
 			<>
-				<PageHeader
-					title="RyzenADJ CPU Tuning"
-					subTitle="Modify CPU performance limits."></PageHeader>
 				<div className="ryzen-form-spacer">
 					<div className="ryzen-form-container">
 						<RyzenForm

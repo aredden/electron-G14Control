@@ -78,9 +78,8 @@ export const getConfig = () => g14Config;
 
 export const minMaxFunc = () => {
 	if (browserWindow.isVisible() && browserWindow.isFocused()) {
-		g14Config.current.minToTray
-			? browserWindow.hide()
-			: browserWindow.minimize();
+		let conf = getConfig();
+		conf.current.minToTray ? browserWindow.hide() : browserWindow.minimize();
 	} else {
 		LOGGER.info('Attempting to force focus to the browserWindow');
 		if (browserWindow) {

@@ -149,7 +149,7 @@ export default class App extends Component<Props, State> {
 							title: 'Exit and update when available',
 						}}
 						onCancel={this.cancelExitAndUpdate}>
-						<ReactMarkdownWithHtml skipHtml={false}>
+						<ReactMarkdownWithHtml allowDangerousHtml>
 							{updateText
 								? updateText +
 								  "\n\nMake sure to export config using the dropdown menu if you don't want to lose your settings!"

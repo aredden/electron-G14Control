@@ -1,10 +1,23 @@
 /** @format */
 
-import { Space, Switch, List, Divider, Row, Col, Statistic } from 'antd';
+import {
+	Space,
+	Switch,
+	List,
+	Divider,
+	Row,
+	Col,
+	Statistic,
+	PageHeader,
+} from 'antd';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBolt } from '@fortawesome/free-solid-svg-icons';
+import {
+	faBolt,
+	faStopwatch,
+	faTemperatureHigh,
+} from '@fortawesome/free-solid-svg-icons';
 import CCX from './CCX';
 interface Props {}
 interface State {
@@ -56,11 +69,11 @@ let DAT = {
 		limit: 0,
 	},
 	StapmTimeConstant: {
-		name: 'Post-Boost TDP Duration',
+		name: 'Post-Boost Duration',
 		value: 0,
 	},
 	SlowPPTTimeConstant: {
-		name: 'Fastest Boost TDP Duration',
+		name: 'Fastest Boost Duration',
 		value: 0,
 	},
 	'CORE TEMP ': {
@@ -71,6 +84,47 @@ let DAT = {
 		name: 'Per Core Frequencies (GHz)',
 		values: [0, 0, 0, 0, 0, 0, 0, 0],
 	},
+};
+
+const resetDat = () => {
+	DAT = {
+		'STAPM LIMIT': {
+			name: 'TDP',
+			value: 0,
+			limit: 0,
+		},
+		'PPT LIMIT FAST': {
+			name: 'Fastest Boost TDP',
+			value: 0,
+			limit: 0,
+		},
+		'PPT LIMIT SLOW': {
+			name: 'Post-Boost TDP',
+			value: 0,
+			limit: 0,
+		},
+		'THM LIMIT CORE': {
+			name: 'Temp Limit',
+			value: 0,
+			limit: 0,
+		},
+		StapmTimeConstant: {
+			name: 'Post-Boost Duration',
+			value: 0,
+		},
+		SlowPPTTimeConstant: {
+			name: 'Fastest Boost Duration',
+			value: 0,
+		},
+		'CORE TEMP ': {
+			name: 'Per Core Temps',
+			values: [0, 0, 0, 0, 0, 0, 0, 0],
+		},
+		'CORE FREQ ': {
+			name: 'Per Core Frequencies (GHz)',
+			values: [0, 0, 0, 0, 0, 0, 0, 0],
+		},
+	};
 };
 
 const coreMatcherThinger = (value: SMUData) => {
@@ -140,6 +194,7 @@ export default class MonitoringList extends Component<Props, State> {
 		if (listening) {
 			window.ipcRenderer.send('killMonitor');
 			window.ipcRenderer.off('smuData', this.smuDataListener);
+			resetDat();
 			this.setState({ listening: false });
 		} else {
 			window.ipcRenderer.send('initMonitor');
@@ -155,110 +210,57 @@ export default class MonitoringList extends Component<Props, State> {
 			window.ipcRenderer.send('killMonitor');
 			window.ipcRenderer.off('smuData', this.smuDataListener);
 		}
-	}
-
-	makeColor(value: number) {
-		if (value <= 35) {
-			return ` <div style="
-			display: inline-block;
-			padding: 0rem .4rem;
-			font-weight: bold;
-			background-color:#89C379;
-			border-radius: .2rem;
-			border: 1px solid black;">${value.toFixed(2).toString()}</div> `;
-		} else if (value <= 55) {
-			return ` <div style="
-				display: inline-block;
-				padding: 0rem .4rem;
-				font-weight: bold;
-				background-color:#FFA809;
-				border-radius: .2rem;
-				border: 1px solid black;">
-				${value.toFixed(2).toString()}</div> `;
-		} else
-			return ` <div style="
-		display: inline-block;
-		padding: 0rem .4rem;
-		font-weight: bold;
-		background-color:#BC2D21;
-		border-radius: .2rem;
-		border: 1px solid black;">
-		${value.toFixed(2).toString()}</div> `;
-	}
-
-	makeColorFreq(value: number) {
-		if (value <= 2) {
-			return ` <div style="
-			display: inline-block;
-			padding: 0rem .4rem;
-			font-weight: bold;
-			background-color:#89C379;
-			border-radius: .2rem;
-			border: 1px solid black;">${value.toFixed(2).toString()}</div> `;
-		} else if (value <= 2.99) {
-			return ` <div style="
-				display: inline-block;
-				padding: 0rem .4rem;
-				font-weight: bold;
-				background-color:#FFA809;
-				border-radius: .2rem;
-				border: 1px solid black;">
-				${value.toFixed(2).toString()}</div> `;
-		} else
-			return ` <div style="
-		display: inline-block;
-		padding: 0rem .4rem;
-		font-weight: bold;
-		background-color:#BC2D21;
-		border-radius: .2rem;
-		border: 1px solid black;">
-		${value.toFixed(2).toString()}</div> `;
+		resetDat();
 	}
 
 	render() {
 		let { listening } = this.state;
 
 		let rimp = (
-			<Row
-				style={{
-					display: 'flex',
-					width: '100%',
-					justifyContent: 'space-between',
-				}}>
-				<Col span={6}>
-					<Statistic
-						title={DAT['STAPM LIMIT'].name}
-						value={
-							DAT['STAPM LIMIT'].value.toFixed(2) +
-							'/' +
-							DAT['STAPM LIMIT'].limit.toFixed(0)
-						}
-						suffix={<FontAwesomeIcon icon={faBolt} />}
-					/>
-				</Col>
-				<Col span={6}>
-					<Statistic
-						title={DAT['PPT LIMIT FAST'].name}
-						value={
-							DAT['PPT LIMIT FAST'].value.toFixed(2) +
-							'/' +
-							DAT['PPT LIMIT FAST'].limit.toFixed(0)
-						}
-						suffix={<FontAwesomeIcon icon={faBolt} />}
-					/>
-				</Col>
-				<Col span={6}>
-					<Statistic
-						title={DAT['PPT LIMIT SLOW'].name}
-						value={
-							DAT['PPT LIMIT SLOW'].value.toFixed(2) +
-							'/' +
-							DAT['PPT LIMIT SLOW'].limit.toFixed(0)
-						}
-						suffix={<FontAwesomeIcon icon={faBolt} />}
-					/>
-				</Col>
-			</Row>
+			<>
+				<Row
+					style={{
+						display: 'flex',
+						width: '100%',
+						justifyContent: 'space-between',
+						height: '5rem',
+						textAlign: 'center',
+					}}>
+					<Col span={6}>
+						<Statistic
+							title={DAT['PPT LIMIT FAST'].name}
+							value={
+								DAT['PPT LIMIT FAST'].value.toFixed(2) +
+								'/' +
+								DAT['PPT LIMIT FAST'].limit.toFixed(0)
+							}
+							suffix={<FontAwesomeIcon icon={faBolt} />}
+						/>
+					</Col>
+					<Col span={6}>
+						<Statistic
+							title={DAT['PPT LIMIT SLOW'].name}
+							value={
+								DAT['PPT LIMIT SLOW'].value.toFixed(2) +
+								'/' +
+								DAT['PPT LIMIT SLOW'].limit.toFixed(0)
+							}
+							suffix={<FontAwesomeIcon icon={faBolt} />}
+						/>
+					</Col>
+					<Col span={6}>
+						<Statistic
+							title={DAT['STAPM LIMIT'].name}
+							value={
+								DAT['STAPM LIMIT'].value.toFixed(2) +
+								'/' +
+								DAT['STAPM LIMIT'].limit.toFixed(0)
+							}
+							suffix={<FontAwesomeIcon icon={faBolt} />}
+						/>
+					</Col>
+				</Row>
+			</>
 		);
 
 		let vals = _.chunk(
@@ -274,7 +276,10 @@ export default class MonitoringList extends Component<Props, State> {
 
 		return (
 			<>
-				<Divider dashed type="horizontal"></Divider>
+				<PageHeader
+					title="RyzenADJ CPU Tuning"
+					subTitle="Modify CPU performance limits."></PageHeader>
+				<br></br>
 				<List
 					className="smu-list monitor-list"
 					size="small"
@@ -285,9 +290,15 @@ export default class MonitoringList extends Component<Props, State> {
 								display: 'flex',
 								justifyContent: 'space-between',
 							}}>
-							<div style={{ width: '20%' }}>SMU Monitoring</div>
+							<div style={{ width: '20%', fontWeight: 'bold' }}>
+								SMU Monitoring
+							</div>
 							<Space
-								style={{ display: 'flex', justifyContent: 'end' }}
+								style={{
+									display: 'flex',
+									justifyContent: 'end',
+									textAlign: 'center',
+								}}
 								direction="horizontal">
 								<label>Enabled</label>
 								<Switch
@@ -300,11 +311,52 @@ export default class MonitoringList extends Component<Props, State> {
 					<List.Item style={{ border: 'none', height: '7rem' }}>
 						{rimp}
 					</List.Item>
-					<List.Item style={{ border: 'none', paddingTop: '1.5rem' }}>
+					<List.Item style={{ border: 'none', height: '6rem' }}>
+						<Row
+							style={{
+								height: '7rem',
+								display: 'flex',
+								width: '100%',
+								textAlign: 'center',
+								justifyContent: 'space-between',
+							}}>
+							{' '}
+							<Col span={6}>
+								{' '}
+								<Statistic
+									title={DAT['SlowPPTTimeConstant'].name}
+									value={DAT['SlowPPTTimeConstant'].value.toFixed(0)}
+									suffix={<FontAwesomeIcon icon={faStopwatch} />}
+								/>
+							</Col>
+							<Col span={6}>
+								{' '}
+								<Statistic
+									title={DAT['StapmTimeConstant'].name}
+									value={DAT['StapmTimeConstant'].value.toFixed(0)}
+									suffix={<FontAwesomeIcon icon={faStopwatch} />}
+								/>
+							</Col>
+							<Col span={6}>
+								{' '}
+								<Statistic
+									title={DAT['THM LIMIT CORE'].name}
+									value={
+										DAT['THM LIMIT CORE'].value.toFixed(0) +
+										'/' +
+										DAT['THM LIMIT CORE'].limit
+									}
+									suffix={<FontAwesomeIcon icon={faTemperatureHigh} />}
+								/>
+							</Col>
+						</Row>
+					</List.Item>
+					<List.Item style={{ border: 'none', paddingTop: '0rem' }}>
 						<CCX values={vals[0]} />
 						<CCX values={vals[1]} />
 					</List.Item>
 				</List>
+				<Divider dashed type="horizontal"></Divider>
 			</>
 		);
 	}

@@ -13,13 +13,11 @@ export default class CPUTuning extends Component<Props, State> {
 		this.state = {};
 	}
 
-	onInputChange = () => {};
-
 	render() {
 		return (
 			<>
-				<RyzenADJ />
 				<Monitoring />
+				<RyzenADJ />
 			</>
 		);
 	}
