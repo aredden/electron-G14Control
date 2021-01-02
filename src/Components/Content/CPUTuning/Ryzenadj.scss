@@ -34,3 +34,44 @@
 	display: flex;
 	justify-content: center;
 }
+
+.smu-list {
+}
+
+.smu-value {
+	margin-left: 1rem;
+	margin-right: auto;
+	padding-left: 0;
+}
+
+.smu-description {
+	background-color: #f0f2f5;
+	border-radius: 0.2rem;
+	border: 1px solid orange;
+	padding: 0.2rem 0.4rem;
+	margin: 0rem 0.4rem;
+}
+
+.cpucore {
+	padding: 0.4rem;
+	margin: 0.3rem;
+	width: 7rem;
+	height: 5.2rem;
+	background-color: #334454;
+	border: 2px solid #1890ff;
+	border-radius: 0.4rem;
+	label {
+		color: whitesmoke;
+	}
+}
+
+.monitor-list {
+	background-color: #f0f2f5;
+	border: 1px solid #dddddd;
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 0.9rem;
+	padding: 1rem;
+	.ant-list-header {
+		border-bottom: none;
+	}
+}

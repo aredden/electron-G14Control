@@ -1,6 +1,7 @@
 /** @format */
 
 import { BrowserWindow, IpcMain } from 'electron';
+import { isNumber } from 'lodash';
 import { getConfig } from '../electron';
 import getLogger from '../Logger';
 import { modifyFanCurve } from './atrofac/ModifyFan';
@@ -130,7 +131,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let { ryzenadj, fanCurve, boost, armouryCrate, graphics, windowsPlan } = plan;
 	let boos: boolean;
 	let graphi: boolean;
-	if (boost || boost === 0) {
+	if (boost || (isNumber(boost) && boost === 0)) {
 		boos = (await setBoost(boost, windowsPlan.guid, false)) as boolean;
 	}
 
@@ -146,7 +147,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 		}
 	}
 
-	let b_g = boostOrGraphicsSet(boos, graphi, graphics, graphics);
+	let b_g = boostOrGraphicsSet(boos, graphi, boost, graphics);
 
 	if (b_g) {
 		return new Promise((resolve) => {
@@ -272,10 +273,10 @@ export const boostOrGraphicsSet = (
 ) => {
 	let resultGraphics = true;
 	let resultBoost = true;
-	if (graphics) {
+	if (graphics || (isNumber(graphics) && graphics === 0)) {
 		resultGraphics = graphi;
 	}
-	if (boost) {
+	if (boost || (isNumber(boost) && boost === 0)) {
 		resultBoost = boos;
 	}
 	return resultGraphics && resultBoost;
