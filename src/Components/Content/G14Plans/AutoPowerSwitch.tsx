@@ -82,7 +82,7 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 
 		return (
 			<>
-				<Card title={'Auto Power Switching - Coming soon'}>
+				<Card title={'Auto Power Switching'}>
 					<Space direction="horizontal" className="powersw-container">
 						<div>
 							<label style={{ marginRight: '.5rem' }} htmlFor="checkAutoSwitch">

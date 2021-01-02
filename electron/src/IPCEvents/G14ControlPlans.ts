@@ -184,25 +184,6 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 								LOGGER.info(
 									'Successfully switched windows plan to target plan.'
 								);
-								if (ryzenadj) {
-									let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
-									ryzenadj = Object.assign(ryzenadj, {
-										fastLimit:
-											fastLimit % 1000 === 0 ? fastLimit : fastLimit * 1000,
-										slowLimit:
-											slowLimit % 1000 === 0 ? slowLimit : slowLimit * 1000,
-										stapmLimit:
-											stapmLimit % 1000 === 0 ? stapmLimit : stapmLimit * 1000,
-									});
-								}
-								let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
-								if (!ryzn) {
-									let final = await keepAttemptRyzenADJ(ryzenadj, 6);
-									if (!final) {
-										resolve(false);
-										return;
-									}
-								}
 								if (fanCurve) {
 									let { cpu, gpu, plan } = fanCurve;
 									let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
@@ -223,6 +204,27 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 										}
 									}
 								} else {
+									if (ryzenadj) {
+										let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
+										ryzenadj = Object.assign(ryzenadj, {
+											fastLimit:
+												fastLimit % 1000 === 0 ? fastLimit : fastLimit * 1000,
+											slowLimit:
+												slowLimit % 1000 === 0 ? slowLimit : slowLimit * 1000,
+											stapmLimit:
+												stapmLimit % 1000 === 0
+													? stapmLimit
+													: stapmLimit * 1000,
+										});
+									}
+									let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
+									if (!ryzn) {
+										let final = await keepAttemptRyzenADJ(ryzenadj, 6);
+										if (!final) {
+											resolve(false);
+											return;
+										}
+									}
 									LOGGER.info('Sucessfully applied G14ControlPlan');
 									resolve(true);
 								}

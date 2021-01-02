@@ -16,6 +16,7 @@ import { store, updateROGKey, updateShortcuts } from '../../Store/ReduxStore';
 import { capitalize } from 'lodash';
 import ReactMarkdown from 'react-markdown';
 import StartMinimized from './Settings/StartMinimized';
+import './Settings.scss';
 
 interface Props {}
 
@@ -324,6 +325,69 @@ to perform well, I decided to embark on making a new version, and this is the re
 					<Card title={'About G14ControlV2'}>
 						<ReactMarkdown>{aboutmkd}</ReactMarkdown>
 						<Space>
+							<div className="fpvra8-0 Ubsnp">
+								<button
+									className="sc-fzoiQi jawRkx"
+									color="primary"
+									tabIndex={0}
+									type="button"
+									onClick={(e) => {
+										e.preventDefault();
+										window.shell.openExternal(
+											'https://www.patreon.com/bePatron?u=34282440'
+										);
+									}}>
+									<div tabIndex={-1} className="sc-fznJRM cPWiv">
+										<svg
+											aria-label="Loading"
+											viewBox="0 0 64 64"
+											className="sc-fzqBZW bhSJWO">
+											<circle
+												cx="32"
+												cy="32"
+												style={{ background: 'white' }}
+												r="32"
+												className="sc-fzqNJr gmvqCk"></circle>
+											<circle
+												color="light"
+												cx="32"
+												style={{ background: 'white' }}
+												cy="32"
+												r="32"
+												stroke-linecap="round"
+												className="sc-fzoyAV tgcnf"></circle>
+										</svg>
+									</div>
+									<div className="sc-fznxsB crxLyS">
+										<div className="sc-fznyAO iAwAuh">
+											<span className="sc-fzplWN iQIUpy">
+												<svg
+													viewBox="0 0 569 546"
+													xmlns="http://www.w3.org/2000/svg">
+													<g>
+														<circle
+															cx="362.589996"
+															cy="204.589996"
+															style={{ background: 'white' }}
+															data-fill="1"
+															id="Oval"
+															r="204.589996"></circle>
+														<rect
+															data-fill="2"
+															height="545.799988"
+															style={{ background: 'white' }}
+															id="Rectangle"
+															width="100"
+															x="0"
+															y="0"></rect>
+													</g>
+												</svg>
+											</span>
+										</div>
+										<div className="sc-fznWqX hCtHOK"></div>Become a patron
+									</div>
+								</button>
+							</div>
 							<button
 								onClick={(e) => {
 									e.preventDefault();

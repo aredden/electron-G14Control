@@ -227,6 +227,7 @@ const createRootReducer = (initialState: G14Config) => {
 					rogKey: state.current.rogKey,
 					batteryLimit: state.current.batteryLimit,
 					shortcuts: state.current.shortcuts,
+					minToTray: state.current.minToTray,
 				},
 			});
 			state = newState;
@@ -255,6 +256,7 @@ const createRootReducer = (initialState: G14Config) => {
 					batteryLimit: action.payload,
 					batteryLimitStatus: state.current.batteryLimitStatus,
 					shortcuts: state.current.shortcuts,
+					minToTray: state.current.minToTray,
 				},
 			});
 			state = newState;
@@ -270,6 +272,7 @@ const createRootReducer = (initialState: G14Config) => {
 					batteryLimit: state.current.batteryLimit,
 					batteryLimitStatus: action.payload,
 					shortcuts: state.current.shortcuts,
+					minToTray: state.current.minToTray,
 				},
 			});
 			state = newState;
@@ -277,7 +280,13 @@ const createRootReducer = (initialState: G14Config) => {
 		});
 
 		reducer.addCase(updateROGKey, (state, action) => {
-			let { ryzenadj, fanCurve, batteryLimit, shortcuts } = state.current;
+			let {
+				ryzenadj,
+				fanCurve,
+				batteryLimit,
+				shortcuts,
+				minToTray,
+			} = state.current;
 			let newState: G14Config = Object.assign(state, {
 				current: {
 					ryzenadj,
@@ -289,6 +298,7 @@ const createRootReducer = (initialState: G14Config) => {
 						func: action.payload.func,
 						armouryCrate: action.payload.armouryCrate,
 					},
+					minToTray,
 				},
 			});
 			state = newState;
@@ -300,7 +310,13 @@ const createRootReducer = (initialState: G14Config) => {
 			return state;
 		});
 		reducer.addCase(updateArmouryPlan, (state, action) => {
-			let { ryzenadj, batteryLimit, shortcuts, rogKey } = state.current;
+			let {
+				ryzenadj,
+				batteryLimit,
+				shortcuts,
+				rogKey,
+				minToTray,
+			} = state.current;
 			let newState: G14Config = Object.assign(state, {
 				current: {
 					ryzenadj,
@@ -311,6 +327,7 @@ const createRootReducer = (initialState: G14Config) => {
 					batteryLimit,
 					shortcuts,
 					rogKey,
+					minToTray,
 				},
 				armouryPlan: action.payload,
 			});
