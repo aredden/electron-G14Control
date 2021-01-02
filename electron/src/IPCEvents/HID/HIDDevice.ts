@@ -228,18 +228,25 @@ export const setUpNewG14ControlKey = (
 
 export const killROGKey = async () => {
 	let thing1 = await checkRemoveAndRename(ARMCRATE_INTERFACE, ASUSACCI_PATH);
+	LOGGER.info('Did thing 1');
 	let thing2 = await checkRemoveAndRename(ARMCRATE_KEY_CTRL, ASUSACCI_PATH);
+	LOGGER.info('Did thing 2');
 	let thing3 = await checkRemoveAndRename(
 		ARMORY_SW_AGENT,
 		ARMORY_SW_AGENT_PATH
 	);
+	LOGGER.info('Did thing 3');
 	let thing4 = await checkRemoveAndRename(
 		ARMCRATE_SESS_HELPER,
 		ARMCRATE_SVC_PATH
 	);
+	LOGGER.info('Did thing 4');
 	let thing5 = await checkRemoveAndRename(ARMCRATE_SVC, ARMCRATE_SVC_PATH);
+	LOGGER.info('Did thing 5');
 	let thing6 = await checkRemoveAndRename(ARMSOCK_SERV, ARMSOCK_SERV_PATH);
+	LOGGER.info('Did thing 6');
 	let thing7 = await checkRemoveAndRename(ARMCRATE_MANAGER);
+	LOGGER.info('Did thing 7');
 	let thing8 = await checkRemoveAndRename(ARMCRATE_MANAGER_AGENT);
 	return true;
 };
