@@ -24,6 +24,23 @@ const location = is_dev
 	  );
 let LOGGER = getLogger('ConfigLoader');
 
+let APPDATA_CONFIG = path.join(
+	app.getPath('appData'),
+	'G14ControlV2',
+	'G14ControlV2.json'
+);
+
+export const tryWriteNewConfig = (config: Buffer) => {
+	let conf = JSON.parse(config.toString()) as G14Config;
+	fs.writeFile(APPDATA_CONFIG, JSON.stringify(conf), 'utf-8', (err) => {
+		if (err) {
+			LOGGER.info("Couldn't write to new config file: " + err);
+		} else {
+			LOGGER.info('Wrote successfully.');
+		}
+	});
+};
+
 export const loadConfig = async () => {
 	if (!location) {
 		LOGGER.error('config.json location undefined.' + location);
@@ -38,6 +55,7 @@ export const loadConfig = async () => {
 				);
 				reject(err);
 			} else {
+				tryWriteNewConfig(data);
 				resolve(data);
 			}
 		});

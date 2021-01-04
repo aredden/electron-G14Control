@@ -1,1 +1,525 @@
-{"special":true,"current":{"ryzenadj":"Performance","fanCurve":{"type":"Custom","name":"Slow Fan"},"rogKey":{"enabled":true,"func":"minmax","armouryCrate":true},"batteryLimit":70,"shortcuts":{"minmax":{"enabled":false,"accelerator":"Control+Space"}},"minToTray":true},"startup":{"checkBoostVisibility":true,"autoLaunchEnabled":true,"startMinimized":true},"plans":[{"name":"SaverSaver","windowsPlan":{"name":"Power saver","guid":"64a64f24-65b9-4b56-befd-5ec1eaced9b3"},"ryzenadj":"Power saver","armouryCrate":"Silent","boost":0,"graphics":0},{"name":"Hot Plan","windowsPlan":{"name":"High performance","guid":"6fecc5ae-f350-48a5-b669-b472cb895ccf"},"ryzenadj":"Performance","armouryCrate":"Turbo","boost":2,"graphics":2},{"name":"Medium Saver","windowsPlan":{"name":"Balanced","guid":"381b4222-f694-41f0-9685-ff5bb260df2e"},"ryzenadj":"Power saver","armouryCrate":"Performance","boost":0,"graphics":0}],"ryzenadj":{"defaults":{"fastLimit":65,"slowLimit":54,"stapmLimit":35,"stapmTime":275,"slowTime":5,"tctlTemp":97},"options":[{"name":"Default","fastLimit":65,"slowLimit":54,"stapmLimit":35,"stapmTime":200,"slowTime":5,"tctlTemp":97},{"name":"Performance","fastLimit":68,"slowLimit":58,"stapmLimit":40,"stapmTime":300,"slowTime":10,"tctlTemp":100},{"name":"Power saver","fastLimit":40,"slowLimit":35,"stapmLimit":25,"stapmTime":275,"slowTime":2,"tctlTemp":85}]},"fanCurves":[{"name":"Performance","plan":"performance","cpu":[21,25,28,30,31,57,58,61],"gpu":[20,23,28,34,51,61,61,69]},{"name":"Gaming","plan":"turbo","cpu":[24,27,31,38,51,61,62,63],"gpu":[20,23,35,39,51,63,65,69]},{"name":"Slow Fan","plan":"silent","cpu":[0,0,0,0,17,23,35,40,56],"gpu":[0,0,0,0,17,23,35,44,60]},{"name":"Medium Fan Performance","cpu":[28,30,32,36,42,49,60,62],"gpu":[21,23,24,28,34,51,61,61],"plan":"performance"},{"name":"Performance Programming","cpu":[33,38,43,46,51,61,62,63],"gpu":[28,32,35,39,51,63,65,69],"plan":"performance"},{"name":"Benchmarking","cpu":[44,46,49,54,61,64,76,79],"gpu":[20,23,35,39,51,63,65,69],"plan":"turbo"},{"name":"Super Benchmarking","cpu":[45,51,63,69,76,80,85,86],"gpu":[20,23,35,39,51,63,65,69],"plan":"turbo"},{"name":"Faster - Performance","cpu":[33,41,43,46,51,61,62,63],"gpu":[35,38,44,47,51,63,65,69],"plan":"performance"},{"name":"Performance","cpu":[21,25,28,30,46,57,58,61],"plan":"performance","gpu":[20,23,28,34,51,61,61,69]},{"name":"Testy Plan","cpu":[16,21,26,32,36,44,49,60],"plan":"turbo","gpu":[20,23,35,39,51,63,65,69]},{"name":"Test 2","cpu":[28,30,36,38,42,49,55,58,56],"plan":"silent","gpu":[21,25,32,34,35,37,43,44,60]}],"displayOptions":[{"resolution":{"width":640,"height":480},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":640,"height":480},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":640,"height":480},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":640,"height":480},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":640,"height":480},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":640,"height":480},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":800,"height":600},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":800,"height":600},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":800,"height":600},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":800,"height":600},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":800,"height":600},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":800,"height":600},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1024,"height":768},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1024,"height":768},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":1024,"height":768},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":1024,"height":768},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":1024,"height":768},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":1024,"height":768},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1280,"height":720},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1280,"height":720},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":1280,"height":720},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":1280,"height":720},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":1280,"height":720},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":1280,"height":720},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1280,"height":1024},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1280,"height":1024},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":1280,"height":1024},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":1280,"height":1024},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":1280,"height":1024},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":1280,"height":1024},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1360,"height":768},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1360,"height":768},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":1360,"height":768},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":1360,"height":768},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":1360,"height":768},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":1360,"height":768},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1366,"height":768},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1366,"height":768},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":1366,"height":768},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":1366,"height":768},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":1366,"height":768},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":1366,"height":768},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1600,"height":900},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1600,"height":900},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":1600,"height":900},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":1600,"height":900},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":1600,"height":900},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":1600,"height":900},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1680,"height":1050},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1680,"height":1050},"bits":32,"refresh":60,"format":"stretched"},{"resolution":{"width":1680,"height":1050},"bits":32,"refresh":60,"format":"centered"},{"resolution":{"width":1680,"height":1050},"bits":32,"refresh":120,"format":"default"},{"resolution":{"width":1680,"height":1050},"bits":32,"refresh":120,"format":"stretched"},{"resolution":{"width":1680,"height":1050},"bits":32,"refresh":120,"format":"centered"},{"resolution":{"width":1920,"height":1080},"bits":32,"refresh":60,"format":"default"},{"resolution":{"width":1920,"height":1080},"bits":32,"refresh":120,"format":"default"}],"armouryPlan":"turbo","autoSwitch":{"enabled":true,"acPlan":{"name":"Hot Plan","windowsPlan":{"name":"High performance","guid":"6fecc5ae-f350-48a5-b669-b472cb895ccf"},"ryzenadj":"Performance","armouryCrate":"Turbo","boost":2,"graphics":2},"dcPlan":{"name":"SaverSaver","windowsPlan":{"name":"Power saver","guid":"64a64f24-65b9-4b56-befd-5ec1eaced9b3"},"ryzenadj":"Power saver","armouryCrate":"Silent","boost":0,"graphics":0}}}
+{
+	"special": true,
+	"firstStart": true,
+	"current": {
+		"ryzenadj": "Performance",
+		"fanCurve": { "type": "Armoury", "name": "Turbo" },
+		"rogKey": { "enabled": true, "func": "minmax", "armouryCrate": true },
+		"batteryLimit": 70,
+		"shortcuts": {
+			"minmax": { "enabled": false, "accelerator": "Control+Space" }
+		},
+		"minToTray": true
+	},
+	"startup": {
+		"checkBoostVisibility": true,
+		"autoLaunchEnabled": true,
+		"startMinimized": true
+	},
+	"plans": [
+		{
+			"name": "SaverSaver",
+			"windowsPlan": {
+				"name": "Power saver",
+				"guid": "64a64f24-65b9-4b56-befd-5ec1eaced9b3"
+			},
+			"ryzenadj": "Power saver",
+			"armouryCrate": "Silent",
+			"boost": 0,
+			"graphics": 0
+		},
+		{
+			"name": "Hot Plan",
+			"windowsPlan": {
+				"name": "High performance",
+				"guid": "6fecc5ae-f350-48a5-b669-b472cb895ccf"
+			},
+			"ryzenadj": "Performance",
+			"armouryCrate": "Turbo",
+			"boost": 2,
+			"graphics": 2
+		},
+		{
+			"name": "Medium Saver",
+			"windowsPlan": {
+				"name": "Balanced",
+				"guid": "381b4222-f694-41f0-9685-ff5bb260df2e"
+			},
+			"ryzenadj": "Power saver",
+			"armouryCrate": "Performance",
+			"boost": 0,
+			"graphics": 0
+		}
+	],
+	"ryzenadj": {
+		"defaults": {
+			"fastLimit": 65,
+			"slowLimit": 54,
+			"stapmLimit": 35,
+			"stapmTime": 275,
+			"slowTime": 5,
+			"tctlTemp": 97
+		},
+		"options": [
+			{
+				"name": "Default",
+				"fastLimit": 65,
+				"slowLimit": 54,
+				"stapmLimit": 35,
+				"stapmTime": 200,
+				"slowTime": 5,
+				"tctlTemp": 97
+			},
+			{
+				"name": "Performance",
+				"fastLimit": 68,
+				"slowLimit": 58,
+				"stapmLimit": 40,
+				"stapmTime": 300,
+				"slowTime": 10,
+				"tctlTemp": 100
+			},
+			{
+				"name": "Power saver",
+				"fastLimit": 40,
+				"slowLimit": 35,
+				"stapmLimit": 25,
+				"stapmTime": 275,
+				"slowTime": 2,
+				"tctlTemp": 85
+			}
+		]
+	},
+	"fanCurves": [
+		{
+			"name": "Performance",
+			"plan": "performance",
+			"cpu": [21, 25, 28, 30, 31, 57, 58, 61],
+			"gpu": [20, 23, 28, 34, 51, 61, 61, 69]
+		},
+		{
+			"name": "Gaming",
+			"plan": "turbo",
+			"cpu": [24, 27, 31, 38, 51, 61, 62, 63],
+			"gpu": [20, 23, 35, 39, 51, 63, 65, 69]
+		},
+		{
+			"name": "Slow Fan",
+			"plan": "silent",
+			"cpu": [0, 0, 0, 0, 17, 23, 35, 40, 56],
+			"gpu": [0, 0, 0, 0, 17, 23, 35, 44, 60]
+		},
+		{
+			"name": "Medium Fan Performance",
+			"cpu": [28, 30, 32, 36, 42, 49, 60, 62],
+			"gpu": [21, 23, 24, 28, 34, 51, 61, 61],
+			"plan": "performance"
+		},
+		{
+			"name": "Performance Programming",
+			"cpu": [33, 38, 43, 46, 51, 61, 62, 63],
+			"gpu": [28, 32, 35, 39, 51, 63, 65, 69],
+			"plan": "performance"
+		},
+		{
+			"name": "Benchmarking",
+			"cpu": [44, 46, 49, 54, 61, 64, 76, 79],
+			"gpu": [20, 23, 35, 39, 51, 63, 65, 69],
+			"plan": "turbo"
+		},
+		{
+			"name": "Super Benchmarking",
+			"cpu": [45, 51, 63, 69, 76, 80, 85, 86],
+			"gpu": [20, 23, 35, 39, 51, 63, 65, 69],
+			"plan": "turbo"
+		},
+		{
+			"name": "Faster - Performance",
+			"cpu": [33, 41, 43, 46, 51, 61, 62, 63],
+			"gpu": [35, 38, 44, 47, 51, 63, 65, 69],
+			"plan": "performance"
+		},
+		{
+			"name": "Performance",
+			"cpu": [21, 25, 28, 30, 46, 57, 58, 61],
+			"plan": "performance",
+			"gpu": [20, 23, 28, 34, 51, 61, 61, 69]
+		},
+		{
+			"name": "Testy Plan",
+			"cpu": [16, 21, 26, 32, 36, 44, 49, 60],
+			"plan": "turbo",
+			"gpu": [20, 23, 35, 39, 51, 63, 65, 69]
+		},
+		{
+			"name": "Test 2",
+			"cpu": [28, 30, 36, 38, 42, 49, 55, 58, 56],
+			"plan": "silent",
+			"gpu": [21, 25, 32, 34, 35, 37, 43, 44, 60]
+		}
+	],
+	"displayOptions": [
+		{
+			"resolution": { "width": 640, "height": 480 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 640, "height": 480 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 640, "height": 480 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 640, "height": 480 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 640, "height": 480 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 640, "height": 480 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 800, "height": 600 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 800, "height": 600 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 800, "height": 600 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 800, "height": 600 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 800, "height": 600 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 800, "height": 600 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1024, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1024, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1024, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1024, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1024, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1024, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1280, "height": 720 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1280, "height": 720 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1280, "height": 720 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1280, "height": 720 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1280, "height": 720 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1280, "height": 720 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1280, "height": 1024 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1280, "height": 1024 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1280, "height": 1024 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1280, "height": 1024 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1280, "height": 1024 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1280, "height": 1024 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1360, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1360, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1360, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1360, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1360, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1360, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1366, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1366, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1366, "height": 768 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1366, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1366, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1366, "height": 768 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1600, "height": 900 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1600, "height": 900 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1600, "height": 900 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1600, "height": 900 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1600, "height": 900 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1600, "height": 900 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1680, "height": 1050 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1680, "height": 1050 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1680, "height": 1050 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1680, "height": 1050 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1680, "height": 1050 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "stretched"
+		},
+		{
+			"resolution": { "width": 1680, "height": 1050 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "centered"
+		},
+		{
+			"resolution": { "width": 1920, "height": 1080 },
+			"bits": 32,
+			"refresh": 60,
+			"format": "default"
+		},
+		{
+			"resolution": { "width": 1920, "height": 1080 },
+			"bits": 32,
+			"refresh": 120,
+			"format": "default"
+		}
+	],
+	"armouryPlan": "turbo",
+	"autoSwitch": {
+		"enabled": true,
+		"acPlan": {
+			"name": "Hot Plan",
+			"windowsPlan": {
+				"name": "High performance",
+				"guid": "6fecc5ae-f350-48a5-b669-b472cb895ccf"
+			},
+			"ryzenadj": "Performance",
+			"armouryCrate": "Turbo",
+			"boost": 2,
+			"graphics": 2
+		},
+		"dcPlan": {
+			"name": "SaverSaver",
+			"windowsPlan": {
+				"name": "Power saver",
+				"guid": "64a64f24-65b9-4b56-befd-5ec1eaced9b3"
+			},
+			"ryzenadj": "Power saver",
+			"armouryCrate": "Silent",
+			"boost": 0,
+			"graphics": 0
+		}
+	}
+}

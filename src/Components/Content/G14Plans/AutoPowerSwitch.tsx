@@ -1,5 +1,6 @@
 /** @format */
 
+import { Unsubscribe } from '@reduxjs/toolkit';
 import { Card, Checkbox, Select, Space } from 'antd';
 import React, { Component } from 'react';
 import {
@@ -16,6 +17,7 @@ interface State {
 	acPlan: G14ControlPlan | undefined;
 	dcPlan: G14ControlPlan | undefined;
 	enabled: boolean;
+	unsub: Unsubscribe;
 }
 
 export default class AutoPowerSwitch extends Component<Props, State> {
@@ -32,14 +34,28 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 			dcPlan = Object.assign({}, autoSwitch.dcPlan);
 			enabled = autoSwitch.enabled ? autoSwitch.enabled : false;
 		}
-		console.log('is enabled: ' + enabled);
+		let unsub = store.subscribe(this.onAddNewPlan);
+
 		this.state = {
 			allPlans: [...curState.plans],
 			acPlan,
 			dcPlan,
 			enabled,
+			unsub,
 		};
 	}
+
+	onAddNewPlan = () => {
+		let datas = store.getState() as G14Config;
+		let names = datas.plans.map((dat) => dat.name);
+		let oldnames = this.state.allPlans.map((dat) => dat.name);
+		if (
+			names.length !== oldnames.length ||
+			names.find((name) => !oldnames.includes(name))
+		) {
+			this.setState({ allPlans: [...datas.plans] });
+		}
+	};
 
 	onChooseAC = (value: any, option: any) => {
 		let { allPlans } = this.state;
@@ -71,6 +87,10 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 			store.dispatch(setAutoSwitchingEnabled(!enabled));
 		});
 	};
+
+	componentWillUnmount() {
+		this.state.unsub();
+	}
 
 	render() {
 		let { allPlans } = this.state;
