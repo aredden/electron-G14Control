@@ -139,11 +139,30 @@ export default class Battery extends Component<Props, State> {
 							);
 							this.setState({ batteryLimitStatus: true });
 							store.dispatch(updateBatteryLimitStatus(true));
+						} else {
+							message.error('Error attempting to set battery limit.');
 						}
 					});
 			} else {
 				message.error('Please set a higher limit.');
 			}
+		}
+	};
+
+	handleModifyEnabled = (limit: number) => {
+		const { batteryLimitStatus } = this.state;
+		if (batteryLimitStatus && limit && limit > 20) {
+			message.loading('Submitting battery charge limit...');
+			window.ipcRenderer
+				.invoke('setBatteryLimiter', limit)
+				.then((result: boolean) => {
+					if (result) {
+						message.success('Successfully set battery limit to: ' + limit);
+						store.dispatch(updateBatteryLimit(limit));
+					} else {
+						message.error('Error attempting to set battery limit.');
+					}
+				});
 		}
 	};
 
@@ -186,7 +205,7 @@ export default class Battery extends Component<Props, State> {
 									max={100}
 									step={5}
 									onAfterChange={(batteryLimit: number) =>
-										store.dispatch(updateBatteryLimit(batteryLimit))
+										this.handleModifyEnabled(batteryLimit)
 									}
 									value={batteryLimit ? batteryLimit : 0}
 								/>
