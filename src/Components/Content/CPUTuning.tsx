@@ -90,7 +90,14 @@ export default class CPUTuning extends Component<Props, State> {
 	deletePlan = (plan: RyzenadjConfigNamed) => {
 		let options = _.cloneDeep((store.getState() as G14Config).ryzenadj.options);
 		let newOptions = options.filter((ok) => ok.name !== plan.name);
-		if (newOptions.length === options.length) {
+		let g14plans = (store.getState() as G14Config).plans;
+		let planExistsInG14PlanList = g14plans.find(
+			(g14plan) => g14plan.ryzenadj && g14plan.ryzenadj === plan.name
+		);
+		if (planExistsInG14PlanList) {
+			message.error('Cannot delete plan that is used in any G14Control plan.');
+			return;
+		} else if (newOptions.length === options.length) {
 			message.error('Error removing plan.');
 		} else if (newOptions.length <= 0) {
 			message.error('Cannot delete the only available plan.');
