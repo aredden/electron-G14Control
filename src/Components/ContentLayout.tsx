@@ -19,9 +19,35 @@ interface Props {
 	version: string;
 }
 
-interface State {}
+interface State {
+	curCurrentPage: MenuListOption;
+}
 
 export default class ContentLayout extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+
+		this.state = {
+			curCurrentPage: 'Status',
+		};
+	}
+
+	componentDidUpdate() {
+		let { curCurrentPage } = this.state;
+		let { currentPage } = this.props;
+		if (curCurrentPage !== currentPage) {
+			let scrollArea = document.getElementById('scroll-content');
+			if (scrollArea) {
+				scrollArea.scroll({
+					top: 0,
+					left: 0,
+					behavior: 'smooth',
+				});
+				this.setState({ curCurrentPage: currentPage });
+			}
+		}
+	}
+
 	render() {
 		let { currentPage } = this.props;
 		let displayPage = <div />;
@@ -51,6 +77,7 @@ export default class ContentLayout extends Component<Props, State> {
 				displayPage = <G14ControlPlans />;
 				break;
 		}
+
 		return (
 			<>
 				<Layout
@@ -62,7 +89,7 @@ export default class ContentLayout extends Component<Props, State> {
 						</Header>
 					</Affix>
 					<div className="scroll-wrapper">
-						<div className="scroll-content">
+						<div className="scroll-content" id="scroll-content">
 							<Content style={{ margin: '1rem 16px' }}>
 								<div
 									className="site-layout-background"

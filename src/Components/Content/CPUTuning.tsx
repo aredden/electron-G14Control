@@ -3,8 +3,13 @@
 import React, { Component } from 'react';
 import RyzenADJ from './CPUTuning/RyzenADJ';
 import Monitoring from './CPUTuning/Monitoring';
-import { addRyzenadjPlan, store } from '../../Store/ReduxStore';
-import { Form, Input, Modal } from 'antd';
+import {
+	addRyzenadjPlan,
+	removeRyzenadjPlan,
+	store,
+} from '../../Store/ReduxStore';
+import { Form, Input, message, Modal } from 'antd';
+import _ from 'lodash';
 interface Props {}
 
 interface State {
@@ -59,7 +64,7 @@ export default class CPUTuning extends Component<Props, State> {
 	changePossibleName = (evt: React.ChangeEvent<HTMLInputElement>) => {
 		evt.persist();
 		console.log(evt);
-		let { plans, possibleName } = this.state;
+		let { plans } = this.state;
 		let newPossible = evt.target.value;
 		if (newPossible.length <= 0) {
 			this.setState({
@@ -82,12 +87,28 @@ export default class CPUTuning extends Component<Props, State> {
 		}
 	};
 
+	deletePlan = (plan: RyzenadjConfigNamed) => {
+		let options = _.cloneDeep((store.getState() as G14Config).ryzenadj.options);
+		let newOptions = options.filter((ok) => ok.name !== plan.name);
+		if (newOptions.length === options.length) {
+			message.error('Error removing plan.');
+		} else if (newOptions.length <= 0) {
+			message.error('Cannot delete the only available plan.');
+		} else {
+			store.dispatch(removeRyzenadjPlan(plan));
+			this.setState({ plans: newOptions });
+		}
+	};
+
 	render() {
 		let { confirmModalVisible, validateHelp, validateStatus } = this.state;
 		return (
 			<>
 				<Monitoring />
-				<RyzenADJ onSaveRyzenadjPlan={this.saveRyzenadjPlan} />
+				<RyzenADJ
+					onDeleteRyzenadjPlan={this.deletePlan}
+					onSaveRyzenadjPlan={this.saveRyzenadjPlan}
+				/>
 				<Modal
 					title={'Name your plan.'}
 					visible={confirmModalVisible}

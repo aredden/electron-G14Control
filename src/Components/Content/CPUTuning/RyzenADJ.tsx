@@ -6,8 +6,10 @@ import { store, updateCurrentConfig } from '../../../Store/ReduxStore';
 import RyzenForm from './RyzenForm';
 import './Ryzenadj.scss';
 import { Unsubscribe } from '@reduxjs/toolkit';
+import _ from 'lodash';
 interface Props {
 	onSaveRyzenadjPlan: (plan: RyzenadjConfig) => any;
+	onDeleteRyzenadjPlan: (plan: RyzenadjConfigNamed) => any;
 }
 
 interface State {
@@ -125,7 +127,12 @@ export default class RyzenADJ extends Component<Props, State> {
 		let { ryzenadj } = store.getState() as G14Config;
 		let { options } = this.state;
 		if (ryzenadj.options.length !== options.length) {
-			this.setState({ options: [...ryzenadj.options] });
+			let opts = _.cloneDeep(ryzenadj.options);
+			this.setState({
+				options: opts,
+				radjFormItems: this.buildRyzenFormItems(opts[0]),
+				radjName: opts[0].name,
+			});
 		}
 	};
 
@@ -307,7 +314,7 @@ export default class RyzenADJ extends Component<Props, State> {
 
 	render() {
 		let { options, radjFormItems, radjName, ryzenadjConfig } = this.state;
-		let { onSaveRyzenadjPlan } = this.props;
+		let { onSaveRyzenadjPlan, onDeleteRyzenadjPlan } = this.props;
 		return (
 			<>
 				<div className="ryzen-form-spacer">
@@ -322,6 +329,7 @@ export default class RyzenADJ extends Component<Props, State> {
 						<h4 style={{ margin: '.4rem' }}>CPU Presets:</h4>
 						<Select
 							defaultValue={radjName}
+							value={radjName}
 							style={{
 								marginLeft: '.4rem',
 								width: 120,
@@ -343,6 +351,16 @@ export default class RyzenADJ extends Component<Props, State> {
 							<button onClick={this.onSubmit}>Apply</button>
 							<button onClick={() => onSaveRyzenadjPlan(ryzenadjConfig)}>
 								Save
+							</button>
+							<button
+								type="button"
+								className="cpu-presets-delete"
+								onClick={() =>
+									onDeleteRyzenadjPlan(
+										Object.assign(ryzenadjConfig, { name: radjName })
+									)
+								}>
+								Delete Current Plan
 							</button>
 						</div>
 					</Space>

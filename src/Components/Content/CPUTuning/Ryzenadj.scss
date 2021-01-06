@@ -11,8 +11,24 @@
 		position: relative;
 		cursor: pointer;
 		margin-left: 0.6rem;
-		margin-top: 2.4rem;
+		margin-top: 0.5rem;
 		width: 100px;
+		background-color: lighten(#4b6074, 40);
+		border-radius: 0.3rem;
+		border: 1px solid lighten(#4b6074, 20);
+		&:hover {
+			background-color: lighten(#4b6074, 30);
+		}
+	}
+	.cpu-presets-delete {
+		margin-left: 0.6rem;
+		width: 209px;
+		background-color: lighten(#e0635c, 20);
+		border: 1px solid #e0635c;
+		border-radius: 0.3rem;
+		&:hover {
+			background-color: #e0635c;
+		}
 	}
 }
 
