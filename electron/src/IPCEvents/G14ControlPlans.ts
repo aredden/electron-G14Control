@@ -91,6 +91,7 @@ export const switchWindowsPlanToActivateSettings = async (
 						LOGGER.info(`Switched to other plan: ${otherPlan.name}`);
 						let back = await setWindowsPlan(activeGuid);
 						if (back) {
+							LOGGER.info(`Successfully switched to: ${activeGuid}`);
 							resolve(true);
 						} else {
 							LOGGER.error(
@@ -196,6 +197,32 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 											armPlan ? armPlan.toLowerCase() : undefined
 										);
 										if (result) {
+											LOGGER.info('Sucessfully applied G14ControlPlan');
+											if (ryzenadj) {
+												let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
+												ryzenadj = Object.assign(ryzenadj, {
+													fastLimit:
+														fastLimit % 1000 === 0
+															? fastLimit
+															: fastLimit * 1000,
+													slowLimit:
+														slowLimit % 1000 === 0
+															? slowLimit
+															: slowLimit * 1000,
+													stapmLimit:
+														stapmLimit % 1000 === 0
+															? stapmLimit
+															: stapmLimit * 1000,
+												});
+											}
+											let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
+											if (!ryzn) {
+												let final = await keepAttemptRyzenADJ(ryzenadj, 6);
+												if (!final) {
+													resolve(false);
+													return;
+												}
+											}
 											LOGGER.info('Sucessfully applied G14ControlPlan');
 											resolve(true);
 										} else {

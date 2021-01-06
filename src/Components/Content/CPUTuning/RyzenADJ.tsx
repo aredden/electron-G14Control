@@ -5,12 +5,16 @@ import { Card, message, Select, Space } from 'antd';
 import { store, updateCurrentConfig } from '../../../Store/ReduxStore';
 import RyzenForm from './RyzenForm';
 import './Ryzenadj.scss';
-interface Props {}
+import { Unsubscribe } from '@reduxjs/toolkit';
+interface Props {
+	onSaveRyzenadjPlan: (plan: RyzenadjConfig) => any;
+}
 
 interface State {
 	ryzenadjConfig: RyzenadjConfig;
 	options: RyzenadjConfigNamed[];
 	radjFormItems: RyzenFormItem[];
+	unsub: Unsubscribe;
 	radjName: string;
 }
 
@@ -109,12 +113,21 @@ export default class RyzenADJ extends Component<Props, State> {
 		}) as RyzenadjConfigNamed;
 		let startRyzenDefaults = Object.assign({}, start);
 		this.state = {
+			unsub: store.subscribe(this.onAddNewRyzenadjPlan),
 			ryzenadjConfig: startRyzenDefaults,
 			options: [...ryzenadj.options],
 			radjName: startPlan,
 			radjFormItems: this.buildRyzenFormItems(startRyzenDefaults),
 		};
 	}
+
+	onAddNewRyzenadjPlan = () => {
+		let { ryzenadj } = store.getState() as G14Config;
+		let { options } = this.state;
+		if (ryzenadj.options.length !== options.length) {
+			this.setState({ options: [...ryzenadj.options] });
+		}
+	};
 
 	onSubmit = async () => {
 		let { ryzenadjConfig, radjName } = this.state;
@@ -288,9 +301,13 @@ export default class RyzenADJ extends Component<Props, State> {
 		this.buildRyzenFormItems(this.state.ryzenadjConfig);
 	}
 
-	render() {
-		let { options, radjFormItems, radjName } = this.state;
+	componentWillUnmount() {
+		this.state.unsub();
+	}
 
+	render() {
+		let { options, radjFormItems, radjName, ryzenadjConfig } = this.state;
+		let { onSaveRyzenadjPlan } = this.props;
 		return (
 			<>
 				<div className="ryzen-form-spacer">
@@ -322,7 +339,12 @@ export default class RyzenADJ extends Component<Props, State> {
 							Ryzenadj settings will occasionally take several tries before
 							being successfully applied.
 						</div>
-						<button onClick={this.onSubmit}>Apply</button>
+						<div className="flex">
+							<button onClick={this.onSubmit}>Apply</button>
+							<button onClick={() => onSaveRyzenadjPlan(ryzenadjConfig)}>
+								Save
+							</button>
+						</div>
 					</Space>
 				</div>
 				<Card

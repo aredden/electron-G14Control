@@ -30,15 +30,13 @@ export const setRyzenadj = (config: RyzenadjConfig) => {
 		Object.keys(config).forEach((value) => {
 			if (value !== 'name') {
 				let milliwatts = config[value];
-				if(milliwatts%1000000===0){
-					milliwatts = milliwatts/1000;
+				if (milliwatts % 1000000 === 0) {
+					milliwatts = milliwatts / 1000;
 				}
 
 				radjStr +=
 					//@ts-ignore
-					value && config[value]
-						? `--${kebabCase(value)} ${milliwatts} `
-						: '';
+					value && config[value] ? `--${kebabCase(value)} ${milliwatts} ` : '';
 			}
 		});
 		if (radjStr.length === 0) {
