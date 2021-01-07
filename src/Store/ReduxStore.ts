@@ -366,6 +366,12 @@ const createRootReducer = (initialState: G14Config) => {
 			);
 			return state;
 		});
+
+		reducer.addCase(updateShortcuts, (state, action) => {
+			let { payload } = action;
+			state.current.shortcuts = payload;
+			return state;
+		});
 	});
 	return reducer;
 };

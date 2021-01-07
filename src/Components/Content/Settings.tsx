@@ -60,11 +60,10 @@ export default class Settings extends Component<Props, State> {
 			message.success(
 				`Successfully ${choice ? 'enabled' : 'disabled'} shortcut!`
 			);
+			this.setState({ shortcuts: newShortcuts });
 			document.getElementById('minmaxcheckid')?.blur();
-			this.setState({ shortcuts: newShortcuts }, () => {
-				let reduxCementVersion = Object.assign({}, newShortcuts);
-				store.dispatch(updateShortcuts(reduxCementVersion));
-			});
+			let reduxCementVersion = Object.assign({}, newShortcuts);
+			store.dispatch(updateShortcuts(reduxCementVersion));
 		} else {
 			message.error(`Failed to ${choice ? 'enable' : 'disable'} shortcut!`);
 		}

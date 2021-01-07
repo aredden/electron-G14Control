@@ -23,12 +23,12 @@ export default class StartMinimized extends Component<Props, State> {
 		let currentState = store.getState() as G14Config;
 		let { startMinimized, autoLaunchEnabled } = currentState.startup;
 		let { minToTray, rogKey } = currentState.current;
-
+		let shortcutsEnabled = currentState.current.shortcuts.minmax.enabled;
 		this.state = {
 			rog: rogKey.enabled,
 			startBoot: Boolean(startMinimized),
 			enabled: autoLaunchEnabled,
-			minToTray: Boolean(minToTray),
+			minToTray: Boolean(minToTray || shortcutsEnabled),
 		};
 	}
 	handleClick = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {

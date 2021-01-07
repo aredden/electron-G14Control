@@ -41,12 +41,17 @@ export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 				LOGGER.info('Disabled minmax shortcut');
 				return true;
 			} else {
-				let result = globalShortcut.register(
-					keys.minmax.accelerator,
-					minMaxFunc
-				);
-				LOGGER.info('Enabled minmax shortcut');
-				return result;
+				if (!globalShortcut.isRegistered(keys.minmax.accelerator)) {
+					let result = globalShortcut.register(
+						keys.minmax.accelerator,
+						minMaxFunc
+					);
+					LOGGER.info('Enabled minmax shortcut');
+					return result;
+				} else {
+					LOGGER.info('Minmax shortcut was already enabled');
+					return true;
+				}
 			}
 		} else {
 			LOGGER.info(
