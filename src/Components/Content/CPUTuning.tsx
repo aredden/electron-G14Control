@@ -46,7 +46,7 @@ export default class CPUTuning extends Component<Props, State> {
 
 	confirmSaveRyzenadjPlan = () => {
 		this.setState({ confirmModalVisible: false }, () => {
-			let { possibleName, chosen } = this.state;
+			let { possibleName, chosen } = _.cloneDeep(this.state);
 			if (chosen && possibleName) {
 				let newPlan = Object.assign(chosen, {
 					name: possibleName,

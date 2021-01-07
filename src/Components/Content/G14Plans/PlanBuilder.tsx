@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import Select, { LabeledValue } from 'antd/lib/select';
 import { capitalize } from 'lodash';
 import PlanModal from './PlanModal';
+import _ from 'lodash';
 
 interface Props {
 	updatePlans: (plans: G14ControlPlan[]) => void;
@@ -132,13 +133,14 @@ export default class PlanBuilder extends Component<Props, State> {
 	};
 
 	handleSubmitSaveConfig = async (e: any, name: string) => {
-		let { setPlan } = this.state;
-		setPlan.name = name;
+		let newSetPlan = _.cloneDeep(this.state.setPlan);
+
+		newSetPlan.name = name;
 
 		this.setState({ showModal: false }, () => {
-			let plns = (store.getState() as G14Config).plans;
-			store.dispatch(updateG14Plans([...plns, setPlan]));
-			this.props.updatePlans([...plns, setPlan]);
+			let plns = _.cloneDeep((store.getState() as G14Config).plans);
+			store.dispatch(updateG14Plans([...plns, newSetPlan]));
+			this.props.updatePlans([...plns, newSetPlan]);
 		});
 	};
 
