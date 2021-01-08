@@ -291,6 +291,34 @@ export async function createWindow(
 	return { tray, browserWindow, g14Config, trayContext };
 }
 
+export const setupElectronReload = (config: G14Config) => {
+	let { shortcuts, rogKey } = config.current;
+
+	// Register global shortcut (example: ctrl + space)
+	if (shortcuts.minmax.enabled) {
+		globalShortcut.unregisterAll();
+		let registered = globalShortcut.register(
+			shortcuts.minmax.accelerator,
+			minMaxFunc
+		);
+		if (registered) {
+			LOGGER.info('Show app shortcut registered.');
+		} else {
+			LOGGER.info('Error registering shortcut.');
+		}
+	}
+
+	if (rogKey.enabled && !hid) {
+		let hdd = setUpNewG14ControlKey(mapperBuilder);
+		if (hdd) {
+			setHidMain(hdd);
+			LOGGER.info('ROG key HID built and listening.');
+		} else {
+			LOGGER.info('There was an issue setting up ROG HID');
+		}
+	}
+};
+
 powerMonitor.on('shutdown', () => {
 	LOGGER.info('Windows is shutting down (sent from powermonitor)');
 	globalShortcut.unregisterAll();

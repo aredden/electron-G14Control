@@ -7,7 +7,12 @@ import is_dev from 'electron-is-dev';
 import getLogger from '../Logger';
 import path from 'path';
 import { app } from 'electron';
-import { browserWindow, getConfig, setG14Config } from '../electron';
+import {
+	browserWindow,
+	getConfig,
+	setG14Config,
+	setupElectronReload,
+} from '../electron';
 
 dotenv.config();
 
@@ -79,7 +84,7 @@ export const writeConfig = async (config: G14Config) => {
 };
 
 export const buildConfigLoaderListeners = (ipc: IpcMain) => {
-	ipc.handle('loadConfig', async (event, args) => {
+	ipc.handle('loadConfig', async (_event, _args) => {
 		let config = await loadConfig().catch((err) => {
 			LOGGER.info(`Error loading config:\n${err}`);
 		});
@@ -91,7 +96,7 @@ export const buildConfigLoaderListeners = (ipc: IpcMain) => {
 			return false;
 		}
 	});
-	ipc.handle('saveConfig', async (event, config: G14Config) => {
+	ipc.handle('saveConfig', async (_event, config: G14Config) => {
 		LOGGER.info('Attempting to save config.');
 		setG14Config(config);
 		let result = writeConfig(config);
@@ -114,7 +119,7 @@ export const buildConfigLoaderListeners = (ipc: IpcMain) => {
 				if (val.canceled) {
 					return;
 				}
-				if (val.filePaths) {
+				if (val.filePaths && val.filePaths.length > 0) {
 					let path2file = val.filePaths[0];
 					fs.readFile(path2file, 'utf-8', (err, datas) => {
 						if (err) {
@@ -124,6 +129,7 @@ export const buildConfigLoaderListeners = (ipc: IpcMain) => {
 							writeConfig(JSON.parse(datas) as G14Config).then((ok) => {
 								if (ok) {
 									browserWindow.reload();
+									setupElectronReload(JSON.parse(datas) as G14Config);
 								} else {
 									LOGGER.info('Issue writing new configuration file.');
 								}
