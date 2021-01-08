@@ -13,12 +13,16 @@ import {
 	setG14Config,
 	setupElectronReload,
 } from '../electron';
+import validator, { configSchema } from '../Utilities/ConfigValidation';
 
 dotenv.config();
 
-//@ts-ignore
-// eslint-ignore-next-line
-const location = is_dev
+type G14PathType = {
+	pathtype: 'Local' | 'Persistent';
+	directory: boolean;
+};
+
+const LOCAL_CFG = is_dev
 	? (process.env.CONFIG_LOC as string)
 	: path.join(
 			app.getPath('exe'),
@@ -29,38 +33,163 @@ const location = is_dev
 	  );
 let LOGGER = getLogger('ConfigLoader');
 
-let APPDATA_CONFIG = path.join(
+const APPDATA_CONFIG = path.join(
 	app.getPath('appData'),
 	'G14ControlV2',
 	'G14ControlV2.json'
 );
 
-export const tryWriteNewConfig = (config: Buffer) => {
-	let conf = JSON.parse(config.toString()) as G14Config;
-	fs.writeFile(APPDATA_CONFIG, JSON.stringify(conf), 'utf-8', (err) => {
-		if (err) {
-			LOGGER.info("Couldn't write to new config file: " + err);
+let FINAL_CFG_LOC = LOCAL_CFG;
+
+const validateConfig = (config: any) => {
+	let validateResult = validator.validate(config, configSchema);
+	LOGGER.info(
+		`Number of validation Errors: ${JSON.stringify(
+			validateResult.errors.length
+		)}`
+	);
+	if (validateResult.valid) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+export const setUpConfigPath: () => G14PathType = () => {
+	let p = path.join(app.getPath('appData'), 'G14ControlV2');
+	if (fs.existsSync(p)) {
+		let persistent = fs.existsSync(APPDATA_CONFIG);
+		if (persistent) {
+			return { pathtype: 'Persistent', directory: true };
 		} else {
-			LOGGER.info('Wrote successfully.');
+			return { pathtype: 'Local', directory: true };
 		}
-	});
+	}
+	return { pathtype: 'Local', directory: false };
+};
+
+export const buildPath = async () => {
+	let { pathtype, directory } = setUpConfigPath();
+	let local = true;
+	let persistConfig = true;
+	FINAL_CFG_LOC = LOCAL_CFG;
+	if (!directory) {
+		let result = await new Promise<boolean>((resolve) => {
+			fs.mkdir(path.join(app.getPath('appData'), 'G14ControlV2'), (err) => {
+				if (err) {
+					LOGGER.error(
+						`Error creating directory for persistent config:\n${JSON.stringify(
+							err,
+							null,
+							2
+						)}`
+					);
+					resolve(false);
+				} else {
+					LOGGER.info(`Successfully created G14Control directory in appdata.`);
+					resolve(true);
+				}
+			});
+		});
+		local = result;
+	}
+	if (pathtype === 'Local' && local) {
+		let config = JSON.parse((await loadConfig()).toString()) as G14Config;
+		let file = Buffer.from(JSON.stringify(config), 'utf-8');
+		let result = await new Promise<boolean>((resolve) => {
+			fs.writeFile(
+				APPDATA_CONFIG,
+				file,
+				{ encoding: 'utf8', flag: 'w+' },
+				(err) => {
+					if (err) {
+						LOGGER.error(
+							`Error writing persistent configuration:\n${JSON.stringify(
+								err,
+								null,
+								2
+							)}`
+						);
+						resolve(false);
+					} else {
+						LOGGER.info(
+							'Successfully wrote configuration data to persistent configuration file.'
+						);
+						resolve(true);
+					}
+				}
+			);
+		});
+		persistConfig = result;
+	}
+	if (persistConfig) {
+		LOGGER.info('Persistent configuration exists.');
+		FINAL_CFG_LOC = APPDATA_CONFIG;
+		let config = JSON.parse((await loadConfig()).toString()) as G14Config;
+		let validated = validateConfig(config);
+		if (!validated) {
+			LOGGER.error('Initial config could not be validated.');
+			FINAL_CFG_LOC = LOCAL_CFG;
+			let configValid = JSON.parse(
+				(await loadConfig()).toString()
+			) as G14Config;
+			FINAL_CFG_LOC = APPDATA_CONFIG;
+			await writeConfig(configValid);
+			configValid = JSON.parse((await loadConfig()).toString()) as G14Config;
+			let ok = validateConfig(configValid);
+			if (ok) {
+				LOGGER.info('Successfully fixed broken config file.');
+			} else {
+				LOGGER.error('Failed to fix configuration.');
+				dialog.showErrorBox(
+					'Configuration Error',
+					'Both local and appdata configuration could not be validated, please reinstall G14ControlV2 to fix.'
+				);
+			}
+		}
+	}
+
+	let ok = persistConfig && local;
+	if (ok) {
+		LOGGER.info('Using appdata persistent config.');
+		FINAL_CFG_LOC = APPDATA_CONFIG;
+		let config = JSON.parse(
+			((await loadConfig()) as Buffer).toString()
+		) as G14Config;
+		validateConfig(config);
+	} else {
+		LOGGER.info('Using local config.');
+		FINAL_CFG_LOC = LOCAL_CFG;
+	}
+};
+
+export const tryWriteNewConfig = (config: Buffer) => {
+	// let conf = JSON.parse(config.toString()) as G14Config;
+	// fs.writeFile(FINAL_CFG_LOC, JSON.stringify(conf), 'utf-8', (err) => {
+	// 	if (err) {
+	// 		LOGGER.info("Couldn't write to new config file: " + err);
+	// 	} else {
+	// 		LOGGER.info('Wrote successfully.');
+	// 	}
+	// });
 };
 
 export const loadConfig = async () => {
-	if (!location) {
-		LOGGER.error('config.json location undefined.' + location);
+	if (!FINAL_CFG_LOC) {
+		LOGGER.error('config.json location undefined.' + FINAL_CFG_LOC);
 
 		return false;
+	} else {
+		LOGGER.info(`Loading config from:\n[${FINAL_CFG_LOC}]`);
 	}
 	return new Promise((resolve, reject) => {
-		fs.readFile(location, (err, data) => {
+		fs.readFile(FINAL_CFG_LOC, (err, data) => {
 			if (err) {
 				LOGGER.info(
-					`Error reading file: ${location}.\n ${JSON.stringify(err)}`
+					`Error reading file: ${FINAL_CFG_LOC}.\n ${JSON.stringify(err)}`
 				);
 				reject(err);
 			} else {
-				tryWriteNewConfig(data);
 				resolve(data);
 			}
 		});
@@ -69,7 +198,7 @@ export const loadConfig = async () => {
 
 export const writeConfig = async (config: G14Config) => {
 	return new Promise((resolve) => {
-		fs.writeFile(location, JSON.stringify(config), (err) => {
+		fs.writeFile(FINAL_CFG_LOC, JSON.stringify(config), (err) => {
 			if (err) {
 				LOGGER.error(
 					`Problem writing to config.json file. \nError: ${JSON.stringify(err)}`
@@ -83,7 +212,7 @@ export const writeConfig = async (config: G14Config) => {
 	});
 };
 
-export const buildConfigLoaderListeners = (ipc: IpcMain) => {
+export const buildConfigLoaderListeners = async (ipc: IpcMain) => {
 	ipc.handle('loadConfig', async (_event, _args) => {
 		let config = await loadConfig().catch((err) => {
 			LOGGER.info(`Error loading config:\n${err}`);

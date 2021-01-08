@@ -23,7 +23,7 @@ import {
 import { HID } from 'node-hid';
 import { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import url from 'url';
-import { loadConfig, writeConfig } from './IPCEvents/ConfigLoader';
+import { buildPath, loadConfig, writeConfig } from './IPCEvents/ConfigLoader';
 import { setUpNewG14ControlKey } from './IPCEvents/HID/HIDDevice';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { mapperBuilder } from './IPCEvents/RogKeyRemapperListener';
@@ -168,6 +168,8 @@ export async function createWindow(
 	if (!gotTheLock) {
 		app.quit();
 	}
+
+	await buildPath();
 
 	// load the config
 	try {

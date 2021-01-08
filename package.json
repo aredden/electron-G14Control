@@ -33,6 +33,7 @@
 		"fkill": "^7.0.1",
 		"forcefocus": "^1.1.0",
 		"is-admin": "^3.0.0",
+		"jsonschema": "^1.4.0",
 		"lodash": "^4.17.20",
 		"node-hid": "^2.0.0-0",
 		"node-powershell": "^4.0.0",
