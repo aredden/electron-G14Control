@@ -22,6 +22,7 @@ import {
 } from '../../Store/ReduxStore';
 import Select from './FanCurve/Select';
 import './FanCurve.scss';
+import { FanCurveModal } from './FanCurve/FanCurvePopper';
 interface Props {}
 
 interface State {
@@ -320,7 +321,14 @@ export default class FanCurve extends Component<Props, State> {
 			<div>
 				<PageHeader
 					title="Fan Curve Editor"
-					subTitle="Modify fan speed configuration."
+					subTitle={
+						<>
+							<div style={{ width: '20rem', display: 'flex' }}>
+								Modify fan speed configuration.
+							</div>
+							<FanCurveModal />
+						</>
+					}
 					style={{ width: '100%', height: '6rem' }}>
 					<div className="curveplan-container">
 						<Select

@@ -25,3 +25,27 @@
 	right: 0px;
 	top: 20px;
 }
+
+.fc-modal-btn {
+	border: 1px solid gray !important;
+	width: 1.5rem;
+	height: 1.5rem;
+	margin-left: 1rem;
+	font-size: 13px;
+	border-radius: 1rem;
+	color: black;
+	text-align: center;
+	line-height: 1.2;
+	background-color: silver;
+	position: absolute;
+	top: 1.7rem;
+	left: 24rem;
+	&:focus {
+		border: 1px solid gray !important;
+		outline: none;
+	}
+	&:hover {
+		background-color: darken(silver, 10);
+		cursor: pointer;
+	}
+}

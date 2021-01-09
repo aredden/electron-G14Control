@@ -143,8 +143,9 @@ export const buildPath = async () => {
 				LOGGER.error('Failed to fix configuration.');
 				dialog.showErrorBox(
 					'Configuration Error',
-					'Both local and appdata configuration could not be validated, please reinstall G14ControlV2 to fix.'
+					'Both local and appdata configuration could not be validated, could be an issue with G14Control, give logs to the developer or open an issue on github.'
 				);
+				persistConfig = false;
 			}
 		}
 	}
@@ -153,10 +154,6 @@ export const buildPath = async () => {
 	if (ok) {
 		LOGGER.info('Using appdata persistent config.');
 		FINAL_CFG_LOC = APPDATA_CONFIG;
-		let config = JSON.parse(
-			((await loadConfig()) as Buffer).toString()
-		) as G14Config;
-		validateConfig(config);
 	} else {
 		LOGGER.info('Using local config.');
 		FINAL_CFG_LOC = LOCAL_CFG;
