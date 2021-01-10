@@ -150,11 +150,7 @@ export default class App extends Component<Props, State> {
 						}}
 						onCancel={this.cancelExitAndUpdate}>
 						<ReactMarkdownWithHtml allowDangerousHtml>
-							{updateText
-								? updateText +
-								  "\n\nMake sure to export config using the dropdown menu if you don't want to lose your settings!"
-								: 'No release notes available.' +
-								  "\n\nMake sure to export config using the dropdown menu if you don't want to lose your settings!"}
+							{updateText ? updateText : 'No release notes available.'}
 						</ReactMarkdownWithHtml>
 					</Modal>
 				</>

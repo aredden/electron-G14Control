@@ -35,6 +35,7 @@ import { isUndefined } from 'lodash';
 import { buildTaskbarMenu } from './Taskbar';
 import { NotificationConstructorOptions } from 'electron/main';
 import { initSwitch } from './AutoPowerSwitching';
+import { initStartupPlan } from './StartupPlan';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -290,6 +291,7 @@ export async function createWindow(
 		}
 	}
 	browserWindow.setMenu(null);
+	initStartupPlan(g14Config);
 	return { tray, browserWindow, g14Config, trayContext };
 }
 
@@ -340,6 +342,14 @@ powerMonitor.on('shutdown', () => {
 	} else {
 		app.quit();
 	}
+});
+
+powerMonitor.on('unlock-screen', () => {
+	initStartupPlan(getConfig());
+});
+
+powerMonitor.on('resume', () => {
+	initStartupPlan(getConfig());
 });
 
 powerMonitor.on('suspend', () => {
