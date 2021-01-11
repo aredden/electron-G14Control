@@ -1,9 +1,8 @@
 /** @format */
 
-import { getConfig } from './electron';
+import { getConfig, showNotification } from './electron';
 import getLogger from './Logger';
 import { setG14ControlPlan } from './IPCEvents/G14ControlPlans';
-import { Notification } from 'electron';
 const LOGGER = getLogger('AutoPowerSwitching');
 
 export type PowerSwitchArgs = {
@@ -34,10 +33,7 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 		if (!result) {
 			LOGGER.error(`Could not switch plan from AC to battery plan.`);
 		} else {
-			new Notification({
-				title: 'Power Switching',
-				body: 'Switched to plan:' + dcPlan.name,
-			}).show();
+			showNotification('Power Switching', 'Switched to plan:' + dcPlan.name);
 		}
 	} else if (acPlan) {
 		let ryz = acPlan.ryzenadj
@@ -54,26 +50,7 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 		if (!result) {
 			LOGGER.error(`Could not switch plan from battery to AC plan.`);
 		} else {
-			new Notification({
-				title: 'Power Switching',
-				body: 'Switched to plan:\n' + acPlan.name,
-			}).show();
+			showNotification('Power Switching', 'Switched to plan:' + acPlan.name);
 		}
 	}
 };
-
-// export const checkForAutoSwitching = async (discharge: number) => {
-// 	if (discharge > 0 && powerDelivery === 'ac') {
-// 		let pow = await whichCharger();
-// 		if (pow && pow.dc) {
-// 			powerDelivery = 'battery';
-// 			initSwitch('battery');
-// 		}
-// 	} else if (discharge <= 1 && powerDelivery === 'battery') {
-// 		let pow = await whichCharger();
-// 		if (pow && (pow.ac || pow.usb)) {
-// 			powerDelivery = 'ac';
-// 			initSwitch('ac');
-// 		}
-// 	}
-// };

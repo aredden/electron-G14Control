@@ -95,6 +95,7 @@ declare type G14Config = {
 	special?: boolean;
 	autoSwitch?: {
 		enabled: boolean;
+		applyOnBoot?: boolean;
 		acPlan: G14ControlPlan;
 		dcPlan: G14ControlPlan;
 	};

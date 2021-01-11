@@ -2,8 +2,8 @@
 
 import { setG14ControlPlan } from './IPCEvents/G14ControlPlans';
 import { whichCharger } from './IPCEvents/WMI/HardwareControl';
-import { Notification } from 'electron';
 import getLogger from './Logger';
+import { showNotification } from './electron';
 
 const LOGGER = getLogger('StartupPlan');
 
@@ -43,7 +43,7 @@ const applyPlan = async (plano: G14ControlPlan, config: G14Config) => {
 		if (result) {
 			return true;
 		} else {
-			LOGGER.error('Failed to set G14Control plan.');
+			LOGGER.error('Failed to set G14Control plan via startup autoswitch.');
 			return false;
 		}
 	} else {
@@ -57,26 +57,29 @@ const applyPlan = async (plano: G14ControlPlan, config: G14Config) => {
 export const initStartupPlan = async (config: G14Config) => {
 	let { autoSwitch } = config;
 	if (autoSwitch && autoSwitch.enabled) {
+		LOGGER.info('Autoswitch is enabled. Will apply plan.');
 		let result = await whichCharger();
 		if (result) {
 			let { ac, dc, usb } = result;
 			if ((ac || usb) && autoSwitch.acPlan) {
 				let result = await applyPlan(autoSwitch.acPlan, config);
 				if (result) {
-					new Notification({
-						title: 'Auto Switching',
-						body: 'Switched to: ' + autoSwitch.acPlan.name,
-					}).show();
+					showNotification(
+						'Auto Switching',
+						'Switched to: ' + autoSwitch.acPlan.name
+					);
 				}
 			} else if (dc && autoSwitch.dcPlan) {
 				let result = await applyPlan(autoSwitch.dcPlan, config);
 				if (result) {
-					new Notification({
-						title: 'Auto Switching',
-						body: 'Switched to: ' + autoSwitch.dcPlan.name,
-					}).show();
+					showNotification(
+						'Auto Switching',
+						'Switched to: ' + autoSwitch.dcPlan.name
+					);
 				}
 			}
+		} else {
+			LOGGER.error('Current charger state could not be identified.');
 		}
 	}
 };

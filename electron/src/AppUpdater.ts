@@ -44,7 +44,7 @@ export default class AutoUpdater<Updater> {
 	checkForUpdate = async () => {
 		LOGGER.info('Checking for update.');
 		let { updater } = this.state;
-		if (!is_dev)
+		if (!is_dev) {
 			updater
 				.checkForUpdatesAndNotify({
 					title: 'G14ControlV2',
@@ -62,6 +62,7 @@ export default class AutoUpdater<Updater> {
 						LOGGER.info('Current update info: ' + JSON.stringify(r, null, 2));
 					}
 				});
+		}
 	};
 
 	getAllInfo = () => {
@@ -77,6 +78,11 @@ export default class AutoUpdater<Updater> {
 	mostRecentVersion = () => {
 		LOGGER.info('App asking for updated version');
 		return this.state.version;
+	};
+
+	downloadUpdate = () => {
+		let { updater } = this.state;
+		updater.downloadUpdate();
 	};
 
 	quitAndUpdate = () => {

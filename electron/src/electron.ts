@@ -112,8 +112,7 @@ export const updateMenuVisible = (minimized?: boolean) => {
 
 const args = process.argv;
 
-// eslint-disable-next-line
-const showNotification = (title: string, body: string) => {
+export const showNotification = (title: string, body: string) => {
 	const notification: NotificationConstructorOptions = {
 		icon: ICONPATH,
 		title: title,
@@ -178,6 +177,10 @@ export async function createWindow(
 	} catch (err) {
 		LOGGER.error('Error loading config at startup');
 	}
+
+	// Set appid so notifications don't show entire app id.
+	app.setAppUserModelId('G14ControlV2');
+
 	// logic for start on boot minimized
 	let startWithFocus = true;
 	if (args.length > 1 && args[1] === 'hide') {
@@ -291,7 +294,12 @@ export async function createWindow(
 		}
 	}
 	browserWindow.setMenu(null);
-	initStartupPlan(g14Config);
+	if (g14Config.autoSwitch && g14Config.autoSwitch.applyOnBoot) {
+		setTimeout(() => {
+			initStartupPlan(getConfig());
+		}, 3000);
+	}
+
 	return { tray, browserWindow, g14Config, trayContext };
 }
 
@@ -344,12 +352,13 @@ powerMonitor.on('shutdown', () => {
 	}
 });
 
-powerMonitor.on('unlock-screen', () => {
-	initStartupPlan(getConfig());
-});
-
 powerMonitor.on('resume', () => {
-	initStartupPlan(getConfig());
+	LOGGER.info('Resume: initializing startup plan.');
+	if (g14Config.autoSwitch && g14Config.autoSwitch.applyOnBoot) {
+		setTimeout(() => {
+			initStartupPlan(getConfig());
+		}, 3000);
+	}
 });
 
 powerMonitor.on('suspend', () => {

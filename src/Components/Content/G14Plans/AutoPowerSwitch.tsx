@@ -7,12 +7,14 @@ import {
 	setACAutoPowerSwitching,
 	setAutoSwitchingEnabled,
 	setDCAutoPowerSwitching,
+	setAutoSwitchOnBootResume,
 	store,
 } from '../../../Store/ReduxStore';
 import './AutoPowerSwitch.scss';
 interface Props {}
 
 interface State {
+	startBootResume: boolean;
 	allPlans: G14ControlPlan[];
 	acPlan: G14ControlPlan | undefined;
 	dcPlan: G14ControlPlan | undefined;
@@ -27,12 +29,14 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 		let { autoSwitch } = curState;
 		let acPlan = undefined,
 			dcPlan = undefined,
-			enabled = false;
+			enabled = false,
+			startBootResume = false;
 
 		if (autoSwitch) {
 			acPlan = Object.assign({}, autoSwitch.acPlan);
 			dcPlan = Object.assign({}, autoSwitch.dcPlan);
 			enabled = autoSwitch.enabled ? autoSwitch.enabled : false;
+			startBootResume = !!autoSwitch.applyOnBoot;
 		}
 		let unsub = store.subscribe(this.onAddNewPlan);
 
@@ -42,6 +46,7 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 			dcPlan,
 			enabled,
 			unsub,
+			startBootResume,
 		};
 	}
 
@@ -88,6 +93,13 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 		});
 	};
 
+	chooseOnBoot = () => {
+		let { startBootResume } = this.state;
+		this.setState({ startBootResume: !startBootResume }, () => {
+			store.dispatch(setAutoSwitchOnBootResume(!startBootResume));
+		});
+	};
+
 	componentWillUnmount() {
 		this.state.unsub();
 	}
@@ -98,20 +110,38 @@ export default class AutoPowerSwitch extends Component<Props, State> {
 			return { value: val.name };
 		});
 
-		let { enabled, acPlan, dcPlan } = this.state;
+		let { enabled, acPlan, dcPlan, startBootResume } = this.state;
 
 		return (
 			<>
 				<Card title={'Auto Power Switching'}>
 					<Space direction="horizontal" className="powersw-container">
 						<div>
-							<label style={{ marginRight: '.5rem' }} htmlFor="checkAutoSwitch">
-								Enable Auto Power Switching
-							</label>
-							<Checkbox
-								onClick={this.chooseEnabled}
-								checked={enabled}
-								id="checkAutoSwitch"></Checkbox>
+							<Space direction="vertical">
+								<div>
+									<label
+										style={{ marginRight: '.5rem' }}
+										htmlFor="checkAutoSwitch">
+										Enable Auto Power Switching
+									</label>
+									<Checkbox
+										onClick={this.chooseEnabled}
+										checked={enabled}
+										id="checkAutoSwitch"></Checkbox>
+								</div>
+
+								<div>
+									<label
+										style={{ marginRight: '.5rem' }}
+										htmlFor="checkStartBootResume">
+										Apply on app startup & resume
+									</label>
+									<Checkbox
+										onClick={this.chooseOnBoot}
+										checked={startBootResume}
+										id="checkStartBootResume"></Checkbox>
+								</div>
+							</Space>
 						</div>
 
 						<Space direction="vertical" className="powersw-select-container">

@@ -172,6 +172,12 @@ export const removeRyzenadjPlan = createAction(
 	}
 );
 
+export const setAutoSwitchOnBootResume = createAction(
+	'SET_AUTOSWITCH_BOOT_RESUME',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -370,6 +376,16 @@ const createRootReducer = (initialState: G14Config) => {
 		reducer.addCase(updateShortcuts, (state, action) => {
 			let { payload } = action;
 			state.current.shortcuts = payload;
+			return state;
+		});
+
+		reducer.addCase(setAutoSwitchOnBootResume, (state, action) => {
+			let { autoSwitch } = state;
+			state.autoSwitch = autoSwitch
+				? Object.assign(state.autoSwitch, {
+						applyOnBoot: action.payload,
+				  })
+				: { applyOnBoot: action.payload };
 			return state;
 		});
 	});
