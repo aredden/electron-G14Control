@@ -38,24 +38,18 @@ export class SMULoop extends EventEmitter {
 	private handleData = (data: Buffer) => {
 		let arr = data.toString();
 		if (arr.indexOf('StapmTimeConstant') !== -1) {
-			try{
-				let smuresponse: {values:SMUData[]} = JSON.parse(arr);
+			try {
+				let smuresponse: { values: SMUData[] } = JSON.parse(arr);
 				this.emit('smuData', smuresponse.values);
-			}catch(e){
-				LOGGER.info(`Error parsing SMU data. ${e}`)
+			} catch (e) {
+				LOGGER.info(`Error parsing SMU data. ${e}`);
 			}
-			
-			
 		}
 	};
 
 	private handleError = (chunk: Buffer) => {
-		LOGGER.error(
-			`Error from renoir-mobile:\n${JSON.stringify(
-				JSON.parse(chunk.toString('utf-8'))
-			)}`
-		);
-		this.emit('smuError', chunk.toString());
+		LOGGER.error(`Error from renoir-mobile:\n${chunk.toString('utf-8')}`);
+		this.emit('smuError', chunk.toString('utf-8'));
 	};
 
 	alive = () => {

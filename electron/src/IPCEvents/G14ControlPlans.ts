@@ -117,6 +117,27 @@ export const switchWindowsPlanToActivateSettings = async (
 	}
 };
 
+export const setRyzenadjWithDelay = async (
+	ryzenadj: RyzenadjConfig | RyzenadjConfigNamed | undefined
+) => {
+	if (ryzenadj) {
+		let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
+		ryzenadj = Object.assign(ryzenadj, {
+			fastLimit: fastLimit % 1000 === 0 ? fastLimit : fastLimit * 1000,
+			slowLimit: slowLimit % 1000 === 0 ? slowLimit : slowLimit * 1000,
+			stapmLimit: stapmLimit % 1000 === 0 ? stapmLimit : stapmLimit * 1000,
+		});
+	}
+	let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
+	if (!ryzn) {
+		let final = await keepAttemptRyzenADJ(ryzenadj, 6);
+		if (!final) {
+			return false;
+		}
+	}
+	return true;
+};
+
 /**
  * 1. Set Boost & Graphics at target windows plan since they are sensitive to changes.
  * 2. Switch to target windows plan
@@ -197,63 +218,35 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 											armPlan ? armPlan.toLowerCase() : undefined
 										);
 										if (result) {
-											LOGGER.info('Sucessfully applied G14ControlPlan');
-											if (ryzenadj) {
-												let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
-												ryzenadj = Object.assign(ryzenadj, {
-													fastLimit:
-														fastLimit % 1000 === 0
-															? fastLimit
-															: fastLimit * 1000,
-													slowLimit:
-														slowLimit % 1000 === 0
-															? slowLimit
-															: slowLimit * 1000,
-													stapmLimit:
-														stapmLimit % 1000 === 0
-															? stapmLimit
-															: stapmLimit * 1000,
-												});
-											}
-											let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
-											if (!ryzn) {
-												let final = await keepAttemptRyzenADJ(ryzenadj, 6);
-												if (!final) {
-													resolve(false);
-													return;
+											LOGGER.info('Sucessfully applied fancurve');
+											setTimeout(async () => {
+												let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
+												if (ryadjResult) {
+													LOGGER.info('Sucessfully applied G14ControlPlan');
+												} else {
+													LOGGER.info(
+														'Failed to apply ryzenadj plan & therefore G14ControlPlan'
+													);
 												}
-											}
-											LOGGER.info('Sucessfully applied G14ControlPlan');
-											resolve(true);
+												resolve(ryadjResult);
+											}, 1000);
 										} else {
 											LOGGER.error('Failed to modify fan curve.');
 											resolve(false);
 										}
 									}
 								} else {
-									if (ryzenadj) {
-										let { fastLimit, slowLimit, stapmLimit } = ryzenadj;
-										ryzenadj = Object.assign(ryzenadj, {
-											fastLimit:
-												fastLimit % 1000 === 0 ? fastLimit : fastLimit * 1000,
-											slowLimit:
-												slowLimit % 1000 === 0 ? slowLimit : slowLimit * 1000,
-											stapmLimit:
-												stapmLimit % 1000 === 0
-													? stapmLimit
-													: stapmLimit * 1000,
-										});
-									}
-									let ryzn = ryzenadj ? await setRyzenadj(ryzenadj) : true;
-									if (!ryzn) {
-										let final = await keepAttemptRyzenADJ(ryzenadj, 6);
-										if (!final) {
-											resolve(false);
-											return;
+									setTimeout(async () => {
+										let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
+										if (ryadjResult) {
+											LOGGER.info('Sucessfully applied G14ControlPlan');
+										} else {
+											LOGGER.info(
+												'Failed to apply ryzenadj plan & therefore G14ControlPlan'
+											);
 										}
-									}
-									LOGGER.info('Sucessfully applied G14ControlPlan');
-									resolve(true);
+										resolve(ryadjResult);
+									}, 1000);
 								}
 							} else {
 								LOGGER.error('Failed to switch windows plan to target plan.');

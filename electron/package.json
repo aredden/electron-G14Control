@@ -1,7 +1,7 @@
 {
 	"name": "g14controlv2-main",
 	"productName": "G14ControlV2-Main",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "",
 	"main": "./build/electron.js",
 	"scripts": {
@@ -11,6 +11,7 @@
 		"tsc": "tsc --project ./tsconfig.dev.json",
 		"watch": "nodemon -e ts --ignore /build --ignore /node_modules --exec \"tsc --project ./tsconfig.dev.json && electron . || exit 1\" || exit 1"
 	},
+	"types": "./src/g14controlv2-main.d.ts",
 	"author": "Alex Redden",
 	"license": "ISC",
 	"dependencies": {
