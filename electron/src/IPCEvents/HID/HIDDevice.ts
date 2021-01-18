@@ -51,10 +51,10 @@ export const checkRemoveAndRename = (name: string, path?: string) => {
 		if (path) {
 			checkExecutableAtPathExists(name, path).then((ok) => {
 				if (ok) {
-					renameProcess(name, name + '_disabled', path).then((result) => {
+					renameProcess(name, name + '_disabled', path).then(() => {
 						checkProcessExist(name).then((result) => {
 							if (result) {
-								killProcess(name).then((result) => {
+								killProcess(name).then(() => {
 									resolve(true);
 								});
 							} else {
@@ -68,7 +68,7 @@ export const checkRemoveAndRename = (name: string, path?: string) => {
 					);
 					checkProcessExist(name).then((result) => {
 						if (result) {
-							killProcess(name).then((resolved) => {
+							killProcess(name).then(() => {
 								resolve(true);
 							});
 						} else {
@@ -80,7 +80,7 @@ export const checkRemoveAndRename = (name: string, path?: string) => {
 		} else {
 			checkProcessExist(name).then((result) => {
 				if (result) {
-					killProcess(name).then((result) => {
+					killProcess(name).then(() => {
 						resolve(true);
 					});
 				} else {
@@ -210,14 +210,10 @@ export const setUpNewG14ControlKey = (
 	let devices = hid.devices();
 	let deviceInfo = devices.find(function (d: hid.Device) {
 		let kbd = d.vendorId === 0x0b05 && d.productId === 0x1866;
-		if (kbd && d.path.includes('col01')) {
-			return true;
-		} else {
-			return false;
-		}
+		return kbd && d.path.includes('col01');
 	});
 	if (deviceInfo) {
-		LOGGER.info('Found ROG key');
+		LOGGER.info('Found G14 unique key'); // I'm not sure what it does, but i suppose it searches for Asus specific 'hidden' kb? Change message if that's not the case
 		hidDevice = new hid.HID(deviceInfo.path);
 		hidDevice.on('data', cb);
 		return hidDevice;
@@ -227,26 +223,20 @@ export const setUpNewG14ControlKey = (
 };
 
 export const killROGKey = async () => {
-	let thing1 = await checkRemoveAndRename(ARMCRATE_INTERFACE, ASUSACCI_PATH);
+	await checkRemoveAndRename(ARMCRATE_INTERFACE, ASUSACCI_PATH);
 	LOGGER.info('Did thing 1');
-	let thing2 = await checkRemoveAndRename(ARMCRATE_KEY_CTRL, ASUSACCI_PATH);
+	await checkRemoveAndRename(ARMCRATE_KEY_CTRL, ASUSACCI_PATH);
 	LOGGER.info('Did thing 2');
-	let thing3 = await checkRemoveAndRename(
-		ARMORY_SW_AGENT,
-		ARMORY_SW_AGENT_PATH
-	);
+	await checkRemoveAndRename(ARMORY_SW_AGENT, ARMORY_SW_AGENT_PATH);
 	LOGGER.info('Did thing 3');
-	let thing4 = await checkRemoveAndRename(
-		ARMCRATE_SESS_HELPER,
-		ARMCRATE_SVC_PATH
-	);
+	await checkRemoveAndRename(ARMCRATE_SESS_HELPER, ARMCRATE_SVC_PATH);
 	LOGGER.info('Did thing 4');
-	let thing5 = await checkRemoveAndRename(ARMCRATE_SVC, ARMCRATE_SVC_PATH);
+	await checkRemoveAndRename(ARMCRATE_SVC, ARMCRATE_SVC_PATH);
 	LOGGER.info('Did thing 5');
-	let thing6 = await checkRemoveAndRename(ARMSOCK_SERV, ARMSOCK_SERV_PATH);
+	await checkRemoveAndRename(ARMSOCK_SERV, ARMSOCK_SERV_PATH);
 	LOGGER.info('Did thing 6');
-	let thing7 = await checkRemoveAndRename(ARMCRATE_MANAGER);
+	await checkRemoveAndRename(ARMCRATE_MANAGER);
 	LOGGER.info('Did thing 7');
-	let thing8 = await checkRemoveAndRename(ARMCRATE_MANAGER_AGENT);
+	await checkRemoveAndRename(ARMCRATE_MANAGER_AGENT);
 	return true;
 };

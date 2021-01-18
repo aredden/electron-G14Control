@@ -1,7 +1,7 @@
 /** @format */
 
 import { BrowserWindow, IpcMain } from 'electron';
-import { g14Config, getROGHID, minMaxFunc, setHidMain } from '../electron';
+import {g14Config, getROGHID, minMaxFunc, setHidMain, togglePlan} from '../electron';
 import getLogger from '../Logger';
 import { killROGKey, setUpNewG14ControlKey } from './HID/HIDDevice';
 import { undoAllRenames } from './HID/utilities';
@@ -26,7 +26,7 @@ export const buildRogKeyRemapperListener = (
 		if (!g14Config.current.rogKey.enabled) {
 			switch (fnChoice) {
 				case 'minmax': {
-					let result = setUpNewG14ControlKey(mapperBuilder);
+					let result = setUpNewG14ControlKey(ROGmapperBuilder);
 					if (result) {
 						setHidMain(result);
 						LOGGER.info('Remap successful.');
@@ -54,8 +54,14 @@ export const buildRogKeyRemapperListener = (
 	});
 };
 
-export const mapperBuilder = (data: Buffer) => {
+export const ROGmapperBuilder = (data: Buffer) => {
 	if (data.toJSON().data[1] === 56) {
 		minMaxFunc();
+	}
+};
+
+export const FnF5mapperBuilder = (data: Buffer) => {
+	if (data.toJSON().data[1] === 174) {
+		togglePlan();
 	}
 };
