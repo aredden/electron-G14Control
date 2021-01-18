@@ -95,13 +95,17 @@ export const buildTrayIcon = async (
 		{
 			type: 'separator',
 		},
+		is_dev?
 		{
 			label: 'Open Dev Tools',
 			role: 'help',
 			accelerator: 'Control+Shift+I',
 			click: () => {
 				browserWindow.webContents.openDevTools();
-			},
+		},
+		} :
+		{
+			type: 'separator',
 		},
 		{
 			label: 'Reset Renderer',
