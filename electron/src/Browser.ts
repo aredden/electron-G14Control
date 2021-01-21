@@ -14,7 +14,7 @@ import {
 	runLoop,
 } from './IPCEvents/IPCEmitters';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import { mapperBuilder } from './IPCEvents/RogKeyRemapperListener';
+import { ROGmapperBuilder } from './IPCEvents/RogKeyRemapperListener';
 import { buildTrayIcon } from './TrayIcon';
 import is_dev from 'electron-is-dev';
 import getLogger from './Logger';
@@ -144,7 +144,7 @@ export async function createWindow(
 	}
 
 	if (rogKey.enabled) {
-		let hdd = setUpNewG14ControlKey(mapperBuilder);
+		let hdd = setUpNewG14ControlKey(ROGmapperBuilder);
 		if (hdd) {
 			setHidMain(hdd);
 			LOGGER.info('ROG key HID built and listening.');

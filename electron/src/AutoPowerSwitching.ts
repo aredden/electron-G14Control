@@ -25,10 +25,7 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 		let fan = dcPlan.fanCurve
 			? config.fanCurves.find((val) => val.name === dcPlan.fanCurve)
 			: undefined;
-		let fullPlan = Object.assign(dcPlan, {
-			ryzenadj: ryz,
-			fanCurve: fan,
-		}) as FullG14ControlPlan;
+		const fullPlan = {...dcPlan, ryzenadj: ryz, fanCurve: fan} as FullG14ControlPlan;
 		let result = await setG14ControlPlan(fullPlan);
 		if (!result) {
 			LOGGER.error(`Could not switch plan from AC to battery plan.`);
@@ -42,10 +39,7 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 		let fan = acPlan.fanCurve
 			? config.fanCurves.find((val) => val.name === acPlan.fanCurve)
 			: undefined;
-		let fullPlan = Object.assign(acPlan, {
-			ryzenadj: ryz,
-			fanCurve: fan,
-		}) as FullG14ControlPlan;
+		const fullPlan = {...acPlan, ryzenadj: ryz, fanCurve: fan} as FullG14ControlPlan;
 		let result = await setG14ControlPlan(fullPlan);
 		if (!result) {
 			LOGGER.error(`Could not switch plan from battery to AC plan.`);

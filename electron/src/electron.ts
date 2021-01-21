@@ -26,7 +26,7 @@ import url from 'url';
 import { buildPath, loadConfig, writeConfig } from './IPCEvents/ConfigLoader';
 import { setUpNewG14ControlKey } from './IPCEvents/HID/HIDDevice';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import { mapperBuilder } from './IPCEvents/RogKeyRemapperListener';
+import {FnF5mapperBuilder, ROGmapperBuilder} from './IPCEvents/RogKeyRemapperListener';
 import { buildTrayIcon } from './TrayIcon';
 import installExtension from 'electron-devtools-installer';
 import forceFocus from 'forcefocus';
@@ -63,6 +63,11 @@ export const getPowerDelivery = () => powerDelivery;
 export const setPowerDelivery = (val: 'battery' | 'ac') =>
 	(powerDelivery = val);
 
+export let powerPlan: 'battery' | 'ac' = 'ac';
+export const getPowerPlan = () => powerPlan;
+const setPowerPlan  = (val: 'battery' | 'ac') =>
+	(powerPlan = val);
+
 export let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
 export let tray: Tray;
@@ -92,6 +97,15 @@ export const minMaxFunc = () => {
 		}
 	}
 };
+
+export const togglePlan = () => {
+	LOGGER.info('FN+F5 pressed')
+	initSwitch(getPowerPlan())
+		.then(()=> getPowerPlan() === 'ac' ?
+		setPowerPlan('battery') :
+		setPowerPlan('ac')
+		)
+}
 
 export const getROGHID = () => hid;
 
@@ -285,7 +299,7 @@ export async function createWindow(
 	}
 
 	if (rogKey.enabled) {
-		let hdd = setUpNewG14ControlKey(mapperBuilder);
+		let hdd = setUpNewG14ControlKey(ROGmapperBuilder);
 		if (hdd) {
 			setHidMain(hdd);
 			LOGGER.info('ROG key HID built and listening.');
@@ -293,6 +307,20 @@ export async function createWindow(
 			LOGGER.info('There was an issue setting up ROG HID');
 		}
 	}
+
+	if(g14Config.autoSwitch
+		&& g14Config.autoSwitch.enabled
+		&& g14Config.autoSwitch.dcPlan
+		&& g14Config.autoSwitch.acPlan){
+		const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
+		if (hdd2) {
+			setHidMain(hdd2);
+			LOGGER.info('FN+F5 HID built and listening.');
+		} else {
+			LOGGER.info('There was an issue setting up FN+F5 HID');
+		}
+	}
+
 	browserWindow.setMenu(null);
 	if (g14Config.autoSwitch && g14Config.autoSwitch.applyOnBoot) {
 		setTimeout(() => {
@@ -321,12 +349,24 @@ export const setupElectronReload = (config: G14Config) => {
 	}
 
 	if (rogKey.enabled && !hid) {
-		let hdd = setUpNewG14ControlKey(mapperBuilder);
+		let hdd = setUpNewG14ControlKey(ROGmapperBuilder);
 		if (hdd) {
 			setHidMain(hdd);
 			LOGGER.info('ROG key HID built and listening.');
 		} else {
 			LOGGER.info('There was an issue setting up ROG HID');
+		}
+	}
+	if(g14Config.autoSwitch
+		&& g14Config.autoSwitch.enabled
+		&& g14Config.autoSwitch.dcPlan
+		&& g14Config.autoSwitch.acPlan){
+		const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
+		if (hdd2) {
+			setHidMain(hdd2);
+			LOGGER.info('FN+F5 HID built and listening.');
+		} else {
+			LOGGER.info('There was an issue setting up FN+F5 HID');
 		}
 	}
 };
@@ -344,7 +384,7 @@ powerMonitor.on('shutdown', () => {
 		browserWindow.destroy();
 	}
 	if (loopsAreRunning()) {
-		killEmitters().then((ok) => {
+		killEmitters().then(() => {
 			app.quit();
 		});
 	} else {
@@ -372,7 +412,7 @@ powerMonitor.on('on-ac', () => {
 		g14Config.autoSwitch.enabled &&
 		g14Config.autoSwitch.acPlan
 	) {
-		initSwitch('ac');
+		initSwitch('ac').then(()=>  setPowerPlan('battery'));
 	}
 });
 
@@ -382,7 +422,7 @@ powerMonitor.on('on-battery', () => {
 		g14Config.autoSwitch.enabled &&
 		g14Config.autoSwitch.dcPlan
 	) {
-		initSwitch('battery');
+		initSwitch('battery').then(()=> setPowerPlan('ac'));
 	}
 });
 
