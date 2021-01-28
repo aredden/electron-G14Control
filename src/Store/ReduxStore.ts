@@ -178,6 +178,14 @@ export const setAutoSwitchOnBootResume = createAction(
 		return { payload: value };
 	}
 );
+
+export const setMultiLanguage = createAction(
+	'SET_MULTILANG',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
+
 const createRootReducer = (initialState: G14Config) => {
 	let reducer = createReducer(initialState, (reducer) => {
 		/**
@@ -387,6 +395,11 @@ const createRootReducer = (initialState: G14Config) => {
 				  })
 				: { applyOnBoot: action.payload };
 			return state;
+		});
+
+		reducer.addCase(setMultiLanguage, (state, action) => {
+			let { payload } = action;
+			state.current.newLanguageSupport = payload;
 		});
 	});
 	return reducer;

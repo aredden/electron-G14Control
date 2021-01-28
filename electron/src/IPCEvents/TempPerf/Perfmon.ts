@@ -4,6 +4,7 @@ import { BrowserWindow } from 'electron';
 import perfmon from 'perfmon';
 import Shell from 'node-powershell';
 import getLogger from '../../Logger';
+import { getConfig } from '../../electron';
 
 const LOGGER = getLogger('Perfmon');
 
@@ -16,8 +17,10 @@ export const buildPerfmonThermalProcess = async (
 	win: BrowserWindow,
 	retryIfFail = true
 ) => {
+	const { newLanguageSupport } = getConfig().current;
+
 	let localeCounters: { thermal: string; battery: string } | false = false;
-	if (retryIfFail) {
+	if (retryIfFail && newLanguageSupport) {
 		localeCounters = await getCounterLocaleName();
 	}
 	let finalCounters = [];

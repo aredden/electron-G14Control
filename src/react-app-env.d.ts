@@ -102,6 +102,7 @@ declare type G14Config = {
 			type: 'Custom' | 'Armoury';
 			name: string;
 		};
+		newLanguageSupport?: boolean;
 		minToTray?: boolean;
 		batteryLimit: number | undefined;
 		batteryLimitStatus?: boolean;

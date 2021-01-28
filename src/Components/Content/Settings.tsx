@@ -8,6 +8,7 @@ import {
 	message,
 	PageHeader,
 	Space,
+	Switch,
 } from 'antd';
 import isAccelerator from 'electron-is-accelerator';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
@@ -17,6 +18,7 @@ import { capitalize } from 'lodash';
 import ReactMarkdown from 'react-markdown';
 import StartMinimized from './Settings/StartMinimized';
 import './Settings.scss';
+import Multilanguage from './Settings/Multilanguage';
 
 interface Props {}
 
@@ -321,6 +323,7 @@ to perform well, I decided to embark on making a new version, and this is the re
 							</Space>
 						</Space>
 					</Card>
+					<Multilanguage />
 					<Card title={'About G14ControlV2'}>
 						<ReactMarkdown>{aboutmkd}</ReactMarkdown>
 						<Space>
