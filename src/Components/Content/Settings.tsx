@@ -8,7 +8,6 @@ import {
 	message,
 	PageHeader,
 	Space,
-	Switch,
 } from 'antd';
 import isAccelerator from 'electron-is-accelerator';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
