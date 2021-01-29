@@ -34,7 +34,7 @@ import AutoUpdater from './AppUpdater';
 import { isUndefined } from 'lodash';
 import { buildTaskbarMenu } from './Taskbar';
 import { NotificationConstructorOptions } from 'electron/main';
-import { initSwitch } from './AutoPowerSwitching';
+import { initSwitch, initF5Switch } from './AutoPowerSwitching';
 import { initStartupPlan } from './StartupPlan';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
@@ -100,11 +100,7 @@ export const minMaxFunc = () => {
 
 export const togglePlan = () => {
 	LOGGER.info('FN+F5 pressed')
-	initSwitch(getPowerPlan())
-		.then(()=> getPowerPlan() === 'ac' ?
-		setPowerPlan('battery') :
-		setPowerPlan('ac')
-		)
+	initF5Switch()
 }
 
 export const getROGHID = () => hid;
@@ -308,10 +304,9 @@ export async function createWindow(
 		}
 	}
 
-	if(g14Config.autoSwitch
-		&& g14Config.autoSwitch.enabled
-		&& g14Config.autoSwitch.dcPlan
-		&& g14Config.autoSwitch.acPlan){
+	if(g14Config.f5Switch
+		&& g14Config.f5Switch.enabled
+		&& g14Config.f5Switch.f5Plans.length > 1){
 		const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
 		if (hdd2) {
 			setHidMain(hdd2);

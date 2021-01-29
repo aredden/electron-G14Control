@@ -99,6 +99,10 @@ declare type G14Config = {
 		acPlan: G14ControlPlan;
 		dcPlan: G14ControlPlan;
 	};
+	f5Switch?: {
+		enabled?: boolean;
+		f5Plans?: string[];
+	};
 	startup: {
 		checkBoostVisibility: boolean;
 		autoLaunchEnabled: boolean;

@@ -15,6 +15,13 @@ export let configSchema: Schema = {
 				dcPlan: { type: 'object' },
 			},
 		},
+		f5Switch: {
+			type: 'object',
+			properties: {
+				enabled: { type: 'boolean' },
+				f5Plans: { type: 'array' },
+			},
+		},
 		startup: {
 			properties: {
 				checkBoostVisibility: { type: 'boolean' },

@@ -18,6 +18,7 @@ import {
 import { capitalize } from 'lodash';
 import PlanBuilder from './G14Plans/PlanBuilder';
 import AutoPowerSwitch from './G14Plans/AutoPowerSwitch';
+import F5PowerSwitch from './G14Plans/F5PowerSwitch';
 
 interface Props {}
 interface State {
@@ -205,6 +206,7 @@ export default class G14ControlPlans extends Component<Props, State> {
 					}}></ControlPlan>
 				<PlanBuilder updatePlans={this.updatePlans} />
 				<AutoPowerSwitch></AutoPowerSwitch>
+				<F5PowerSwitch></F5PowerSwitch>
 			</Space>
 		);
 	}

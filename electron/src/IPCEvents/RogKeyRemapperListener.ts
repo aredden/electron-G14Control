@@ -44,8 +44,35 @@ export const buildRogKeyRemapperListener = (
 		let hid = getROGHID();
 		LOGGER.info(`current hid device: ` + JSON.stringify(hid));
 		if (hid) {
-			hid.removeAllListeners('data');
-			LOGGER.info('Removed all listeners from HID Device.');
+			hid.removeListener('data', ROGmapperBuilder);
+			LOGGER.info('Removed ROG key listeners from HID Device.');
+			return true;
+		} else {
+			LOGGER.info("Tried to unbind from HID that didn't exist.");
+			return false;
+		}
+	});
+	
+	ipc.handle('remapFnF5', async (event, args: string) => {
+		if (g14Config.f5Switch
+			&& !g14Config.f5Switch.enabled) {
+			const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
+			if (hdd2) {
+				setHidMain(hdd2);
+				LOGGER.info('FN+F5 HID built and listening.');
+				return true
+			} else {
+				LOGGER.info('There was an issue setting up FN+F5 HID');
+			}
+		}
+		return false;
+	});
+	ipc.handle('unbindFnF5', async () => {
+		let hid = getROGHID();
+		LOGGER.info(`current hid device: ` + JSON.stringify(hid));
+		if (hid) {
+			hid.removeListener('data', FnF5mapperBuilder);
+			LOGGER.info('Removed FnF5 listener from HID Device.');
 			return true;
 		} else {
 			LOGGER.info("Tried to unbind from HID that didn't exist.");
