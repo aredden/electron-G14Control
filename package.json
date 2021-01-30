@@ -136,6 +136,13 @@
 					"filter": [
 						"**/*"
 					]
+				},
+				{
+					"from": "./electron/pwrprofhelper",
+					"to": "extraResources",
+					"filter": [
+						"**/*"
+					]
 				}
 			]
 		}

@@ -11,6 +11,6 @@
 		"sourceMap": true,
 		"moduleResolution": "node"
 	},
-	"include": ["."],
+	"include": ["**/*.ts", "**/*d.ts", "**/*.js"],
 	"exclude": ["build", "node_modules"]
 }

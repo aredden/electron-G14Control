@@ -2,7 +2,7 @@
 
 import { BrowserWindow, IpcMain } from 'electron';
 import getLogger from '../Logger';
-import { getCPUBoostRawResult, setBoost } from './powercfg/Powercfg';
+import { getBoostFromHelper, setBoostFromHelper } from './powercfg/Powercfg';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LOGGER = getLogger('WindowsPlanListeners');
@@ -44,13 +44,15 @@ const parseBoost = (rawBoost: string) => {
 
 export const buildCPUBoostListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('getBoost', async (e, guid: string) => {
-		let boostRaw: string | false = await getCPUBoostRawResult(guid);
+		let boostRaw: { ac: string; dc: string } | false = await getBoostFromHelper(
+			guid
+		);
 		if (!boostRaw) {
 			return false;
 		} else {
 			return {
 				guid: guid,
-				boost: parseBoost(boostRaw),
+				boost: boostRaw,
 			};
 		}
 	});
@@ -61,7 +63,7 @@ export const buildCPUBoostListeners = (ipc: IpcMain, win: BrowserWindow) => {
 				typeof boostLevel === 'string'
 					? parseInt(boostLevel as string)
 					: (boostLevel as number);
-			let result = await setBoost(boost, guid);
+			let result = await setBoostFromHelper(boost, guid);
 			return { guid: guid, result: result };
 		}
 	);
