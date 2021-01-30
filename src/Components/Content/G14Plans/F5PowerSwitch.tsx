@@ -25,7 +25,7 @@ export default class F5PowerSwitch extends Component<Props, State> {
 		let curState = store.getState() as G14Config;
 		let { f5Switch } = curState;
 		let f5Plans = [] as string[],
-			enabled = false
+			enabled = false;
 
 		if (f5Switch) {
 			f5Plans = f5Switch.f5Plans ? f5Switch.f5Plans : [];
@@ -58,41 +58,35 @@ export default class F5PowerSwitch extends Component<Props, State> {
 			this.setState({ f5Plans: values }, () => {
 				store.dispatch(setF5PlansPowerSwitching(values as string[]));
 			});
-        }
+		}
 	};
 
 	chooseEnabled = async () => {
-        
-        let { enabled } = this.state;
-        const new_enabled = !enabled
-        if (new_enabled){
-            message.loading('Remapping Fn+F5 Keys');
-            let result = await window.ipcRenderer.invoke('remapFnF5');
-            if (result) {
-                message.success(
-                    'Successfully remapped Fn+F5 to change the power plan'
-                );
-                this.setState({ enabled: new_enabled }, () => {
-                    store.dispatch(setF5SwitchingEnabled(new_enabled));
-                });
-            } else {
-                message.error('Error remapping Fn+F5 keys.');
-            }
-        } else {
-            message.loading('Unbinding Fn+F5 Keys');
-            let result = await window.ipcRenderer.invoke('unbindFnF5');
-            if (result) {
-                message.success(
-                    'Successfully unbinded Fn+F5'
-                );
-                this.setState({ enabled: new_enabled }, () => {
-                    store.dispatch(setF5SwitchingEnabled(new_enabled));
-                });
-            } else {
-                message.error('Error unbinding Fn+F5 keys.');
-            }
-        }
-        
+		let { enabled } = this.state;
+		const new_enabled = !enabled;
+		if (new_enabled) {
+			message.loading('Remapping Fn+F5 Keys');
+			let result = await window.ipcRenderer.invoke('remapFnF5');
+			if (result) {
+				message.success('Successfully remapped Fn+F5 to change the power plan');
+				this.setState({ enabled: new_enabled }, () => {
+					store.dispatch(setF5SwitchingEnabled(new_enabled));
+				});
+			} else {
+				message.error('Error remapping Fn+F5 keys.');
+			}
+		} else {
+			message.loading('Unbinding Fn+F5 Keys');
+			let result = await window.ipcRenderer.invoke('unbindFnF5');
+			if (result) {
+				message.success('Successfully unbinded Fn+F5');
+				this.setState({ enabled: new_enabled }, () => {
+					store.dispatch(setF5SwitchingEnabled(new_enabled));
+				});
+			} else {
+				message.error('Error unbinding Fn+F5 keys.');
+			}
+		}
 	};
 
 	componentWillUnmount() {
@@ -100,13 +94,13 @@ export default class F5PowerSwitch extends Component<Props, State> {
 	}
 
 	render() {
-        let { allPlans } = this.state;
-        const children = [];
-for (let i = 10; i < 36; i++) {
-  children.push();
-}
+		let { allPlans } = this.state;
 		let possiblePlanOptions = allPlans.map((val) => {
-			return <Select.Option key={val.name} value={val.name}>{val.name}</Select.Option>;
+			return (
+				<Select.Option key={val.name} value={val.name}>
+					{val.name}
+				</Select.Option>
+			);
 		});
 
 		let { enabled, f5Plans } = this.state;
@@ -134,13 +128,13 @@ for (let i = 10; i < 36; i++) {
 						<Space direction="vertical" className="f5powersw-select-container">
 							<label>Cycle between these Plans</label>
 							<Select
-                                mode="multiple"
-                                allowClear
+								mode="multiple"
+								allowClear
 								defaultValue={f5Plans}
 								className="f5powersw-select"
 								onChange={this.onChooseF5Plans}>
-                                    {possiblePlanOptions}
-                                </Select>
+								{possiblePlanOptions}
+							</Select>
 						</Space>
 					</Space>
 				</Card>

@@ -97,6 +97,7 @@ declare type G14Config = {
 		dcPlan?: G14ControlPlan;
 	};
 	f5Switch?: {
+		index?: number;
 		enabled?: boolean;
 		f5Plans?: string[];
 	};

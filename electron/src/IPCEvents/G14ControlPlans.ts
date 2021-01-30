@@ -1,6 +1,6 @@
 /** @format */
 
-import { BrowserWindow, IpcMain, remote, Remote } from 'electron';
+import { BrowserWindow, IpcMain } from 'electron';
 import { isNumber } from 'lodash';
 import { getConfig } from '../electron';
 import getLogger from '../Logger';
@@ -17,7 +17,6 @@ import {
 import { setRyzenadj } from './ryzenadj/ModifyCPU';
 
 const LOGGER = getLogger('G14ControlPlans');
-export let current_plan = null
 
 export const buildG14ControlPlanListeners = (
 	win: BrowserWindow,
@@ -223,8 +222,11 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 											setTimeout(async () => {
 												let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
 												if (ryadjResult) {
-													LOGGER.info('Sucessfully applied G14ControlPlan "' + plan.name + '"');
-													current_plan = plan.name; 
+													LOGGER.info(
+														'Sucessfully applied G14ControlPlan "' +
+															plan.name +
+															'"'
+													);
 												} else {
 													LOGGER.info(
 														'Failed to apply ryzenadj plan & therefore G14ControlPlan'
@@ -241,8 +243,9 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 									setTimeout(async () => {
 										let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
 										if (ryadjResult) {
-											LOGGER.info('Sucessfully applied G14ControlPlan "' + plan.name + '"');
-											current_plan = plan.name; 
+											LOGGER.info(
+												'Sucessfully applied G14ControlPlan "' + plan.name + '"'
+											);
 										} else {
 											LOGGER.info(
 												'Failed to apply ryzenadj plan & therefore G14ControlPlan'

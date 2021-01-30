@@ -102,6 +102,7 @@ declare type G14Config = {
 	f5Switch?: {
 		enabled?: boolean;
 		f5Plans?: string[];
+		index?: number;
 	};
 	startup: {
 		checkBoostVisibility: boolean;

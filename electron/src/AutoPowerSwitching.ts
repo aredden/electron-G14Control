@@ -1,8 +1,10 @@
 /** @format */
 
-import { getConfig, showNotification } from './electron';
+import { g14Config, getConfig, showNotification } from './electron';
 import getLogger from './Logger';
-import { setG14ControlPlan, current_plan } from './IPCEvents/G14ControlPlans';
+import { setG14ControlPlan } from './IPCEvents/G14ControlPlans';
+import { isNumber } from 'lodash';
+import { writeConfig } from './IPCEvents/ConfigLoader';
 const LOGGER = getLogger('AutoPowerSwitching');
 
 export type PowerSwitchArgs = {
@@ -25,7 +27,11 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 		let fan = dcPlan.fanCurve
 			? config.fanCurves.find((val) => val.name === dcPlan.fanCurve)
 			: undefined;
-		const fullPlan = {...dcPlan, ryzenadj: ryz, fanCurve: fan} as FullG14ControlPlan;
+		const fullPlan = {
+			...dcPlan,
+			ryzenadj: ryz,
+			fanCurve: fan,
+		} as FullG14ControlPlan;
 		let result = await setG14ControlPlan(fullPlan);
 		if (!result) {
 			LOGGER.error(`Could not switch plan from AC to battery plan.`);
@@ -39,7 +45,11 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 		let fan = acPlan.fanCurve
 			? config.fanCurves.find((val) => val.name === acPlan.fanCurve)
 			: undefined;
-		const fullPlan = {...acPlan, ryzenadj: ryz, fanCurve: fan} as FullG14ControlPlan;
+		const fullPlan = {
+			...acPlan,
+			ryzenadj: ryz,
+			fanCurve: fan,
+		} as FullG14ControlPlan;
 		let result = await setG14ControlPlan(fullPlan);
 		if (!result) {
 			LOGGER.error(`Could not switch plan from battery to AC plan.`);
@@ -51,41 +61,54 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 
 export const initF5Switch = async () => {
 	let config = getConfig();
-	if (!config.f5Switch || !config.f5Switch.enabled || !config.f5Switch.f5Plans) {
+	if (
+		!config.f5Switch ||
+		!config.f5Switch.enabled ||
+		!config.f5Switch.f5Plans
+	) {
 		return;
 	}
 	const plan_names: string[] = config.f5Switch.f5Plans;
-	let old_plan_name = current_plan
-	let new_plan_name = undefined
-	let new_plan = undefined
+	let plan_index = config.f5Switch.index;
+	if (!isNumber(plan_index) || plan_index > plan_names.length) {
+		plan_index = 0;
+	} else {
+		plan_index = plan_index + 1;
+	}
+	let new_plan_name: string = plan_names[plan_index % plan_names.length];
+	let new_plan: G14ControlPlan = config.plans.find(
+		(plan) => plan.name === new_plan_name
+	);
 
-	for (var x = 0; x < plan_names.length; x++) {
-		if (plan_names[x] === current_plan || x === plan_names.length-1){
-			new_plan_name = plan_names[(x+1) % plan_names.length]
-			break
-		}
+	if (!new_plan || !new_plan_name) {
+		LOGGER.error('Could not find next plan.');
+		return;
 	}
-	for (let i = 0; i < config.plans.length; i++) {
-		if (config.plans[i].name === new_plan_name){
-			new_plan = config.plans[i]
-		}
+
+	if (!new_plan_name || !new_plan) {
+		LOGGER.error(`Could not switch plans, no fitting plans found.`);
+		return;
 	}
-	if (!new_plan_name || !new_plan ) {
-		LOGGER.error(`Could not switch plans, no fitting plans found.`)
-		return
-	}
-	LOGGER.info('Power Switching from: ' + old_plan_name + ' to ' + new_plan_name);
+
+	showNotification('Fn+F5', `Switching to: ${new_plan_name}`);
+
+	g14Config.f5Switch.index = plan_index;
+	writeConfig(g14Config);
+	LOGGER.info(`F5 cycle power switching to ${new_plan_name}`);
 	let ryz = new_plan.ryzenadj
 		? config.ryzenadj.options.find((val) => val.name === new_plan.ryzenadj)
 		: undefined;
 	let fan = new_plan.fanCurve
 		? config.fanCurves.find((val) => val.name === new_plan.fanCurve)
 		: undefined;
-	const fullPlan = {...new_plan, ryzenadj: ryz, fanCurve: fan} as FullG14ControlPlan;
+	const fullPlan = {
+		...new_plan,
+		ryzenadj: ryz,
+		fanCurve: fan,
+	} as FullG14ControlPlan;
 	let result = await setG14ControlPlan(fullPlan);
 	if (!result) {
 		LOGGER.error(`Could not switch plan.`);
-	} else {
-		showNotification('Manual Switching', 'Switched to: ' + new_plan.name);
+		showNotification('Fn+F5', 'Error switching to: ' + new_plan.name);
 	}
 };
