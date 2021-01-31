@@ -4,8 +4,25 @@ import { exec } from 'child_process';
 import getLogger from '../../Logger';
 import { parsePlans } from '../../Utilities';
 import { switchWindowsPlanToActivateSettings } from '../G14ControlPlans';
-
+import path from 'path';
+import is_dev from 'electron-is-dev';
+import { app } from 'electron';
+import Shell from 'node-powershell';
+import { isBoolean } from 'lodash';
+require('dotenv').config();
 const LOGGER = getLogger('Powercfg');
+
+const PWRPROF_HELPER = is_dev
+	? process.env.PWRPROF_HELPER
+	: path
+			.join(
+				app.getPath('exe'),
+				'../',
+				'resources',
+				'extraResources',
+				'G14PowerCfg.exe'
+			)
+			.replace(' ', '` ');
 
 export const getActivePlan = async (): Promise<
 	{ name: string; guid: string } | false
@@ -183,5 +200,145 @@ export const setBoost = async (
 		return hok;
 	} else {
 		return resultSuccess;
+	}
+};
+
+export const getBoostFromHelper = async (guid?: string) => {
+	const sh = new Shell({
+		noProfile: true,
+		executionPolicy: 'Bypass',
+	});
+	guid
+		? sh.addCommand(`${PWRPROF_HELPER} boostget ${guid}`)
+		: sh.addCommand(`${PWRPROF_HELPER} boostget active`);
+
+	const result = await sh.invoke().catch((err) => {
+		if (err) {
+			LOGGER.info('Error: ' + err);
+		}
+	});
+	const vals = result ? result.split(' ') : [];
+	LOGGER.info(result + `  ${PWRPROF_HELPER} boostget ${guid}`);
+	sh.dispose();
+	if (vals.length === 2) {
+		LOGGER.info(`length ${vals[0].length} ${vals[1].trim().length}`);
+		return {
+			ac: vals[0].trim(),
+			dc: vals[1].trim(),
+		};
+	} else {
+		return false;
+	}
+};
+
+export const getGraphicsFromHelper = async (guid?: string) => {
+	const sh = new Shell({
+		noProfile: true,
+		executionPolicy: 'Bypass',
+	});
+	guid
+		? sh.addCommand(`${PWRPROF_HELPER} graphicsget ${guid}`)
+		: sh.addCommand(`${PWRPROF_HELPER} graphicsget active`);
+	const result = await sh.invoke().catch((err) => {
+		if (err) {
+			LOGGER.info('Error: ' + err);
+		}
+	});
+	const vals = result ? result.split(' ') : [];
+	sh.dispose();
+	if (vals.length === 2) {
+		LOGGER.info(vals.toString());
+		return {
+			ac: vals[0].trim(),
+			dc: vals[1].trim(),
+		};
+	}
+};
+
+export const setGraphicsFromHelper = async (
+	value: string | number,
+	guid?: string,
+	doswitch = true
+) => {
+	const sh = new Shell({
+		noProfile: true,
+		executionPolicy: 'Bypass',
+	});
+	guid
+		? sh.addCommand(`${PWRPROF_HELPER} graphicsset ${guid} ${value}`.toString())
+		: sh.addCommand(`${PWRPROF_HELPER} graphicsset active ${value}`.toString());
+
+	const result = await sh.invoke().catch((err) => {
+		if (err) {
+			LOGGER.info('Error: ' + err);
+		}
+	});
+	sh.dispose();
+	if (result && result.trim() === 'True') {
+		const active = await getActivePlan();
+
+		if (!isBoolean(active) && doswitch) {
+			const ok = await switchWindowsPlanToActivateSettings(active.guid);
+			if (ok) {
+				LOGGER.info('Set graphics');
+				return true;
+			} else {
+				LOGGER.error(
+					'Failed to switch windows plan, but successfully set graphics'
+				);
+				return false;
+			}
+		}
+		if (active && !doswitch) {
+			LOGGER.info('Set graphics');
+			return true;
+		}
+	} else {
+		LOGGER.error('Failed to set graphics');
+		return false;
+	}
+};
+
+export const setBoostFromHelper = async (
+	value: string | number,
+	guid?: string,
+	doswitch = true
+) => {
+	const sh = new Shell({
+		noProfile: true,
+		executionPolicy: 'Bypass',
+	});
+	guid
+		? sh.addCommand(`${PWRPROF_HELPER} boostset ${guid} ${value}`.toString())
+		: sh.addCommand(`${PWRPROF_HELPER} boostset active ${value}`.toString());
+
+	const result = await sh.invoke().catch((err) => {
+		if (err) {
+			LOGGER.info('Error: ' + err);
+		}
+	});
+	sh.dispose();
+	if (result && result.trim() === 'True') {
+		const active = await getActivePlan();
+
+		if (!isBoolean(active) && doswitch) {
+			const ok = await switchWindowsPlanToActivateSettings(active.guid);
+			if (ok) {
+				LOGGER.info('Set boost');
+				return true;
+			} else {
+				LOGGER.error(
+					'Failed to switch windows plan, but successfully set boost'
+				);
+				return false;
+			}
+		}
+		if (active && !doswitch) {
+			LOGGER.info('Set boost');
+			return true;
+		}
+	} else {
+		LOGGER.error('Failed to set boost');
+		return false;
 	}
 };

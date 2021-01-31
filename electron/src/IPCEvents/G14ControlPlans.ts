@@ -8,12 +8,12 @@ import getLogger from '../Logger';
 import { modifyFanCurve } from './atrofac/ModifyFan';
 import { modifyArmoryCratePlan } from './atrofac/SetArmoryPlan';
 import { parseArrayCurve } from './AtrofacListeners';
-import { setSwitchableDynamicGraphicsSettings } from './gpu/DiscreteGPU';
 import {
 	getActivePlan,
 	getWindowsPlans,
-	setBoost,
 	setWindowsPlan,
+	setGraphicsFromHelper,
+	setBoostFromHelper,
 } from './powercfg/Powercfg';
 import { setRyzenadj } from './ryzenadj/ModifyCPU';
 
@@ -75,9 +75,9 @@ export const buildG14ControlPlanListeners = (
 	);
 };
 
-export const switchWindowsPlanToActivateSettings = async (
-	activeGuid: string
-) => {
+export const switchWindowsPlanToActivateSettings: (
+	activeguid: string
+) => Promise<boolean> = async (activeGuid) => {
 	let allWindowsPlans = await getWindowsPlans();
 	if (allWindowsPlans) {
 		let otherPlan = allWindowsPlans.find((plan) => {
@@ -155,13 +155,18 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let boos: boolean;
 	let graphi: boolean;
 	if (boost || (isNumber(boost) && boost === 0)) {
-		boos = (await setBoost(boost, windowsPlan.guid, false)) as boolean;
+		boos = (await setBoostFromHelper(
+			boost,
+			windowsPlan.guid,
+			false
+		)) as boolean;
 	}
 
 	if (graphics || graphics === 0) {
-		graphi = (await setSwitchableDynamicGraphicsSettings(
+		graphi = (await setGraphicsFromHelper(
 			graphics,
-			windowsPlan.guid
+			windowsPlan.guid,
+			false
 		)) as boolean;
 		if (graphi) {
 			LOGGER.info('Successfully set graphics values to: ' + graphics);

@@ -43,24 +43,22 @@ export default class GraphicsSettings extends Component<Props, State> {
 	}
 
 	componentDidMount() {
-		window.ipcRenderer.invoke('getSwitchableDynamicGraphics').then(
-			(
-				returned:
-					| false
-					| {
-							plan: { name: string; guid: string };
-							result: { ac: number; dc: number };
-					  }
-			) => {
+		window.ipcRenderer.invoke('getActivePlan').then((res) => {
+			if (res) {
+				this.setState({ plan: res.guid });
+			}
+		});
+		window.ipcRenderer
+			.invoke('getSwitchableDynamicGraphics')
+			.then((returned: false | { ac: number; dc: number }) => {
 				if (
 					returned &&
-					typeof returned.result.ac === 'number' &&
-					typeof returned.result.dc === 'number'
+					typeof returned.ac === 'number' &&
+					typeof returned.dc === 'number'
 				) {
-					this.setState({ plan: returned.plan, graphics: returned.result });
+					this.setState({ graphics: returned });
 				}
-			}
-		);
+			});
 		this.getPowerDelivery();
 	}
 

@@ -71,12 +71,18 @@ export default class CurrentConfiguration extends Component<Props, State> {
 						.then(
 							async (
 								resultboost:
-									| { guid: string; boost: { ac: number; dc: number } }
+									| { guid?: string; boost: { ac: string; dc: string } }
 									| false
 							) => {
 								if (resultboost && !isNull(resultboost.boost.ac)) {
 									if (result) {
-										this.setState({ windowsPlan, boost: resultboost.boost });
+										this.setState({
+											windowsPlan,
+											boost: {
+												ac: parseInt(resultboost.boost.ac),
+												dc: parseInt(resultboost.boost.dc),
+											},
+										});
 									} else {
 										this.setState({ windowsPlan });
 									}
@@ -97,12 +103,17 @@ export default class CurrentConfiguration extends Component<Props, State> {
 				response:
 					| {
 							plan: { name: string; guid: string };
-							result: { ac: number; dc: number };
+							result: { ac: string; dc: string };
 					  }
 					| false
 			) => {
 				if (response) {
-					this.setState({ graphics: response.result });
+					this.setState({
+						graphics: {
+							ac: parseInt(response.result.ac),
+							dc: parseInt(response.result.dc),
+						},
+					});
 				} else {
 					message.error(
 						'There was trouble finding switchable dynamic graphics settings.'

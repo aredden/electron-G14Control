@@ -1,10 +1,15 @@
 /** @format */
 
-import {BrowserWindow, IpcMain} from 'electron';
-import {buildAtkWmi, setBatteryLimiter,removeBatteryLimiter, whichCharger,} from './WMI/HardwareControl';
+import { BrowserWindow, IpcMain } from 'electron';
+import {
+	buildAtkWmi,
+	setBatteryLimiter,
+	removeBatteryLimiter,
+	whichCharger,
+} from './WMI/HardwareControl';
 import getLogger from '../Logger';
 import Shell from 'node-powershell';
-import {checkTaskExists} from '../AutoLaunch';
+import { checkTaskExists } from '../AutoLaunch';
 
 const LOGGER = getLogger('BatteryListener');
 
@@ -25,7 +30,7 @@ export const buildBatterySaverListener = (win: BrowserWindow, ipc: IpcMain) => {
 
 	ipc.handle('removeBatteryLimiter', async (event) => {
 		await removeBatteryLimiter();
-		return (await removeLimit());
+		return await removeLimit();
 	});
 
 	ipc.handle('isPlugged', async (event) => {
