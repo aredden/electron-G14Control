@@ -12,6 +12,6 @@
 		"moduleResolution": "node",
 		"isolatedModules": true
 	},
-	"include": ["**/*"],
+	"include": ["**/*.ts", "**/*d.ts", "**/*.js"],
 	"exclude": ["build", "node_modules"]
 }
