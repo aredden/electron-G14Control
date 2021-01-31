@@ -97,7 +97,7 @@ declare type G14Config = {
 		dcPlan?: G14ControlPlan;
 	};
 	f5Switch?: {
-		index?: number;
+		currentGuid?: string;
 		enabled?: boolean;
 		f5Plans?: string[];
 	};
@@ -182,6 +182,7 @@ declare type G14ControlPlan = {
 	armouryCrate?: ArmoryPlan;
 	graphics?: number;
 	windowsPlan: { name: string; guid: string };
+	guid?: string;
 };
 
 declare type FullG14ControlPlan = {
@@ -196,8 +197,9 @@ declare type FullG14ControlPlan = {
 	armouryCrate?: ArmoryPlan;
 	graphics?: number;
 	windowsPlan?: { name: string; guid: string };
+	guid?: string;
 };
 
 declare type WindowsPlan = { name: string; guid: string };
 
-declare module 'wmi-client';
+declare module 'wmi-client' {}

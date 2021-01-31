@@ -39,6 +39,7 @@ import { buildTaskbarMenu } from './Taskbar';
 import { NotificationConstructorOptions } from 'electron/main';
 import { initSwitch, initF5Switch } from './AutoPowerSwitching';
 import { initStartupPlan } from './StartupPlan';
+import updateConfigOnUpdate from './UpdateConfig';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -189,6 +190,8 @@ export async function createWindow(
 	} catch (err) {
 		LOGGER.error('Error loading config at startup');
 	}
+
+	await updateConfigOnUpdate(g14Config);
 
 	// Set appid so notifications don't show entire app id.
 	app.setAppUserModelId('G14ControlV2');

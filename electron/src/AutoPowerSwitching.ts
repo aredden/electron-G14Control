@@ -3,7 +3,7 @@
 import { g14Config, getConfig, showNotification } from './electron';
 import getLogger from './Logger';
 import { setG14ControlPlan } from './IPCEvents/G14ControlPlans';
-import { isNumber } from 'lodash';
+import { isNumber, isString } from 'lodash';
 import { writeConfig } from './IPCEvents/ConfigLoader';
 const LOGGER = getLogger('AutoPowerSwitching');
 
@@ -68,33 +68,35 @@ export const initF5Switch = async () => {
 	) {
 		return;
 	}
-	const plan_names: string[] = config.f5Switch.f5Plans;
-	let plan_index = config.f5Switch.index;
-	if (!isNumber(plan_index) || plan_index > plan_names.length) {
-		plan_index = 0;
+	const plan_guids: string[] = config.f5Switch.f5Plans;
+	const currentGuid = config.f5Switch.currentGuid;
+	const guids = config.f5Switch.f5Plans;
+	let nextPlanGuid = '';
+	if (!isString(currentGuid) || !plan_guids.includes(currentGuid)) {
+		nextPlanGuid = guids[0];
 	} else {
-		plan_index = plan_index + 1;
+		const idx = plan_guids.indexOf(currentGuid);
+		if (idx === -1 || (!idx && !isNumber(idx))) {
+			nextPlanGuid = guids[0];
+		} else {
+			nextPlanGuid = guids[(idx + 1) % guids.length];
+		}
 	}
-	let new_plan_name: string = plan_names[plan_index % plan_names.length];
-	let new_plan: G14ControlPlan = config.plans.find(
-		(plan) => plan.name === new_plan_name
+
+	const new_plan: G14ControlPlan = config.plans.find(
+		(plan) => plan.guid === nextPlanGuid
 	);
 
-	if (!new_plan || !new_plan_name) {
+	if (!new_plan) {
 		LOGGER.error('Could not find next plan.');
 		return;
 	}
 
-	if (!new_plan_name || !new_plan) {
-		LOGGER.error(`Could not switch plans, no fitting plans found.`);
-		return;
-	}
+	showNotification('Fn+F5', `Switching to: ${new_plan.name}`);
 
-	showNotification('Fn+F5', `Switching to: ${new_plan_name}`);
-
-	g14Config.f5Switch.index = plan_index;
+	g14Config.f5Switch.currentGuid = nextPlanGuid;
 	writeConfig(g14Config);
-	LOGGER.info(`F5 cycle power switching to ${new_plan_name}`);
+	LOGGER.info(`F5 cycle power switching to ${new_plan.name}`);
 	let ryz = new_plan.ryzenadj
 		? config.ryzenadj.options.find((val) => val.name === new_plan.ryzenadj)
 		: undefined;
@@ -110,5 +112,13 @@ export const initF5Switch = async () => {
 	if (!result) {
 		LOGGER.error(`Could not switch plan.`);
 		showNotification('Fn+F5', 'Error switching to: ' + new_plan.name);
+	}
+};
+
+export const updateNextPlan = (plan: FullG14ControlPlan) => {
+	let config = getConfig();
+	if (config.f5Switch.f5Plans.includes(plan.guid)) {
+		config.f5Switch.currentGuid = plan.guid;
+		writeConfig(config);
 	}
 };

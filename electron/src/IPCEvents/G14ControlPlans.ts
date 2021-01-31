@@ -2,6 +2,7 @@
 
 import { BrowserWindow, IpcMain } from 'electron';
 import { isNumber } from 'lodash';
+import { updateNextPlan } from '../AutoPowerSwitching';
 import { getConfig } from '../electron';
 import getLogger from '../Logger';
 import { modifyFanCurve } from './atrofac/ModifyFan';
@@ -227,6 +228,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 															plan.name +
 															'"'
 													);
+													updateNextPlan(plan);
 												} else {
 													LOGGER.info(
 														'Failed to apply ryzenadj plan & therefore G14ControlPlan'
@@ -246,6 +248,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 											LOGGER.info(
 												'Sucessfully applied G14ControlPlan "' + plan.name + '"'
 											);
+											updateNextPlan(plan);
 										} else {
 											LOGGER.info(
 												'Failed to apply ryzenadj plan & therefore G14ControlPlan'

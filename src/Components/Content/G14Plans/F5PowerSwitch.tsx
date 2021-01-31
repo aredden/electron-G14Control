@@ -97,7 +97,7 @@ export default class F5PowerSwitch extends Component<Props, State> {
 		let { allPlans } = this.state;
 		let possiblePlanOptions = allPlans.map((val) => {
 			return (
-				<Select.Option key={val.name} value={val.name}>
+				<Select.Option key={val.name} value={val.guid as string}>
 					{val.name}
 				</Select.Option>
 			);
