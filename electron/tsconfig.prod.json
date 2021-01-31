@@ -7,7 +7,8 @@
 		"outDir": "../public",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		"downlevelIteration": true
+		"downlevelIteration": true,
+		"isolatedModules": true
 	},
 	"include": ["**/*.ts", "**/*d.ts", "**/*.js"],
 	"exclude": ["build", "node_modules"]

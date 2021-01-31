@@ -99,6 +99,11 @@ declare type G14Config = {
 		acPlan: G14ControlPlan;
 		dcPlan: G14ControlPlan;
 	};
+	f5Switch?: {
+		enabled?: boolean;
+		f5Plans?: string[];
+		currentGuid?: string;
+	};
 	startup: {
 		checkBoostVisibility: boolean;
 		autoLaunchEnabled: boolean;
@@ -150,6 +155,7 @@ declare type G14ControlPlan = {
 	armouryCrate?: ArmoryPlan;
 	graphics?: number;
 	windowsPlan: { name: string; guid: string };
+	guid?: string;
 };
 
 declare type FullG14ControlPlan = {
@@ -165,4 +171,5 @@ declare type FullG14ControlPlan = {
 	armouryCrate?: ArmoryPlan;
 	graphics?: number;
 	windowsPlan: { name: string; guid: string };
+	guid?: string;
 };

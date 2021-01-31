@@ -158,6 +158,20 @@ export const setAutoSwitchingEnabled = createAction(
 	}
 );
 
+export const setF5PlansPowerSwitching = createAction(
+	'SET_F5_SWITCH_PLANS',
+	(values: string[]) => {
+		return { payload: values };
+	}
+);
+
+export const setF5SwitchingEnabled = createAction(
+	'SET_F5_SWITCH_ENABLED',
+	(value: boolean) => {
+		return { payload: value };
+	}
+);
+
 export const addRyzenadjPlan = createAction(
 	'ADD_RYZENADJ_PLAN',
 	(value: RyzenadjConfigNamed) => {
@@ -361,6 +375,27 @@ const createRootReducer = (initialState: G14Config) => {
 				: { dcPlan: action.payload };
 			return state;
 		});
+
+		reducer.addCase(setF5SwitchingEnabled, (state, action) => {
+			let { f5Switch } = state;
+			state.f5Switch = f5Switch
+				? Object.assign(state.f5Switch, {
+						enabled: action.payload,
+				  })
+				: { enabled: action.payload };
+			return state;
+		});
+
+		reducer.addCase(setF5PlansPowerSwitching, (state, action) => {
+			let { f5Switch } = state;
+			state.f5Switch = f5Switch
+				? Object.assign(state.f5Switch, {
+					f5Plans: action.payload,
+				  })
+				: { f5Plans: action.payload };
+			return state;
+		});
+
 
 		reducer.addCase(addRyzenadjPlan, (state, action) => {
 			let { payload } = action;

@@ -2,6 +2,7 @@
 
 import { BrowserWindow, IpcMain } from 'electron';
 import { isNumber } from 'lodash';
+import { updateNextPlan } from '../AutoPowerSwitching';
 import { getConfig } from '../electron';
 import getLogger from '../Logger';
 import { modifyFanCurve } from './atrofac/ModifyFan';
@@ -212,10 +213,10 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 									'Successfully switched windows plan to target plan.'
 								);
 								if (fanCurve) {
-									let { cpu, gpu, plan } = fanCurve;
+									let { cpu, gpu, plan: plan_s } = fanCurve;
 									let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
 									let cpuCurve = cpu ? parseArrayCurve(cpu) : undefined;
-									let armPlan = arm === 'noarmoury' ? plan : armouryCrate;
+									let armPlan = arm === 'noarmoury' ? plan_s : armouryCrate;
 									if (cpu || gpu || armPlan) {
 										let result = await modifyFanCurve(
 											cpuCurve,
@@ -227,7 +228,12 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 											setTimeout(async () => {
 												let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
 												if (ryadjResult) {
-													LOGGER.info('Sucessfully applied G14ControlPlan');
+													LOGGER.info(
+														'Sucessfully applied G14ControlPlan "' +
+															plan.name +
+															'"'
+													);
+													updateNextPlan(plan);
 												} else {
 													LOGGER.info(
 														'Failed to apply ryzenadj plan & therefore G14ControlPlan'
@@ -244,7 +250,10 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 									setTimeout(async () => {
 										let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
 										if (ryadjResult) {
-											LOGGER.info('Sucessfully applied G14ControlPlan');
+											LOGGER.info(
+												'Sucessfully applied G14ControlPlan "' + plan.name + '"'
+											);
+											updateNextPlan(plan);
 										} else {
 											LOGGER.info(
 												'Failed to apply ryzenadj plan & therefore G14ControlPlan'

@@ -26,7 +26,10 @@ import url from 'url';
 import { buildPath, loadConfig, writeConfig } from './IPCEvents/ConfigLoader';
 import { setUpNewG14ControlKey } from './IPCEvents/HID/HIDDevice';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import {FnF5mapperBuilder, ROGmapperBuilder} from './IPCEvents/RogKeyRemapperListener';
+import {
+	FnF5mapperBuilder,
+	ROGmapperBuilder,
+} from './IPCEvents/RogKeyRemapperListener';
 import { buildTrayIcon } from './TrayIcon';
 import installExtension from 'electron-devtools-installer';
 import forceFocus from 'forcefocus';
@@ -34,8 +37,9 @@ import AutoUpdater from './AppUpdater';
 import { isUndefined } from 'lodash';
 import { buildTaskbarMenu } from './Taskbar';
 import { NotificationConstructorOptions } from 'electron/main';
-import { initSwitch } from './AutoPowerSwitching';
+import { initSwitch, initF5Switch } from './AutoPowerSwitching';
 import { initStartupPlan } from './StartupPlan';
+import updateConfigOnUpdate from './UpdateConfig';
 const LOGGER = getLogger('Main');
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -65,8 +69,7 @@ export const setPowerDelivery = (val: 'battery' | 'ac') =>
 
 export let powerPlan: 'battery' | 'ac' = 'ac';
 export const getPowerPlan = () => powerPlan;
-const setPowerPlan  = (val: 'battery' | 'ac') =>
-	(powerPlan = val);
+const setPowerPlan = (val: 'battery' | 'ac') => (powerPlan = val);
 
 export let browserWindow: BrowserWindow;
 export let showIconEnabled = false;
@@ -99,13 +102,9 @@ export const minMaxFunc = () => {
 };
 
 export const togglePlan = () => {
-	LOGGER.info('FN+F5 pressed')
-	initSwitch(getPowerPlan())
-		.then(()=> getPowerPlan() === 'ac' ?
-		setPowerPlan('battery') :
-		setPowerPlan('ac')
-		)
-}
+	LOGGER.info('FN+F5 pressed');
+	initF5Switch();
+};
 
 export const getROGHID = () => hid;
 
@@ -114,7 +113,7 @@ export const setHidMain = (hiddevice: HID) => {
 	hid = hiddevice;
 };
 
-export const updateMenuVisible = (minimized?: boolean) => {
+export const updateMenuVisible = (_minimized?: boolean) => {
 	if (browserWindow.isMinimized() || !browserWindow.isVisible()) {
 		trayContext.getMenuItemById('showapp').enabled = true;
 		trayContext.getMenuItemById('hideapp').enabled = false;
@@ -176,7 +175,7 @@ export async function createWindow(
 	tray: Tray,
 	trayContext: any,
 	ICONPATH: string,
-	hid: HID
+	_hid: HID
 ) {
 	// Create the browser window.
 	if (!gotTheLock) {
@@ -191,6 +190,8 @@ export async function createWindow(
 	} catch (err) {
 		LOGGER.error('Error loading config at startup');
 	}
+
+	await updateConfigOnUpdate(g14Config);
 
 	// Set appid so notifications don't show entire app id.
 	app.setAppUserModelId('G14ControlV2');
@@ -308,10 +309,11 @@ export async function createWindow(
 		}
 	}
 
-	if(g14Config.autoSwitch
-		&& g14Config.autoSwitch.enabled
-		&& g14Config.autoSwitch.dcPlan
-		&& g14Config.autoSwitch.acPlan){
+	if (
+		g14Config.f5Switch &&
+		g14Config.f5Switch.enabled &&
+		g14Config.f5Switch.f5Plans.length > 1
+	) {
 		const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
 		if (hdd2) {
 			setHidMain(hdd2);
@@ -357,10 +359,12 @@ export const setupElectronReload = (config: G14Config) => {
 			LOGGER.info('There was an issue setting up ROG HID');
 		}
 	}
-	if(g14Config.autoSwitch
-		&& g14Config.autoSwitch.enabled
-		&& g14Config.autoSwitch.dcPlan
-		&& g14Config.autoSwitch.acPlan){
+	if (
+		g14Config.autoSwitch &&
+		g14Config.autoSwitch.enabled &&
+		g14Config.autoSwitch.dcPlan &&
+		g14Config.autoSwitch.acPlan
+	) {
 		const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
 		if (hdd2) {
 			setHidMain(hdd2);
@@ -412,7 +416,7 @@ powerMonitor.on('on-ac', () => {
 		g14Config.autoSwitch.enabled &&
 		g14Config.autoSwitch.acPlan
 	) {
-		initSwitch('ac').then(()=>  setPowerPlan('battery'));
+		initSwitch('ac').then(() => setPowerPlan('battery'));
 	}
 });
 
@@ -422,7 +426,7 @@ powerMonitor.on('on-battery', () => {
 		g14Config.autoSwitch.enabled &&
 		g14Config.autoSwitch.dcPlan
 	) {
-		initSwitch('battery').then(()=> setPowerPlan('ac'));
+		initSwitch('battery').then(() => setPowerPlan('ac'));
 	}
 });
 

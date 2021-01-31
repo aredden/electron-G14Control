@@ -1,0 +1,21 @@
+
+.f5powersw-container {
+    width: 100% !important;
+    display: flex;
+    justify-content: space-between;
+}
+
+.f5powersw-select-container {
+    width: 100%;
+    label {
+        padding-left: 1rem;
+        text-align: center;
+        font-size: medium;
+        font-weight: 600;
+        display: flex;
+    }
+}
+
+.f5powersw-select {
+    width: 22rem;
+}

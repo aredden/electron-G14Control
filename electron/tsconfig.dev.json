@@ -9,7 +9,8 @@
 		"allowSyntheticDefaultImports": true,
 		"downlevelIteration": true,
 		"sourceMap": true,
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"isolatedModules": true
 	},
 	"include": ["**/*.ts", "**/*d.ts", "**/*.js"],
 	"exclude": ["build", "node_modules"]

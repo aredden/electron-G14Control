@@ -96,6 +96,11 @@ declare type G14Config = {
 		acPlan?: G14ControlPlan;
 		dcPlan?: G14ControlPlan;
 	};
+	f5Switch?: {
+		currentGuid?: string;
+		enabled?: boolean;
+		f5Plans?: string[];
+	};
 	current: {
 		ryzenadj: string;
 		fanCurve: {
@@ -177,6 +182,7 @@ declare type G14ControlPlan = {
 	armouryCrate?: ArmoryPlan;
 	graphics?: number;
 	windowsPlan: { name: string; guid: string };
+	guid?: string;
 };
 
 declare type FullG14ControlPlan = {
@@ -191,8 +197,9 @@ declare type FullG14ControlPlan = {
 	armouryCrate?: ArmoryPlan;
 	graphics?: number;
 	windowsPlan?: { name: string; guid: string };
+	guid?: string;
 };
 
 declare type WindowsPlan = { name: string; guid: string };
 
-declare module 'wmi-client';
+declare module 'wmi-client' {}
