@@ -50,13 +50,14 @@ export default class GraphicsSettings extends Component<Props, State> {
 		});
 		window.ipcRenderer
 			.invoke('getSwitchableDynamicGraphics')
-			.then((returned: false | { ac: number; dc: number }) => {
+			.then((returned: false | { ac: string; dc: string }) => {
 				if (
 					returned &&
-					typeof returned.ac === 'number' &&
-					typeof returned.dc === 'number'
+					typeof returned.ac === 'string' &&
+					typeof returned.dc === 'string'
 				) {
-					this.setState({ graphics: returned });
+					const { ac, dc } = returned;
+					this.setState({ graphics: { ac: parseInt(ac), dc: parseInt(dc) } });
 				}
 			});
 		this.getPowerDelivery();

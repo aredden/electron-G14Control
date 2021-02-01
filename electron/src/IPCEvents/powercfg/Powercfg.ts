@@ -252,6 +252,8 @@ export const getGraphicsFromHelper = async (guid?: string) => {
 			ac: vals[0].trim(),
 			dc: vals[1].trim(),
 		};
+	} else {
+		return false;
 	}
 };
 

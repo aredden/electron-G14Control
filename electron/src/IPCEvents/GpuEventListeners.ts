@@ -4,7 +4,6 @@ import { BrowserWindow, IpcMain } from 'electron';
 import { getDisplays, setDisplayConfig } from './gpu/DisplayConfig';
 import { resetGPU } from './gpu/DiscreteGPU';
 import {
-	getActivePlan,
 	getGraphicsFromHelper,
 	setGraphicsFromHelper,
 } from './powercfg/Powercfg';
@@ -21,7 +20,7 @@ export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 
 	ipc.handle('getSwitchableDynamicGraphics', async () => {
 		let result = await getGraphicsFromHelper();
-		return { result: result, plan: await getActivePlan() };
+		return result;
 	});
 
 	ipc.handle('setSwitchableDynamicGraphics', async (event, value: number) => {

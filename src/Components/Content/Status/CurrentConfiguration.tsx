@@ -102,16 +102,16 @@ export default class CurrentConfiguration extends Component<Props, State> {
 			(
 				response:
 					| {
-							plan: { name: string; guid: string };
-							result: { ac: string; dc: string };
+							ac: string;
+							dc: string;
 					  }
 					| false
 			) => {
 				if (response) {
 					this.setState({
 						graphics: {
-							ac: parseInt(response.result.ac),
-							dc: parseInt(response.result.dc),
+							ac: parseInt(response.ac),
+							dc: parseInt(response.dc),
 						},
 					});
 				} else {
