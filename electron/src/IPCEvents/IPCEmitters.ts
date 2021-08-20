@@ -14,14 +14,14 @@ export const loopsAreRunning = () => {
 const LOGGER = getLogger('IPCEmitters');
 
 export const killEmitters = async () => {
-	tempLoop.pause();
+	tempLoop && tempLoop.pause();
 	isPaused = true;
 	LOGGER.info('Perfmon paused.');
 };
 
-export const runLoop = (window: BrowserWindow) => {
+export const runLoop = async (window: BrowserWindow) => {
 	if (!started) {
-		tempLoop = buildPerfmonThermalProcess(window);
+		tempLoop = await buildPerfmonThermalProcess(window);
 		started = true;
 		isPaused = false;
 	} else if (!loopsAreRunning()) {

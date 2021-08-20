@@ -173,3 +173,14 @@ declare type FullG14ControlPlan = {
 	windowsPlan: { name: string; guid: string };
 	guid?: string;
 };
+
+declare module 'perfmon' {
+	export default function perfmon(
+		counters: string[],
+		callback: (err: any, data: any) => void
+	): PerfmonStream;
+	export interface PerfmonStream {
+		pause: () => any;
+		resume: () => any;
+	}
+}

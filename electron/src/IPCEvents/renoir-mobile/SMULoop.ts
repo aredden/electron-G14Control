@@ -6,9 +6,24 @@ import is_dev from 'electron-is-dev';
 import { EventEmitter } from 'events';
 import getLogger from '../../Logger';
 import path from 'path';
+const root_path = require('app-root-path').path;
 dotenv.config();
 
 const LOGGER = getLogger('SMULoop');
+
+const CMOB_LOC = is_dev
+	? process.env.CEZANNE_MONITOR
+	: path.join(
+			process.execPath,
+			'..',
+			'resources',
+			'ryzenMonitor',
+			'cezanne-mobile-monitor.exe'
+	  );
+
+const MONITOR_CWD = is_dev
+	? path.parse(process.env.CEZANNE_MONITOR).dir
+	: path.join(process.execPath, '..', 'resources', 'ryzenMonitor');
 
 const RMOB_LOC = is_dev
 	? process.env.RMOB_LOC
@@ -29,7 +44,9 @@ export class SMULoop extends EventEmitter {
 
 	start = () => {
 		if (!this.alive()) {
-			this.loop = cp.spawn(RMOB_LOC);
+			this.loop = cp.spawn(CMOB_LOC, {
+				cwd: MONITOR_CWD,
+			});
 			this.loop.stdout.on('data', this.handleData);
 			this.loop.stderr.on('data', this.handleError);
 		}

@@ -10,6 +10,6 @@
 		"downlevelIteration": true,
 		"isolatedModules": true
 	},
-	"include": ["**/*.ts", "**/*d.ts", "**/*.js"],
+	"include": ["**/*.ts", "**/*.d.ts", "**/*.js"],
 	"exclude": ["build", "node_modules"]
 }

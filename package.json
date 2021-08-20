@@ -19,7 +19,7 @@
 		"@fortawesome/free-solid-svg-icons": "^5.15.1",
 		"@fortawesome/react-fontawesome": "^0.1.14",
 		"@reduxjs/toolkit": "^1.5.0",
-		"antd": "^4.7.0",
+		"antd": "^4.16.12",
 		"chalk": "^4.1.0",
 		"chart.js": "^2.9.4",
 		"chartjs-plugin-annotation": "^0.5.7",
@@ -34,8 +34,8 @@
 		"forcefocus": "^1.1.0",
 		"is-admin": "^3.0.0",
 		"jsonschema": "^1.4.0",
-		"lodash": "^4.17.20",
-		"node-hid": "^2.0.0-0",
+		"lodash": "^4.17.21",
+		"node-hid": "^2.1.1",
 		"node-powershell": "^4.0.0",
 		"node-sass": "^4.14.1",
 		"object-hash": "^2.1.1",
@@ -82,6 +82,13 @@
 			"icon": "./electron/src/assets/icon.ico",
 			"requestedExecutionLevel": "requireAdministrator",
 			"extraResources": [
+				{
+					"from": "./electron/cezanne-mobile",
+					"to": "extraResources",
+					"filter": [
+						"**/*"
+					]
+				},
 				{
 					"from": "./electron/src/assets",
 					"to": "extraResources",
@@ -173,6 +180,7 @@
 		"@types/chart.js": "^2.9.27",
 		"@types/chartjs-plugin-annotation": "^0.5.1",
 		"@types/electron": "^1.6.10",
+		"@types/ffi-napi": "^4.0.4",
 		"@types/jest": "^24.0.0",
 		"@types/lodash": "^4.14.165",
 		"@types/node": "^12.0.0",
@@ -180,9 +188,10 @@
 		"@types/react": "^16.9.0",
 		"@types/react-dom": "^16.9.0",
 		"babel-cli": "^6.26.0",
-		"electron": "^10.2.0",
-		"electron-builder": "^22.9.1",
-		"electron-rebuild": "^2.3.4",
+		"cmake-js": "^6.2.1",
+		"electron": "^11.4.12",
+		"electron-builder": "^22.11.7",
+		"electron-rebuild": "^3.1.1",
 		"react-scripts": "3.4.3",
 		"typescript": "^4.1.2"
 	}

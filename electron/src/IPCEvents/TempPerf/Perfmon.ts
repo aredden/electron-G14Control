@@ -1,7 +1,7 @@
 /** @format */
 
 import { BrowserWindow } from 'electron';
-import perfmon from 'perfmon';
+import perfmon, { PerfmonStream } from 'perfmon';
 import Shell from 'node-powershell';
 import getLogger from '../../Logger';
 import { getConfig } from '../../electron';
@@ -29,7 +29,7 @@ export const buildPerfmonThermalProcess = async (
 	} else {
 		finalCounters.push(...[defaultCounters.battery, defaultCounters.thermal]);
 	}
-	let perf: any = '';
+	let perf: PerfmonStream;
 	perf = perfmon(finalCounters, async (err: any, data: any) => {
 		if (!err) {
 			let highPrecisionTemp = data.counters[finalCounters[1]];

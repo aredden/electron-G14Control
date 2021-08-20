@@ -330,6 +330,8 @@ export async function createWindow(
 		}, 3000);
 	}
 
+	LOGGER.info('G14ControlV2 is ready to go!');
+
 	return { tray, browserWindow, g14Config, trayContext };
 }
 
