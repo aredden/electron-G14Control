@@ -4,21 +4,45 @@ import * as hid from 'node-hid';
 import Shell from 'node-powershell';
 import getLogger from '../../Logger';
 import {
-	ASUSACCI_PATH,
-	ARMSOCK_SERV,
-	ARMSOCK_SERV_PATH,
 	ARMCRATE_INTERFACE,
 	ARMCRATE_KEY_CTRL,
-	ARMORY_SW_AGENT,
-	ARMORY_SW_AGENT_PATH,
-	ARMCRATE_SVC,
-	ARMCRATE_SVC_PATH,
-	ARMCRATE_SESS_HELPER,
 	ARMCRATE_MANAGER,
 	ARMCRATE_MANAGER_AGENT,
+	ARMCRATE_SESS_HELPER,
+	ARMCRATE_SVC,
+	ARMCRATE_SVC_PATH,
+	ARMORY_SW_AGENT,
+	ARMORY_SW_AGENT_PATH,
+	ARMSOCK_SERV,
+	ARMSOCK_SERV_PATH,
+	ASUSACCI_PATH,
+	ASUS_VENDOR_ID,
+	G14_2020,
+	G14_2021,
 } from './constants';
 
 const LOGGER = getLogger('HIDControl');
+
+const makeShell = () => {
+	return new Shell({
+		executionPolicy: 'Bypass',
+		noProfile: true,
+	});
+};
+
+const formatNameIsRunning = (name: string) => {
+	return `${name} is running`;
+};
+
+const formatNameIsNotRunning = (name: string) => {
+	return `${name} is not running`;
+};
+
+const getProcessWhereName = (name: string) =>
+	`Get-Process | Where-Object Name -like "${name.replace(
+		'.exe',
+		''
+	)}" | Select-Object ProcessName`;
 
 export const checkExecutableAtPathExists = (name: string, path: string) => {
 	return new Promise((resolve) => {
@@ -89,6 +113,25 @@ export const checkRemoveAndRename = (name: string, path?: string) => {
 			});
 		}
 	});
+};
+
+export const checkProcessExists = async (name: string) => {
+	const ps = makeShell();
+	try {
+		ps.addCommand(getProcessWhereName(name));
+		const result = await ps.invoke();
+		if (result && result.length > 0) {
+			LOGGER.info(formatNameIsRunning(name));
+			return true;
+		} else {
+			LOGGER.info(formatNameIsNotRunning(name));
+			return false;
+		}
+	} catch (err) {
+		LOGGER.error(`Error checking process named: ${name}...\nError: \n${err}`);
+		ps.dispose();
+		return false;
+	}
 };
 
 export const checkProcessExist = async (executableName: string) => {
@@ -201,23 +244,46 @@ export const renameProcess = async (
 	});
 };
 
-// Remaps the key to listen to whatever callback it is given.
-export const setUpNewG14ControlKey = (
-	cb: (data: Buffer) => any,
-	main?: boolean
+let hidDevice: hid.HID;
+
+const closeDevice = () => {
+	console.log('\nClosing HID device if it exists...');
+	if (hidDevice) {
+		hidDevice.removeAllListeners();
+		hidDevice.close();
+	}
+};
+
+process.on('SIGINT', closeDevice);
+process.on('SIGKILL', closeDevice);
+process.on('beforeExit', closeDevice);
+process.on('uncaughtException', closeDevice);
+export const setUpNewG14ControlKey = async (
+	cb: (data: Buffer) => void,
+	_?: boolean
 ) => {
-	let hidDevice: hid.HID;
+	// Gather all HID devices.
 	let devices = hid.devices();
-	let deviceInfo = devices.find(function (d: hid.Device) {
-		let kbd = d.vendorId === 0x0b05 && d.productId === 0x1866;
-		return kbd && d.path.includes('col01');
+	// Find all HID devices that are made by ASUS and have the
+	// 2021 or 2020 G14 product id.
+	let deviceInfo = devices.filter(function (d: hid.Device) {
+		const { vendorId, productId } = d;
+		let DeviceIsKeyboard =
+			vendorId === ASUS_VENDOR_ID &&
+			(productId === G14_2021 || productId === G14_2020);
+		return DeviceIsKeyboard && d.path?.includes('col01');
 	});
-	if (deviceInfo) {
-		LOGGER.info('Found G14 unique key'); // I'm not sure what it does, but i suppose it searches for Asus specific 'hidden' kb? Change message if that's not the case
-		hidDevice = new hid.HID(deviceInfo.path);
+
+	if (deviceInfo && deviceInfo.length === 1) {
+		// If there is only one device, start listening to the device.
+		hidDevice = new hid.HID(deviceInfo[0].path);
+		// Make the device listen using the callback that was given to the main function.
 		hidDevice.on('data', cb);
-		return hidDevice;
+	} else if (deviceInfo && deviceInfo.length > 1) {
+		LOGGER.error('More than one asus hotkey keyboard found');
+		return false;
 	} else {
+		LOGGER.error('No keyboard found');
 		return false;
 	}
 };
