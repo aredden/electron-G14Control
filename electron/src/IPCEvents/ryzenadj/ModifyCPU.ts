@@ -13,13 +13,7 @@ dotenv.config();
 // eslint-ignore-next-line
 const RADJ_LOC = is_dev
 	? (process.env.RADJ_LOC as string)
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'ryzenadj.exe'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'ryzenadj.exe');
 
 const LOGGER = getLogger('RyzenADJ');
 
@@ -44,9 +38,7 @@ export const setRyzenadj = (config: RyzenadjConfig) => {
 		}
 		exec(`cmd /c "${RADJ_LOC}" ${radjStr}`, (err, out, stderr) => {
 			if (err || stderr) {
-				LOGGER.error(
-					`Error setting ryzenadj settings: ${JSON.stringify({ err, stderr })}`
-				);
+				LOGGER.error(`Error setting ryzenadj settings: ${JSON.stringify({ err, stderr })}`);
 				resolve(false);
 			} else {
 				LOGGER.info(`Result of ryzenADJ command:\n${out}`);

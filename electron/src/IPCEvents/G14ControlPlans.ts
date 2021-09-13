@@ -19,65 +19,59 @@ import { setRyzenadj } from './ryzenadj/ModifyCPU';
 
 const LOGGER = getLogger('G14ControlPlans');
 
-export const buildG14ControlPlanListeners = (
-	win: BrowserWindow,
-	ipc: IpcMain
-) => {
-	ipc.handle(
-		'setG14ControlPlan',
-		async (event, plano: G14ControlPlan | string) => {
-			let config = getConfig();
-			let plan: G14ControlPlan;
-			if (typeof plano === 'string') {
-				plan = config.plans.find((pln) => pln.name === plano);
-			} else {
-				plan = plano;
-			}
+export const buildG14ControlPlanListeners = (win: BrowserWindow, ipc: IpcMain) => {
+	ipc.handle('setG14ControlPlan', async (event, plano: G14ControlPlan | string) => {
+		let config = getConfig();
+		let plan: G14ControlPlan;
+		if (typeof plano === 'string') {
+			plan = config.plans.find((pln) => pln.name === plano);
+		} else {
+			plan = plano;
+		}
 
-			LOGGER.info(`Recieved plan:\n${JSON.stringify(plan, null, 2)}`);
-			let curve: FanCurveConfig;
-			if (plan.fanCurve) {
-				curve = config.fanCurves.find((curv) => {
-					return curv.name === plan.fanCurve;
-				}) as FanCurveConfig;
-			}
-			let radj: RyzenadjConfigNamed;
-			if (plan.ryzenadj) {
-				radj = config.ryzenadj.options.find((rdj) => {
-					return rdj.name === plan.ryzenadj;
-				});
-			}
+		LOGGER.info(`Recieved plan:\n${JSON.stringify(plan, null, 2)}`);
+		let curve: FanCurveConfig;
+		if (plan.fanCurve) {
+			curve = config.fanCurves.find((curv) => {
+				return curv.name === plan.fanCurve;
+			}) as FanCurveConfig;
+		}
+		let radj: RyzenadjConfigNamed;
+		if (plan.ryzenadj) {
+			radj = config.ryzenadj.options.find((rdj) => {
+				return rdj.name === plan.ryzenadj;
+			});
+		}
 
-			if ((curve || !plan.fanCurve) && (radj || !plan.ryzenadj)) {
-				let full: FullG14ControlPlan = {
-					name: plan.name,
-					fanCurve: curve,
-					ryzenadj: radj,
-					armouryCrate: plan.armouryCrate,
-					boost: plan.boost,
-					windowsPlan: plan.windowsPlan,
-					graphics: plan.graphics,
-				};
-				let result = await setG14ControlPlan(full);
-				if (result) {
-					return true;
-				} else {
-					LOGGER.error('Failed to set G14Control plan.');
-					return false;
-				}
+		if ((curve || !plan.fanCurve) && (radj || !plan.ryzenadj)) {
+			let full: FullG14ControlPlan = {
+				name: plan.name,
+				fanCurve: curve,
+				ryzenadj: radj,
+				armouryCrate: plan.armouryCrate,
+				boost: plan.boost,
+				windowsPlan: plan.windowsPlan,
+				graphics: plan.graphics,
+			};
+			let result = await setG14ControlPlan(full);
+			if (result) {
+				return true;
 			} else {
-				LOGGER.info(
-					`Could not find curve or ryzenadj plan with names:\nryzen: ${plan.ryzenadj}\ncurve: ${plan.fanCurve}`
-				);
+				LOGGER.error('Failed to set G14Control plan.');
 				return false;
 			}
+		} else {
+			LOGGER.info(
+				`Could not find curve or ryzenadj plan with names:\nryzen: ${plan.ryzenadj}\ncurve: ${plan.fanCurve}`
+			);
+			return false;
 		}
-	);
+	});
 };
 
-export const switchWindowsPlanToActivateSettings: (
-	activeguid: string
-) => Promise<boolean> = async (activeGuid) => {
+export const switchWindowsPlanToActivateSettings: (activeguid: string) => Promise<boolean> = async (
+	activeGuid
+) => {
 	let allWindowsPlans = await getWindowsPlans();
 	if (allWindowsPlans) {
 		let otherPlan = allWindowsPlans.find((plan) => {
@@ -155,19 +149,11 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	let boos: boolean;
 	let graphi: boolean;
 	if (boost || (isNumber(boost) && boost === 0)) {
-		boos = (await setBoostFromHelper(
-			boost,
-			windowsPlan.guid,
-			false
-		)) as boolean;
+		boos = (await setBoostFromHelper(boost, windowsPlan.guid, false)) as boolean;
 	}
 
 	if (graphics || graphics === 0) {
-		graphi = (await setGraphicsFromHelper(
-			graphics,
-			windowsPlan.guid,
-			false
-		)) as boolean;
+		graphi = (await setGraphicsFromHelper(graphics, windowsPlan.guid, false)) as boolean;
 		if (graphi) {
 			LOGGER.info('Successfully set graphics values to: ' + graphics);
 		} else {
@@ -182,9 +168,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 			setTimeout(async () => {
 				let active = await getActivePlan();
 				if (active && active.guid === windowsPlan.guid) {
-					let switched = await switchWindowsPlanToActivateSettings(
-						windowsPlan.guid
-					);
+					let switched = await switchWindowsPlanToActivateSettings(windowsPlan.guid);
 					if (!switched) {
 						LOGGER.error(
 							"Couldn't activate G14Control plan because couldn't shuffle windows plan to activate boost / graphics settings"
@@ -196,22 +180,16 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 				let result = await new Promise(async (resolve) => {
 					setTimeout(async () => {
 						let arm = armouryCrate
-							? await modifyArmoryCratePlan(
-									armouryCrate.toLowerCase() as ArmoryPlan
-							  )
+							? await modifyArmoryCratePlan(armouryCrate.toLowerCase() as ArmoryPlan)
 							: 'noarmoury';
 						if (arm || arm === 'noarmoury') {
-							LOGGER.info(
-								'Successfully modified armory crate plan to: ' + armouryCrate
-							);
+							LOGGER.info('Successfully modified armory crate plan to: ' + armouryCrate);
 							let switchPlan = true;
 							if (active && active.guid !== windowsPlan.guid) {
 								switchPlan = await setWindowsPlan(windowsPlan.guid);
 							}
 							if (switchPlan) {
-								LOGGER.info(
-									'Successfully switched windows plan to target plan.'
-								);
+								LOGGER.info('Successfully switched windows plan to target plan.');
 								if (fanCurve) {
 									let { cpu, gpu, plan: plan_s } = fanCurve;
 									let gpuCurve = gpu ? parseArrayCurve(gpu) : undefined;
@@ -228,16 +206,10 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 											setTimeout(async () => {
 												let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
 												if (ryadjResult) {
-													LOGGER.info(
-														'Sucessfully applied G14ControlPlan "' +
-															plan.name +
-															'"'
-													);
+													LOGGER.info('Sucessfully applied G14ControlPlan "' + plan.name + '"');
 													updateNextPlan(plan);
 												} else {
-													LOGGER.info(
-														'Failed to apply ryzenadj plan & therefore G14ControlPlan'
-													);
+													LOGGER.info('Failed to apply ryzenadj plan & therefore G14ControlPlan');
 												}
 												resolve(ryadjResult);
 											}, 1000);
@@ -250,14 +222,10 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 									setTimeout(async () => {
 										let ryadjResult = await setRyzenadjWithDelay(ryzenadj);
 										if (ryadjResult) {
-											LOGGER.info(
-												'Sucessfully applied G14ControlPlan "' + plan.name + '"'
-											);
+											LOGGER.info('Sucessfully applied G14ControlPlan "' + plan.name + '"');
 											updateNextPlan(plan);
 										} else {
-											LOGGER.info(
-												'Failed to apply ryzenadj plan & therefore G14ControlPlan'
-											);
+											LOGGER.info('Failed to apply ryzenadj plan & therefore G14ControlPlan');
 										}
 										resolve(ryadjResult);
 									}, 1000);
@@ -281,10 +249,7 @@ export const setG14ControlPlan = async (plan: FullG14ControlPlan) => {
 	}
 };
 
-export const keepAttemptRyzenADJ = async (
-	plan: RyzenadjConfig,
-	tries: number
-) => {
+export const keepAttemptRyzenADJ = async (plan: RyzenadjConfig, tries: number) => {
 	if (tries <= 0) {
 		return false;
 	} else {

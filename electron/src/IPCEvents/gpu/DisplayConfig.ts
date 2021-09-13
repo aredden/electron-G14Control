@@ -21,12 +21,7 @@ const screenrefloc = is_dev
 
 const LOGGER = getLogger('DisplayConfig');
 
-const buildCommandString = (
-	display: number,
-	refresh?: number,
-	width?: number,
-	height?: number
-) => {
+const buildCommandString = (display: number, refresh?: number, width?: number, height?: number) => {
 	let command = ` /d=${display}`;
 	if (refresh) {
 		command = command + ` /f=${refresh}`;
@@ -83,9 +78,7 @@ export const setDisplayConfig = async (
 
 export const parseDisplayOptions = (stringOpts: string) => {
 	return new Promise((resolve) => {
-		let opts = stringOpts.split(
-			/ {0,2}Display modes for \\\\\.\\DISPLAY[0-9]{1,2}:/gm
-		);
+		let opts = stringOpts.split(/ {0,2}Display modes for \\\\\.\\DISPLAY[0-9]{1,2}:/gm);
 		if (!opts || opts.length < 2) {
 			return [];
 		}

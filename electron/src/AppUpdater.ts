@@ -55,9 +55,7 @@ export default class AutoUpdater<Updater> {
 						this.state.version = r.updateInfo.version;
 						this.state.updateAvailable = true;
 						this.state.updateInfo = r.updateInfo;
-						LOGGER.info(
-							`Got update info:\n${JSON.stringify(r.updateInfo, null, 2)}`
-						);
+						LOGGER.info(`Got update info:\n${JSON.stringify(r.updateInfo, null, 2)}`);
 					} else {
 						LOGGER.info('Current update info: ' + JSON.stringify(r, null, 2));
 					}

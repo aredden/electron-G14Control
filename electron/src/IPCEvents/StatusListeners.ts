@@ -1,12 +1,7 @@
 /** @format */
 
 import { BrowserWindow, IpcMain } from 'electron';
-import {
-	getBiosCpu,
-	getDrivers,
-	getSoftware,
-	refreshAllMaps,
-} from './ComputerInfo';
+import { getBiosCpu, getDrivers, getSoftware, refreshAllMaps } from './ComputerInfo';
 export const buildStatusListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('getCpuBiosInfo', async (_evt) => {
 		let map = await getBiosCpu();

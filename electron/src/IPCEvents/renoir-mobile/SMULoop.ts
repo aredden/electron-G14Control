@@ -13,13 +13,7 @@ const LOGGER = getLogger('SMULoop');
 
 const CMOB_LOC = is_dev
 	? process.env.CEZANNE_MONITOR
-	: path.join(
-			process.execPath,
-			'..',
-			'resources',
-			'ryzenMonitor',
-			'cezanne-mobile-monitor.exe'
-	  );
+	: path.join(process.execPath, '..', 'resources', 'ryzenMonitor', 'cezanne-mobile-monitor.exe');
 
 const MONITOR_CWD = is_dev
 	? path.parse(process.env.CEZANNE_MONITOR).dir
@@ -27,13 +21,7 @@ const MONITOR_CWD = is_dev
 
 const RMOB_LOC = is_dev
 	? process.env.RMOB_LOC
-	: path.join(
-			process.execPath,
-			'..',
-			'resources',
-			'renoirMobile',
-			'renoir-mobile.exe'
-	  );
+	: path.join(process.execPath, '..', 'resources', 'renoirMobile', 'renoir-mobile.exe');
 
 export class SMULoop extends EventEmitter {
 	loop: cp.ChildProcessWithoutNullStreams;

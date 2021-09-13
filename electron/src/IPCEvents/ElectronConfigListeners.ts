@@ -23,16 +23,13 @@ export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('openLogs', () => {
 		exec(`explorer "${path.join(app.getPath('exe'), '../', 'logs')}"`);
 	});
-	ipc.handle(
-		'setAutoLaunch',
-		async (event, enabled: boolean, config: G14Config) => {
-			let result = await setAutoLaunch(enabled);
-			let write = await writeConfig(config);
-			if (result && write) {
-				return true;
-			}
+	ipc.handle('setAutoLaunch', async (event, enabled: boolean, config: G14Config) => {
+		let result = await setAutoLaunch(enabled);
+		let write = await writeConfig(config);
+		if (result && write) {
+			return true;
 		}
-	);
+	});
 	ipc.handle('editShortcuts', (event, keys: ShortCuts) => {
 		if (keys) {
 			if (!keys.minmax.enabled) {
@@ -42,10 +39,7 @@ export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 				return true;
 			} else {
 				if (!globalShortcut.isRegistered(keys.minmax.accelerator)) {
-					let result = globalShortcut.register(
-						keys.minmax.accelerator,
-						minMaxFunc
-					);
+					let result = globalShortcut.register(keys.minmax.accelerator, minMaxFunc);
 					LOGGER.info('Enabled minmax shortcut');
 					return result;
 				} else {
@@ -54,9 +48,7 @@ export const buildElectronListeners = (ipc: IpcMain, win: BrowserWindow) => {
 				}
 			}
 		} else {
-			LOGGER.info(
-				'Problem with editShortcuts command. Shortcuts were not sent to handler.'
-			);
+			LOGGER.info('Problem with editShortcuts command. Shortcuts were not sent to handler.');
 			return false;
 		}
 	});

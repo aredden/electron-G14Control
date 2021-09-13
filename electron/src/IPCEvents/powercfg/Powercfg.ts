@@ -15,18 +15,10 @@ const LOGGER = getLogger('Powercfg');
 const PWRPROF_HELPER = is_dev
 	? process.env.PWRPROF_HELPER
 	: path
-			.join(
-				app.getPath('exe'),
-				'../',
-				'resources',
-				'extraResources',
-				'G14PowerCfg.exe'
-			)
+			.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'G14PowerCfg.exe')
 			.replace(' ', '` ');
 
-export const getActivePlan = async (): Promise<
-	{ name: string; guid: string } | false
-> => {
+export const getActivePlan = async (): Promise<{ name: string; guid: string } | false> => {
 	return new Promise((resolve) =>
 		exec('powercfg /getactivescheme', (err, out, stderr) => {
 			if (!err && !stderr) {
@@ -50,9 +42,7 @@ export const getActivePlan = async (): Promise<
 	);
 };
 
-export const getWindowsPlans = async (): Promise<
-	Array<{ name: string; guid: string }> | false
-> => {
+export const getWindowsPlans = async (): Promise<Array<{ name: string; guid: string }> | false> => {
 	return new Promise((resolve) => {
 		exec('powercfg /l', (err, out, stderr) => {
 			if (!err && !stderr) {
@@ -91,39 +81,32 @@ export const setWindowsPlan = async (guid: string): Promise<boolean> => {
 	});
 };
 
-export const getCPUBoostRawResult = async (
-	guid?: string
-): Promise<string | false> => {
+export const getCPUBoostRawResult = async (guid?: string): Promise<string | false> => {
 	let activeGuid: string = guid as string;
 	if (!guid) {
 		let plan = await getActivePlan();
 		if (!plan) {
-			LOGGER.error(
-				'getCPUBoostRawResult active plan GUID could not be parsed.'
-			);
+			LOGGER.error('getCPUBoostRawResult active plan GUID could not be parsed.');
 			return false;
 		}
 		activeGuid = (plan as { name: string; guid: string }).guid;
 	}
 	if (activeGuid) {
 		return new Promise((resolve) => {
-			exec(
-				`powercfg /q ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE`,
-				(err, out, stderr) => {
-					if (!err && !stderr) {
-						resolve(out);
-					} else {
-						LOGGER.error(
-							`Error getting boost for guid: ${activeGuid}:\n${JSON.stringify(
-								{ err, stderr },
-								null,
-								2
-							)}`
-						);
-						resolve(false);
-					}
+			exec(`powercfg /q ${activeGuid} SUB_PROCESSOR PERFBOOSTMODE`, (err, out, stderr) => {
+				if (!err && !stderr) {
+					resolve(out);
+				} else {
+					LOGGER.error(
+						`Error getting boost for guid: ${activeGuid}:\n${JSON.stringify(
+							{ err, stderr },
+							null,
+							2
+						)}`
+					);
+					resolve(false);
 				}
-			);
+			});
 		});
 	} else {
 		LOGGER.info('getCPUBoostRawResult active plan GUID could not be parsed.');
@@ -131,11 +114,7 @@ export const getCPUBoostRawResult = async (
 	}
 };
 
-export const setBoost = async (
-	value: string | number,
-	guid?: string,
-	doSwitch = true
-) => {
+export const setBoost = async (value: string | number, guid?: string, doSwitch = true) => {
 	let activeGuid: string = guid as string;
 	if (!guid) {
 		let plan = await getActivePlan();
@@ -189,12 +168,7 @@ export const setBoost = async (
 		}
 	});
 	let current = await getActivePlan();
-	if (
-		current &&
-		(!guid || guid === current.guid) &&
-		resultSuccess &&
-		doSwitch
-	) {
+	if (current && (!guid || guid === current.guid) && resultSuccess && doSwitch) {
 		LOGGER.info('Need to switch windows plan to activate boost.');
 		let hok = await switchWindowsPlanToActivateSettings(current.guid);
 		return hok;
@@ -285,9 +259,7 @@ export const setGraphicsFromHelper = async (
 				LOGGER.info('Set graphics');
 				return true;
 			} else {
-				LOGGER.error(
-					'Failed to switch windows plan, but successfully set graphics'
-				);
+				LOGGER.error('Failed to switch windows plan, but successfully set graphics');
 				return false;
 			}
 		}
@@ -329,9 +301,7 @@ export const setBoostFromHelper = async (
 				LOGGER.info('Set boost');
 				return true;
 			} else {
-				LOGGER.error(
-					'Failed to switch windows plan, but successfully set boost'
-				);
+				LOGGER.error('Failed to switch windows plan, but successfully set boost');
 				return false;
 			}
 		}

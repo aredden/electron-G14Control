@@ -2,10 +2,7 @@
 
 import { IpcMain } from 'electron';
 import { IpcMainInvokeEvent } from 'electron/main';
-import {
-	checkBoostVisibility,
-	enableVisibility,
-} from '../Registry/BoostVisibility';
+import { checkBoostVisibility, enableVisibility } from '../Registry/BoostVisibility';
 import getLogger from '../Logger';
 
 const LOGGER = getLogger('StartupChecks');

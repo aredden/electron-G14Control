@@ -1,7 +1,6 @@
 /** @format */
 
-export const ARMORY_SW_AGENT_PATH =
-	'C:/Program Files (x86)/ASUS/ArmouryDevice/dll/SwAgent';
+export const ARMORY_SW_AGENT_PATH = 'C:/Program Files (x86)/ASUS/ArmouryDevice/dll/SwAgent';
 export const ARMCRATE_SVC_PATH = 'C:/Program Files/ASUS/ARMOURY CRATE Service';
 export const ARMSOCK_SERV_PATH =
 	'C:/Program Files (x86)/ASUS/ArmouryDevice/dll/ArmourySocketServer';

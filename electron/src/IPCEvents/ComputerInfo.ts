@@ -2,11 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 import { spawn } from 'child_process';
 import getLogger from '../Logger';
-import {
-	buildDriverMap,
-	buildSoftwareMap,
-	formatGetWmiobject,
-} from './WMI/ComputerInfoUtils';
+import { buildDriverMap, buildSoftwareMap, formatGetWmiobject } from './WMI/ComputerInfoUtils';
 
 const LOGGER = getLogger('ComputerInfo');
 
@@ -19,10 +15,7 @@ const buildMap = (datas: Array<string>) => {
 	let mapmap = new Map();
 	datas.map((value) => {
 		let newVal = value.split(':');
-		mapmap.set(
-			newVal[0].replace(/ /gm, ''),
-			newVal[1].replace(/^ | {2}/gm, '')
-		);
+		mapmap.set(newVal[0].replace(/ /gm, ''), newVal[1].replace(/^ | {2}/gm, ''));
 		return null;
 	});
 
@@ -66,9 +59,7 @@ const buildPsSpawn = (args: string) => {
 	let childo = spawn('powershell.exe', [args]);
 
 	childo.stderr.on('error', (err) => {
-		LOGGER.error(
-			`Powershell Spawn (from ComputerInfo.tsx resulted in error:\n${err}`
-		);
+		LOGGER.error(`Powershell Spawn (from ComputerInfo.tsx resulted in error:\n${err}`);
 	});
 
 	childo.stdout.on('data', (data) => {

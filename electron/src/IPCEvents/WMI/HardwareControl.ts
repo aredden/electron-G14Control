@@ -68,39 +68,37 @@ export const whichCharger = async () => {
 	});
 	let command = buildAtkWmi('DSTS', BATTERY_AC_USBC);
 	ps.addCommand(command);
-	return new Promise<false | { ac: boolean; dc: boolean; usb: boolean }>(
-		(resolve) => {
-			ps.invoke()
-				.then((resulted) => {
-					ps.dispose();
-					let parsed = parseWmiObjectResult(resulted);
-					LOGGER.info('Which Charger Result: ' + parsed);
-					if (parsed) {
-						switch (parsed) {
-							case '0': {
-								resolve({ ac: false, dc: true, usb: false });
-								break;
-							}
-							case '65538': {
-								resolve({ ac: false, dc: false, usb: true });
-								break;
-							}
-							case '65537': {
-								resolve({ ac: true, dc: false, usb: true });
-								break;
-							}
+	return new Promise<false | { ac: boolean; dc: boolean; usb: boolean }>((resolve) => {
+		ps.invoke()
+			.then((resulted) => {
+				ps.dispose();
+				let parsed = parseWmiObjectResult(resulted);
+				LOGGER.info('Which Charger Result: ' + parsed);
+				if (parsed) {
+					switch (parsed) {
+						case '0': {
+							resolve({ ac: false, dc: true, usb: false });
+							break;
 						}
-					} else {
-						resolve(false);
+						case '65538': {
+							resolve({ ac: false, dc: false, usb: true });
+							break;
+						}
+						case '65537': {
+							resolve({ ac: true, dc: false, usb: true });
+							break;
+						}
 					}
-				})
-				.catch((err) => {
-					ps.dispose();
-					LOGGER.info('Error result from check which charger: \n' + err);
+				} else {
 					resolve(false);
-				});
-		}
-	);
+				}
+			})
+			.catch((err) => {
+				ps.dispose();
+				LOGGER.info('Error result from check which charger: \n' + err);
+				resolve(false);
+			});
+	});
 };
 
 // (Get-WmiObject -Namespace root/WMI -Class AsusAtkWmi_WMNB).DEVS(0x00120057, X)
@@ -123,18 +121,14 @@ export const setBatteryLimiter = async (amount: number) => {
 						resolve(true);
 					} else {
 						LOGGER.info(
-							`Setting battery limit resulted in unexpected result: \n${JSON.stringify(
-								result
-							)}`
+							`Setting battery limit resulted in unexpected result: \n${JSON.stringify(result)}`
 						);
 						resolve(false);
 					}
 				})
 				.catch((err) => {
 					ps.dispose();
-					LOGGER.info(
-						`Setting battery limit resulted in error: \n${JSON.stringify(err)}`
-					);
+					LOGGER.info(`Setting battery limit resulted in error: \n${JSON.stringify(err)}`);
 					return false;
 				});
 		});

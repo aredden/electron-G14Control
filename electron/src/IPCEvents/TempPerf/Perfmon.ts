@@ -13,10 +13,7 @@ const defaultCounters = {
 	battery: '\\Power Meter(_Total)\\Power',
 };
 
-export const buildPerfmonThermalProcess = async (
-	win: BrowserWindow,
-	retryIfFail = true
-) => {
+export const buildPerfmonThermalProcess = async (win: BrowserWindow, retryIfFail = true) => {
 	const { newLanguageSupport } = getConfig().current;
 
 	let localeCounters: { thermal: string; battery: string } | false = false;
@@ -40,9 +37,7 @@ export const buildPerfmonThermalProcess = async (
 			let discharge = data.counters[finalCounters[0]];
 			win.webContents.send('dischargeRate', discharge);
 		} else {
-			LOGGER.info(
-				`ERROR getting info from perfmon.js${JSON.stringify(err, null, 2)}`
-			);
+			LOGGER.info(`ERROR getting info from perfmon.js${JSON.stringify(err, null, 2)}`);
 			if (retryIfFail) {
 				perf = await buildPerfmonThermalProcess(win, false);
 			}
@@ -64,14 +59,8 @@ export const getCounterLocaleName = async () => {
 	]);
 	if (r[0] && r[1] && r[2] && r[3]) {
 		return {
-			thermal: `\\${r[0].replace(/\r\n*/, '')}(*)\\${r[1].replace(
-				/\r\n*/,
-				''
-			)}`,
-			battery: `\\${r[2].replace(/\r\n*/, '')}(_Total)\\${r[3].replace(
-				/\r\n*/,
-				''
-			)}`,
+			thermal: `\\${r[0].replace(/\r\n*/, '')}(*)\\${r[1].replace(/\r\n*/, '')}`,
+			battery: `\\${r[2].replace(/\r\n*/, '')}(_Total)\\${r[3].replace(/\r\n*/, '')}`,
 		};
 	} else {
 		return false;
@@ -95,9 +84,7 @@ const addThenInvokeMLCommand = async (...multiLineCommand: any[]) => {
 				resolve(result);
 			})
 			.catch((err) => {
-				LOGGER.error(
-					typeof err === 'string' ? err : JSON.stringify(err, null, 2)
-				);
+				LOGGER.error(typeof err === 'string' ? err : JSON.stringify(err, null, 2));
 				resolve(false);
 			});
 	});

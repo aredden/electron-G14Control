@@ -7,12 +7,7 @@ import is_dev from 'electron-is-dev';
 import getLogger from '../Logger';
 import path from 'path';
 import { app } from 'electron';
-import {
-	browserWindow,
-	getConfig,
-	setG14Config,
-	setupElectronReload,
-} from '../electron';
+import { browserWindow, getConfig, setG14Config, setupElectronReload } from '../electron';
 import validator, { configSchema } from '../Utilities/ConfigValidation';
 
 dotenv.config();
@@ -24,30 +19,16 @@ type G14PathType = {
 
 const LOCAL_CFG = is_dev
 	? (process.env.CONFIG_LOC as string)
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'config.oonip'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'config.oonip');
 let LOGGER = getLogger('ConfigLoader');
 
-const APPDATA_CONFIG = path.join(
-	app.getPath('appData'),
-	'G14ControlV2',
-	'G14ControlV2.json'
-);
+const APPDATA_CONFIG = path.join(app.getPath('appData'), 'G14ControlV2', 'G14ControlV2.json');
 
 let FINAL_CFG_LOC = LOCAL_CFG;
 
 const validateConfig = (config: any) => {
 	let validateResult = validator.validate(config, configSchema);
-	LOGGER.info(
-		`Number of validation Errors: ${JSON.stringify(
-			validateResult.errors.length
-		)}`
-	);
+	LOGGER.info(`Number of validation Errors: ${JSON.stringify(validateResult.errors.length)}`);
 	if (validateResult.valid) {
 		return true;
 	} else {
@@ -78,11 +59,7 @@ export const buildPath = async () => {
 			fs.mkdir(path.join(app.getPath('appData'), 'G14ControlV2'), (err) => {
 				if (err) {
 					LOGGER.error(
-						`Error creating directory for persistent config:\n${JSON.stringify(
-							err,
-							null,
-							2
-						)}`
+						`Error creating directory for persistent config:\n${JSON.stringify(err, null, 2)}`
 					);
 					resolve(false);
 				} else {
@@ -97,28 +74,15 @@ export const buildPath = async () => {
 		let config = JSON.parse((await loadConfig()).toString()) as G14Config;
 		let file = Buffer.from(JSON.stringify(config), 'utf-8');
 		let result = await new Promise<boolean>((resolve) => {
-			fs.writeFile(
-				APPDATA_CONFIG,
-				file,
-				{ encoding: 'utf8', flag: 'w+' },
-				(err) => {
-					if (err) {
-						LOGGER.error(
-							`Error writing persistent configuration:\n${JSON.stringify(
-								err,
-								null,
-								2
-							)}`
-						);
-						resolve(false);
-					} else {
-						LOGGER.info(
-							'Successfully wrote configuration data to persistent configuration file.'
-						);
-						resolve(true);
-					}
+			fs.writeFile(APPDATA_CONFIG, file, { encoding: 'utf8', flag: 'w+' }, (err) => {
+				if (err) {
+					LOGGER.error(`Error writing persistent configuration:\n${JSON.stringify(err, null, 2)}`);
+					resolve(false);
+				} else {
+					LOGGER.info('Successfully wrote configuration data to persistent configuration file.');
+					resolve(true);
 				}
-			);
+			});
 		});
 		persistConfig = result;
 	}
@@ -130,9 +94,7 @@ export const buildPath = async () => {
 		if (!validated) {
 			LOGGER.error('Initial config could not be validated.');
 			FINAL_CFG_LOC = LOCAL_CFG;
-			let configValid = JSON.parse(
-				(await loadConfig()).toString()
-			) as G14Config;
+			let configValid = JSON.parse((await loadConfig()).toString()) as G14Config;
 			FINAL_CFG_LOC = APPDATA_CONFIG;
 			await writeConfig(configValid);
 			configValid = JSON.parse((await loadConfig()).toString()) as G14Config;
@@ -182,9 +144,7 @@ export const loadConfig = async () => {
 	return new Promise((resolve, reject) => {
 		fs.readFile(FINAL_CFG_LOC, (err, data) => {
 			if (err) {
-				LOGGER.info(
-					`Error reading file: ${FINAL_CFG_LOC}.\n ${JSON.stringify(err)}`
-				);
+				LOGGER.info(`Error reading file: ${FINAL_CFG_LOC}.\n ${JSON.stringify(err)}`);
 				reject(err);
 			} else {
 				resolve(data);
@@ -197,9 +157,7 @@ export const writeConfig = async (config: G14Config) => {
 	return new Promise((resolve) => {
 		fs.writeFile(FINAL_CFG_LOC, JSON.stringify(config), (err) => {
 			if (err) {
-				LOGGER.error(
-					`Problem writing to config.json file. \nError: ${JSON.stringify(err)}`
-				);
+				LOGGER.error(`Problem writing to config.json file. \nError: ${JSON.stringify(err)}`);
 				resolve(false);
 			} else {
 				setG14Config(config);
@@ -279,19 +237,13 @@ export const buildConfigLoaderListeners = async (ipc: IpcMain) => {
 				}
 				if (val.filePaths) {
 					let dir = val.filePaths[0];
-					fs.writeFile(
-						path.join(dir, 'G14Config.datas'),
-						JSON.stringify(getConfig()),
-						(e) => {
-							if (e) {
-								LOGGER.error(
-									'Error writing config to directory: \n' + JSON.stringify(e)
-								);
-							} else {
-								LOGGER.info('Successfully exported config file.');
-							}
+					fs.writeFile(path.join(dir, 'G14Config.datas'), JSON.stringify(getConfig()), (e) => {
+						if (e) {
+							LOGGER.error('Error writing config to directory: \n' + JSON.stringify(e));
+						} else {
+							LOGGER.info('Successfully exported config file.');
 						}
-					);
+					});
 				}
 			});
 	});

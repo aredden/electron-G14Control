@@ -64,18 +64,12 @@ export const initStartupPlan = async (config: G14Config) => {
 			if ((ac || usb) && autoSwitch.acPlan) {
 				let result = await applyPlan(autoSwitch.acPlan, config);
 				if (result) {
-					showNotification(
-						'Auto Switching',
-						'Switched to: ' + autoSwitch.acPlan.name
-					);
+					showNotification('Auto Switching', 'Switched to: ' + autoSwitch.acPlan.name);
 				}
 			} else if (dc && autoSwitch.dcPlan) {
 				let result = await applyPlan(autoSwitch.dcPlan, config);
 				if (result) {
-					showNotification(
-						'Auto Switching',
-						'Switched to: ' + autoSwitch.dcPlan.name
-					);
+					showNotification('Auto Switching', 'Switched to: ' + autoSwitch.dcPlan.name);
 				}
 			}
 		} else {

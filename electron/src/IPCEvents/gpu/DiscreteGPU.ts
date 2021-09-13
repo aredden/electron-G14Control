@@ -15,13 +15,7 @@ const DC = '/setdcvalueindex';
 
 let restartGPULoc = is_dev
 	? process.env.RESTART_GPU_LOC
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'RestartGPU.exe'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'RestartGPU.exe');
 
 export const resetGPU = async () => {
 	const ps = new Shell({
@@ -39,27 +33,18 @@ export const resetGPU = async () => {
 			.catch((err) => {
 				ps.dispose();
 				resolve(false);
-				LOGGER.error(
-					'Error recieved after running command:\n' + err.toString()
-				);
+				LOGGER.error('Error recieved after running command:\n' + err.toString());
 			});
 	});
 };
 
 const parseCurrentDynamicGraphicsValues = (answer: string) => {
 	let returnValues = { ac: undefined, dc: undefined };
-	let graphicsACSettingSub = answer.match(
-		/Current AC Power Setting Index: 0x0000000[0-9]{1}/gm
-	);
-	let graphicsDCSettingSub = answer.match(
-		/Current DC Power Setting Index: 0x0000000[0-9]{1}/gm
-	);
+	let graphicsACSettingSub = answer.match(/Current AC Power Setting Index: 0x0000000[0-9]{1}/gm);
+	let graphicsDCSettingSub = answer.match(/Current DC Power Setting Index: 0x0000000[0-9]{1}/gm);
 	if (graphicsACSettingSub && graphicsACSettingSub.length === 1) {
 		graphicsACSettingSub.forEach((value) => {
-			let acValue = value.replace(
-				/Current AC Power Setting Index: 0x0000000/,
-				''
-			);
+			let acValue = value.replace(/Current AC Power Setting Index: 0x0000000/, '');
 			if (acValue && acValue.length === 1) {
 				returnValues.ac = parseInt(acValue);
 			}
@@ -67,10 +52,7 @@ const parseCurrentDynamicGraphicsValues = (answer: string) => {
 	}
 	if (graphicsDCSettingSub && graphicsDCSettingSub.length === 1) {
 		graphicsDCSettingSub.forEach((value) => {
-			let dcValue = value.replace(
-				/Current DC Power Setting Index: 0x0000000/,
-				''
-			);
+			let dcValue = value.replace(/Current DC Power Setting Index: 0x0000000/, '');
 			if (dcValue && dcValue.length === 1) {
 				returnValues.dc = parseInt(dcValue);
 			}
@@ -87,9 +69,7 @@ export const getSwitchableDynamicGraphicsSettings = async () => {
 	return new Promise(async (resolve) => {
 		let result = await getActivePlan();
 		if (result) {
-			ps.addCommand(
-				`powercfg /q ${result.guid} ${SW_DYNAMC_GRAPHICS} ${GLOBAL_SETTINGS}`
-			);
+			ps.addCommand(`powercfg /q ${result.guid} ${SW_DYNAMC_GRAPHICS} ${GLOBAL_SETTINGS}`);
 			ps.invoke()
 				.then((answer) => {
 					ps.dispose();
@@ -108,10 +88,7 @@ export const getSwitchableDynamicGraphicsSettings = async () => {
 	});
 };
 
-export const setSwitchableDynamicGraphicsSettings = async (
-	setting: number,
-	guid?: string
-) => {
+export const setSwitchableDynamicGraphicsSettings = async (setting: number, guid?: string) => {
 	const ps = new Shell({
 		executionPolicy: 'Bypass',
 		noProfile: true,
@@ -142,17 +119,13 @@ export const setSwitchableDynamicGraphicsSettings = async (
 						})
 						.catch((err) => {
 							ps.dispose();
-							LOGGER.info(
-								`Error setting AC value for switchable dynamic graphics...\n${err}`
-							);
+							LOGGER.info(`Error setting AC value for switchable dynamic graphics...\n${err}`);
 							resolve(false);
 						});
 				})
 				.catch((err) => {
 					ps.dispose();
-					LOGGER.info(
-						`Error setting AC value for switchable dynamic graphics...\n${err}`
-					);
+					LOGGER.info(`Error setting AC value for switchable dynamic graphics...\n${err}`);
 					resolve(false);
 				});
 		} else {

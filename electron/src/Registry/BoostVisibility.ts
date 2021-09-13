@@ -10,13 +10,7 @@ const LOGGER = getLogger('BoostVisibility');
 
 const BOOST_VIS_CHG = is_dev
 	? path.join(__dirname, '../../src/Registry', 'RegistryChecker.exe')
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'RegistryChecker.exe'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'RegistryChecker.exe');
 
 export const checkBoostVisibility = async (): Promise<boolean> => {
 	let admin = await isAdmin();
@@ -46,9 +40,7 @@ export const enableVisibility = async () => {
 	return new Promise((resolve) => {
 		let proc = exec(`cmd /c "${BOOST_VIS_CHG}" modify`);
 		proc.stdout.on('data', (data) => {
-			LOGGER.info(
-				`\n${BOOST_VIS_CHG}\nRegistryChecker modification result: ${data}`
-			);
+			LOGGER.info(`\n${BOOST_VIS_CHG}\nRegistryChecker modification result: ${data}`);
 			resolve(true);
 		});
 		proc.stderr.on('data', (err) => {

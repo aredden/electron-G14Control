@@ -63,10 +63,7 @@ export const setAutoLaunch = async (enabled: boolean) => {
 		ps.invoke()
 			.then((response: string) => {
 				ps.dispose();
-				if (
-					(enabled && response.includes('Ready')) ||
-					(!enabled && response.length === 0)
-				) {
+				if ((enabled && response.includes('Ready')) || (!enabled && response.length === 0)) {
 					LOGGER.info('Startup modification completed.');
 					resolve(true);
 				} else {
@@ -103,16 +100,12 @@ export const checkTaskExists = async (name: string) => {
 					);
 					resolve(true);
 				} else {
-					LOGGER.info(
-						`Search for task ${name}* didn't come up with any results.`
-					);
+					LOGGER.info(`Search for task ${name}* didn't come up with any results.`);
 					resolve(false);
 				}
 			})
 			.catch((err) => {
-				LOGGER.error(
-					`An error was thrown while checking if task: ${name} existed`
-				);
+				LOGGER.error(`An error was thrown while checking if task: ${name} existed`);
 				ps.dispose();
 				resolve(false);
 			});

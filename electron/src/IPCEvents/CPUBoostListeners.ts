@@ -8,14 +8,8 @@ import { getBoostFromHelper, setBoostFromHelper } from './powercfg/Powercfg';
 const LOGGER = getLogger('WindowsPlanListeners');
 
 const parseBoost = (rawBoost: string) => {
-	let acBoostRegex = new RegExp(
-		/Current AC Power Setting Index: 0x0000000[024]/,
-		'gm'
-	);
-	let dcBoostRegex = new RegExp(
-		/Current DC Power Setting Index: 0x0000000[024]/,
-		'gm'
-	);
+	let acBoostRegex = new RegExp(/Current AC Power Setting Index: 0x0000000[024]/, 'gm');
+	let dcBoostRegex = new RegExp(/Current DC Power Setting Index: 0x0000000[024]/, 'gm');
 	let acboost = acBoostRegex.exec(rawBoost);
 	let dcboost = dcBoostRegex.exec(rawBoost);
 
@@ -44,9 +38,7 @@ const parseBoost = (rawBoost: string) => {
 
 export const buildCPUBoostListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('getBoost', async (e, guid: string) => {
-		let boostRaw: { ac: string; dc: string } | false = await getBoostFromHelper(
-			guid
-		);
+		let boostRaw: { ac: string; dc: string } | false = await getBoostFromHelper(guid);
 		if (!boostRaw) {
 			return false;
 		} else {
@@ -56,15 +48,10 @@ export const buildCPUBoostListeners = (ipc: IpcMain, win: BrowserWindow) => {
 			};
 		}
 	});
-	ipc.handle(
-		'setBoost',
-		async (e, boostLevel: string | number, guid?: string) => {
-			let boost =
-				typeof boostLevel === 'string'
-					? parseInt(boostLevel as string)
-					: (boostLevel as number);
-			let result = await setBoostFromHelper(boost, guid);
-			return { guid: guid, result: result };
-		}
-	);
+	ipc.handle('setBoost', async (e, boostLevel: string | number, guid?: string) => {
+		let boost =
+			typeof boostLevel === 'string' ? parseInt(boostLevel as string) : (boostLevel as number);
+		let result = await setBoostFromHelper(boost, guid);
+		return { guid: guid, result: result };
+	});
 };

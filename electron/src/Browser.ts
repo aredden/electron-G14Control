@@ -7,12 +7,7 @@ import path from 'path';
 import { setHidMain, updateMenuVisible } from './electron';
 import { loadConfig } from './IPCEvents/ConfigLoader';
 import { setUpNewG14ControlKey } from './IPCEvents/HID/HIDDevice';
-import {
-	buildEmitters,
-	loopsAreRunning,
-	killEmitters,
-	runLoop,
-} from './IPCEvents/IPCEmitters';
+import { buildEmitters, loopsAreRunning, killEmitters, runLoop } from './IPCEvents/IPCEmitters';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
 import { ROGmapperBuilder } from './IPCEvents/RogKeyRemapperListener';
 import { buildTrayIcon } from './TrayIcon';
@@ -126,16 +121,13 @@ export async function createWindow(
 
 	// Register global shortcut ctrl + space
 	if (shortcuts.minmax.enabled) {
-		let registered = globalShortcut.register(
-			shortcuts.minmax.accelerator,
-			() => {
-				if (browserWindow.isFocused()) {
-					browserWindow.minimize();
-				} else {
-					browserWindow.show();
-				}
+		let registered = globalShortcut.register(shortcuts.minmax.accelerator, () => {
+			if (browserWindow.isFocused()) {
+				browserWindow.minimize();
+			} else {
+				browserWindow.show();
 			}
-		);
+		});
 		if (registered) {
 			LOGGER.info('Show app shortcut registered.');
 		} else {

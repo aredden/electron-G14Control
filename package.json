@@ -37,7 +37,6 @@
 		"lodash": "^4.17.21",
 		"node-hid": "^2.1.1",
 		"node-powershell": "^4.0.0",
-		"node-sass": "^4.14.1",
 		"object-hash": "^2.1.1",
 		"perfmon": "^0.2.0",
 		"react": "^16.14.0",
@@ -57,7 +56,7 @@
 		"electron-build": "npm run build && npm run dist",
 		"pack": "electron-builder --dir",
 		"electron-pub": "electron-builder build --publish always",
-		"dist": "electron-builder --publish always",
+		"dist": "electron-builder --publish never",
 		"postinstall": "electron-builder install-app-deps",
 		"build-electron": "call \"./build-all.bat\"",
 		"build-github": "call \"./github-build.bat\""
@@ -188,11 +187,14 @@
 		"@types/react": "^16.9.0",
 		"@types/react-dom": "^16.9.0",
 		"babel-cli": "^6.26.0",
+		"browserslist": "^4.17.0",
 		"cmake-js": "^6.2.1",
 		"electron": "^11.4.12",
 		"electron-builder": "^22.11.7",
-		"electron-rebuild": "^3.1.1",
-		"react-scripts": "3.4.3",
+		"electron-rebuild": "^3.2.3",
+		"glob-parent": "^6.0.1",
+		"node-sass": "^6.0.1",
+		"react-scripts": "^4.0.3",
 		"typescript": "^4.1.2"
 	}
 }

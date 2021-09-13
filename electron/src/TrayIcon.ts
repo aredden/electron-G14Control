@@ -1,23 +1,12 @@
 /** @format */
 
-import {
-	app,
-	BrowserWindow,
-	Menu,
-	Tray,
-	Notification,
-	nativeTheme,
-} from 'electron';
+import { app, BrowserWindow, Menu, Tray, Notification, nativeTheme } from 'electron';
 import { showIconEnabled } from './electron';
 import { resetGPU } from './IPCEvents/gpu/DiscreteGPU';
 import { killEmitters, loopsAreRunning } from './IPCEvents/IPCEmitters';
 import is_dev from 'electron-is-dev';
 import path from 'path';
-import {
-	getActivePlan,
-	getWindowsPlans,
-	setWindowsPlan,
-} from './IPCEvents/powercfg/Powercfg';
+import { getActivePlan, getWindowsPlans, setWindowsPlan } from './IPCEvents/powercfg/Powercfg';
 const ICONPATH = is_dev
 	? path.join(
 			__dirname,
@@ -26,13 +15,7 @@ const ICONPATH = is_dev
 			'assets',
 			nativeTheme.themeSource === 'light' ? 'icon_dark.png' : 'icon_light.png'
 	  )
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'icon_light.png'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'icon_light.png');
 
 export const buildTrayIcon = async (
 	tray: Tray,
@@ -128,20 +111,18 @@ export const buildTrayIcon = async (
 	tray.setToolTip('G14ControlV2');
 	tray.setTitle('G14ControlV2');
 	tray.setContextMenu(trayContext);
-	trayContext
-		.getMenuItemById('windowsSubmenu')
-		.submenu.items.forEach((item) => {
-			item.click = async (e: any, f: any) => {
-				console.log(JSON.stringify({ e, f }));
-				trayContext.getMenuItemById(
-					((await getActivePlan()) as { name: string; guid: string }).guid
-				).checked = false;
-				let result = await setWindowsPlan(item.id);
-				if (result) {
-					item.checked = true;
-				}
-			};
-		});
+	trayContext.getMenuItemById('windowsSubmenu').submenu.items.forEach((item) => {
+		item.click = async (e: any, f: any) => {
+			console.log(JSON.stringify({ e, f }));
+			trayContext.getMenuItemById(
+				((await getActivePlan()) as { name: string; guid: string }).guid
+			).checked = false;
+			let result = await setWindowsPlan(item.id);
+			if (result) {
+				item.checked = true;
+			}
+		};
+	});
 	return { tray, trayContext, browserWindow };
 };
 

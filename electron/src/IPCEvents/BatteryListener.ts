@@ -87,17 +87,13 @@ const setLimit = async (amt: number) => {
 					LOGGER.info('Result of limit command: \n' + result);
 					resolve(true);
 				} else {
-					LOGGER.error(
-						'There was a problem setting battery limit Task Scheduler command.'
-					);
+					LOGGER.error('There was a problem setting battery limit Task Scheduler command.');
 					resolve(false);
 				}
 			})
 			.catch((err) => {
 				ps.dispose();
-				LOGGER.error(
-					'There was an error setting Task Scheduler task: \n' + err
-				);
+				LOGGER.error('There was an error setting Task Scheduler task: \n' + err);
 				resolve(false);
 			});
 	});

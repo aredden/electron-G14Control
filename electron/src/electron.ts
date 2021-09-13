@@ -14,22 +14,14 @@ import {
 import getLogger from './Logger';
 import path from 'path';
 import is_dev from 'electron-is-dev';
-import {
-	buildEmitters,
-	killEmitters,
-	loopsAreRunning,
-	runLoop,
-} from './IPCEvents/IPCEmitters';
+import { buildEmitters, killEmitters, loopsAreRunning, runLoop } from './IPCEvents/IPCEmitters';
 import { HID } from 'node-hid';
 import { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import url from 'url';
 import { buildPath, loadConfig, writeConfig } from './IPCEvents/ConfigLoader';
 import { setUpNewG14ControlKey } from './IPCEvents/HID/HIDDevice';
 import { buildIpcConnection } from './IPCEvents/IPCListeners';
-import {
-	FnF5mapperBuilder,
-	ROGmapperBuilder,
-} from './IPCEvents/RogKeyRemapperListener';
+import { FnF5mapperBuilder, ROGmapperBuilder } from './IPCEvents/RogKeyRemapperListener';
 import { buildTrayIcon } from './TrayIcon';
 import installExtension from 'electron-devtools-installer';
 import forceFocus from 'forcefocus';
@@ -54,18 +46,11 @@ export const setG14Config = (g14conf: G14Config) => {
 
 const ICONPATH = is_dev
 	? path.join(__dirname, '../', 'src', 'assets', 'icon.ico')
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'icon.ico'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'icon.ico');
 
 export let powerDelivery: 'battery' | 'ac' = 'ac';
 export const getPowerDelivery = () => powerDelivery;
-export const setPowerDelivery = (val: 'battery' | 'ac') =>
-	(powerDelivery = val);
+export const setPowerDelivery = (val: 'battery' | 'ac') => (powerDelivery = val);
 
 export let powerPlan: 'battery' | 'ac' = 'ac';
 export const getPowerPlan = () => powerPlan;
@@ -234,9 +219,7 @@ export async function createWindow(
 	if (is_dev) {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name: any) => console.log(`Added Extension:  ${name}`))
-			.catch((err: any) =>
-				console.log('An error occurred adding devtools: ', err)
-			);
+			.catch((err: any) => console.log('An error occurred adding devtools: ', err));
 	}
 
 	// create ipc and modify listeners
@@ -282,16 +265,13 @@ export async function createWindow(
 
 	// Register global shortcut ctrl + space
 	if (shortcuts.minmax.enabled) {
-		let registered = globalShortcut.register(
-			shortcuts.minmax.accelerator,
-			() => {
-				if (browserWindow.isFocused()) {
-					browserWindow.minimize();
-				} else {
-					browserWindow.show();
-				}
+		let registered = globalShortcut.register(shortcuts.minmax.accelerator, () => {
+			if (browserWindow.isFocused()) {
+				browserWindow.minimize();
+			} else {
+				browserWindow.show();
 			}
-		);
+		});
 		if (registered) {
 			LOGGER.info('Show app shortcut registered.');
 		} else {
@@ -300,7 +280,7 @@ export async function createWindow(
 	}
 
 	if (rogKey.enabled) {
-		let hdd = setUpNewG14ControlKey(ROGmapperBuilder);
+		let hdd = await setUpNewG14ControlKey(ROGmapperBuilder);
 		if (hdd) {
 			setHidMain(hdd);
 			LOGGER.info('ROG key HID built and listening.');
@@ -309,12 +289,8 @@ export async function createWindow(
 		}
 	}
 
-	if (
-		g14Config.f5Switch &&
-		g14Config.f5Switch.enabled &&
-		g14Config.f5Switch.f5Plans.length > 1
-	) {
-		const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
+	if (g14Config.f5Switch && g14Config.f5Switch.enabled && g14Config.f5Switch.f5Plans.length > 1) {
+		const hdd2 = await setUpNewG14ControlKey(FnF5mapperBuilder);
 		if (hdd2) {
 			setHidMain(hdd2);
 			LOGGER.info('FN+F5 HID built and listening.');
@@ -335,16 +311,13 @@ export async function createWindow(
 	return { tray, browserWindow, g14Config, trayContext };
 }
 
-export const setupElectronReload = (config: G14Config) => {
+export const setupElectronReload = async (config: G14Config) => {
 	let { shortcuts, rogKey } = config.current;
 
 	// Register global shortcut (example: ctrl + space)
 	if (shortcuts.minmax.enabled) {
 		globalShortcut.unregisterAll();
-		let registered = globalShortcut.register(
-			shortcuts.minmax.accelerator,
-			minMaxFunc
-		);
+		let registered = globalShortcut.register(shortcuts.minmax.accelerator, minMaxFunc);
 		if (registered) {
 			LOGGER.info('Show app shortcut registered.');
 		} else {
@@ -353,7 +326,7 @@ export const setupElectronReload = (config: G14Config) => {
 	}
 
 	if (rogKey.enabled && !hid) {
-		let hdd = setUpNewG14ControlKey(ROGmapperBuilder);
+		let hdd = await setUpNewG14ControlKey(ROGmapperBuilder);
 		if (hdd) {
 			setHidMain(hdd);
 			LOGGER.info('ROG key HID built and listening.');
@@ -367,7 +340,7 @@ export const setupElectronReload = (config: G14Config) => {
 		g14Config.autoSwitch.dcPlan &&
 		g14Config.autoSwitch.acPlan
 	) {
-		const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
+		const hdd2 = await setUpNewG14ControlKey(FnF5mapperBuilder);
 		if (hdd2) {
 			setHidMain(hdd2);
 			LOGGER.info('FN+F5 HID built and listening.');
@@ -413,21 +386,13 @@ powerMonitor.on('suspend', () => {
 });
 
 powerMonitor.on('on-ac', () => {
-	if (
-		g14Config.autoSwitch &&
-		g14Config.autoSwitch.enabled &&
-		g14Config.autoSwitch.acPlan
-	) {
+	if (g14Config.autoSwitch && g14Config.autoSwitch.enabled && g14Config.autoSwitch.acPlan) {
 		initSwitch('ac').then(() => setPowerPlan('battery'));
 	}
 });
 
 powerMonitor.on('on-battery', () => {
-	if (
-		g14Config.autoSwitch &&
-		g14Config.autoSwitch.enabled &&
-		g14Config.autoSwitch.dcPlan
-	) {
+	if (g14Config.autoSwitch && g14Config.autoSwitch.enabled && g14Config.autoSwitch.dcPlan) {
 		initSwitch('battery').then(() => setPowerPlan('ac'));
 	}
 });
@@ -483,11 +448,9 @@ app.on('ready', async () => {
 
 app.on('renderer-process-crashed', (event, webcontents, killed) => {
 	LOGGER.info(
-		`Renderer process crashed: ${JSON.stringify(
-			event,
-			null,
-			2
-		)}\nWas killed? ${killed} ... ${killed ? 'RIP' : ''}`
+		`Renderer process crashed: ${JSON.stringify(event, null, 2)}\nWas killed? ${killed} ... ${
+			killed ? 'RIP' : ''
+		}`
 	);
 	app.quit();
 });

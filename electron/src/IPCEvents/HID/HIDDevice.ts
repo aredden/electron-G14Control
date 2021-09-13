@@ -39,10 +39,7 @@ const formatNameIsNotRunning = (name: string) => {
 };
 
 const getProcessWhereName = (name: string) =>
-	`Get-Process | Where-Object Name -like "${name.replace(
-		'.exe',
-		''
-	)}" | Select-Object ProcessName`;
+	`Get-Process | Where-Object Name -like "${name.replace('.exe', '')}" | Select-Object ProcessName`;
 
 export const checkExecutableAtPathExists = (name: string, path: string) => {
 	return new Promise((resolve) => {
@@ -150,21 +147,15 @@ export const checkProcessExist = async (executableName: string) => {
 			.then((result) => {
 				ps.dispose();
 				if (result.length > 0) {
-					LOGGER.info(
-						`Result of checkProcessExists(): Process ${executableName} is running!`
-					);
+					LOGGER.info(`Result of checkProcessExists(): Process ${executableName} is running!`);
 					resolve(true);
 				} else {
-					LOGGER.info(
-						`Result of checkProcessExists(): Process ${executableName} is not running.`
-					);
+					LOGGER.info(`Result of checkProcessExists(): Process ${executableName} is not running.`);
 					resolve(false);
 				}
 			})
 			.catch((err) => {
-				LOGGER.error(
-					`Error checking process named: ${executableName}, had error: \n${err}`
-				);
+				LOGGER.error(`Error checking process named: ${executableName}, had error: \n${err}`);
 				ps.dispose();
 				resolve(false);
 			});
@@ -182,16 +173,10 @@ export const killProcess = async (executablename: string) => {
 			.then((success) => {
 				ps.dispose();
 				if (success) {
-					LOGGER.info(
-						'Successully killed process with message: ' +
-							success.replace('\n', '')
-					);
+					LOGGER.info('Successully killed process with message: ' + success.replace('\n', ''));
 					resolve(true);
 				} else {
-					LOGGER.error(
-						'Failed to kill process (or something idk but no error):\n' +
-							success
-					);
+					LOGGER.error('Failed to kill process (or something idk but no error):\n' + success);
 					resolve(true);
 				}
 			})
@@ -221,12 +206,8 @@ export const renameProcess = async (
 					LOGGER.info('Failed to rename process (or something idk):' + result);
 					resolve(true);
 				} else {
-					LOGGER.info(
-						'Successfully renamed ' + executableName + ' to ' + newName
-					);
-					LOGGER.info(
-						'Will now check that execuatable path expected exists...'
-					);
+					LOGGER.info('Successfully renamed ' + executableName + ' to ' + newName);
+					LOGGER.info('Will now check that execuatable path expected exists...');
 					checkExecutableAtPathExists(newName, path).then((result) => {
 						if (result) {
 							resolve(true);
@@ -258,10 +239,7 @@ process.on('SIGINT', closeDevice);
 process.on('SIGKILL', closeDevice);
 process.on('beforeExit', closeDevice);
 process.on('uncaughtException', closeDevice);
-export const setUpNewG14ControlKey = async (
-	cb: (data: Buffer) => void,
-	_?: boolean
-) => {
+export const setUpNewG14ControlKey = async (cb: (data: Buffer) => void, _?: boolean) => {
 	// Gather all HID devices.
 	let devices = hid.devices();
 	// Find all HID devices that are made by ASUS and have the
@@ -269,8 +247,7 @@ export const setUpNewG14ControlKey = async (
 	let deviceInfo = devices.filter(function (d: hid.Device) {
 		const { vendorId, productId } = d;
 		let DeviceIsKeyboard =
-			vendorId === ASUS_VENDOR_ID &&
-			(productId === G14_2021 || productId === G14_2020);
+			vendorId === ASUS_VENDOR_ID && (productId === G14_2021 || productId === G14_2020);
 		return DeviceIsKeyboard && d.path?.includes('col01');
 	});
 
@@ -291,19 +268,20 @@ export const setUpNewG14ControlKey = async (
 
 export const killROGKey = async () => {
 	await checkRemoveAndRename(ARMCRATE_INTERFACE, ASUSACCI_PATH);
-	LOGGER.info('Did thing 1');
+	LOGGER.info(`Performed::CheckRemove:\n${ARMCRATE_INTERFACE}\n${ASUSACCI_PATH}`);
 	await checkRemoveAndRename(ARMCRATE_KEY_CTRL, ASUSACCI_PATH);
-	LOGGER.info('Did thing 2');
+	LOGGER.info(`Performed::CheckRemove:\n${ARMCRATE_KEY_CTRL}\n${ASUSACCI_PATH}`);
 	await checkRemoveAndRename(ARMORY_SW_AGENT, ARMORY_SW_AGENT_PATH);
-	LOGGER.info('Did thing 3');
+	LOGGER.info(`Performed::CheckRemove:\n${ARMORY_SW_AGENT}\n${ARMORY_SW_AGENT_PATH}`);
 	await checkRemoveAndRename(ARMCRATE_SESS_HELPER, ARMCRATE_SVC_PATH);
-	LOGGER.info('Did thing 4');
+	LOGGER.info(`Performed::CheckRemove:\n${ARMCRATE_SESS_HELPER}\n${ARMCRATE_SVC_PATH}`);
 	await checkRemoveAndRename(ARMCRATE_SVC, ARMCRATE_SVC_PATH);
-	LOGGER.info('Did thing 5');
+	LOGGER.info(`Performed::CheckRemove:\n${ARMCRATE_SVC}\n${ARMCRATE_SVC_PATH}`);
 	await checkRemoveAndRename(ARMSOCK_SERV, ARMSOCK_SERV_PATH);
-	LOGGER.info('Did thing 6');
+	LOGGER.info(`Performed::CheckRemove:\n${ARMSOCK_SERV}\n${ARMSOCK_SERV_PATH}`);
 	await checkRemoveAndRename(ARMCRATE_MANAGER);
-	LOGGER.info('Did thing 7');
+	LOGGER.info(`Performed::CheckRemove:\n${ARMCRATE_MANAGER}`);
 	await checkRemoveAndRename(ARMCRATE_MANAGER_AGENT);
+	LOGGER.info(`Performed::CheckRemove:\n${ARMCRATE_MANAGER_AGENT}`);
 	return true;
 };

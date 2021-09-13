@@ -6,33 +6,15 @@ import path from 'path';
 
 const EXIT_ICON = is_dev
 	? path.join(__dirname, '../', 'src', 'assets', 'exit-white.png')
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'exit-white.png'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'exit-white.png');
 
 const MIN_TRAY_ICON = is_dev
 	? path.join(__dirname, '../', 'src', 'assets', 'trayminimize-white.png')
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'trayminimize-white.png'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'trayminimize-white.png');
 
 const G14_ICON = is_dev
 	? path.join(__dirname, '../', 'src', 'assets', 'icon_light.png')
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'icon-light.png'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'icon-light.png');
 
 export const buildTaskbarMenu = async (win: BrowserWindow) => {
 	win.setThumbarButtons([

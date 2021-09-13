@@ -1,23 +1,14 @@
 /** @format */
 
 import { BrowserWindow, IpcMain } from 'electron';
-import {
-	g14Config,
-	getROGHID,
-	minMaxFunc,
-	setHidMain,
-	togglePlan,
-} from '../electron';
+import { g14Config, getROGHID, minMaxFunc, setHidMain, togglePlan } from '../electron';
 import getLogger from '../Logger';
 import { killROGKey, setUpNewG14ControlKey } from './HID/HIDDevice';
 import { undoAllRenames } from './HID/utilities';
 
 const LOGGER = getLogger('RogKeyRemapperListener');
 
-export const buildRogKeyRemapperListener = (
-	win: BrowserWindow,
-	ipc: IpcMain
-) => {
+export const buildRogKeyRemapperListener = (win: BrowserWindow, ipc: IpcMain) => {
 	ipc.handle('disableROG', async () => {
 		let result = await killROGKey();
 		LOGGER.info('Armoury Crate processes killed & renamed.');

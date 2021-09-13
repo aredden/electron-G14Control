@@ -10,13 +10,7 @@ dotenv.config();
 
 const ATRO_LOC = is_dev
 	? (process.env.ATRO_LOC as string)
-	: path.join(
-			app.getPath('exe'),
-			'../',
-			'resources',
-			'extraResources',
-			'atrofac-cli.exe'
-	  );
+	: path.join(app.getPath('exe'), '../', 'resources', 'extraResources', 'atrofac-cli.exe');
 const LOGGER = getLogger('SetArmoryPlan');
 
 export const modifyArmoryCratePlan = async (plan: ArmoryPlan) => {

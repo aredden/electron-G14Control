@@ -3,10 +3,7 @@
 import { BrowserWindow, IpcMain } from 'electron';
 import { getDisplays, setDisplayConfig } from './gpu/DisplayConfig';
 import { resetGPU } from './gpu/DiscreteGPU';
-import {
-	getGraphicsFromHelper,
-	setGraphicsFromHelper,
-} from './powercfg/Powercfg';
+import { getGraphicsFromHelper, setGraphicsFromHelper } from './powercfg/Powercfg';
 
 export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	ipc.handle('resetGPU', async () => {
@@ -34,12 +31,7 @@ export const buildGPUListeners = (ipc: IpcMain, win: BrowserWindow) => {
 	});
 
 	ipc.handle('setDisplayOptions', async (evt, opts: DisplayOptions) => {
-		let result = await setDisplayConfig(
-			opts.display,
-			opts.refresh,
-			opts.width,
-			opts.height
-		);
+		let result = await setDisplayConfig(opts.display, opts.refresh, opts.width, opts.height);
 		return result;
 	});
 };

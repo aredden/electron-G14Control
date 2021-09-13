@@ -61,11 +61,7 @@ export const initSwitch = async (state: 'battery' | 'ac') => {
 
 export const initF5Switch = async () => {
 	let config = getConfig();
-	if (
-		!config.f5Switch ||
-		!config.f5Switch.enabled ||
-		!config.f5Switch.f5Plans
-	) {
+	if (!config.f5Switch || !config.f5Switch.enabled || !config.f5Switch.f5Plans) {
 		return;
 	}
 	const plan_guids: string[] = config.f5Switch.f5Plans;
@@ -83,9 +79,7 @@ export const initF5Switch = async () => {
 		}
 	}
 
-	const new_plan: G14ControlPlan = config.plans.find(
-		(plan) => plan.guid === nextPlanGuid
-	);
+	const new_plan: G14ControlPlan = config.plans.find((plan) => plan.guid === nextPlanGuid);
 
 	if (!new_plan) {
 		LOGGER.error('Could not find next plan.');
