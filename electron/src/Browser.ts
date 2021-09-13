@@ -144,7 +144,7 @@ export async function createWindow(
 	}
 
 	if (rogKey.enabled) {
-		let hdd = setUpNewG14ControlKey(ROGmapperBuilder);
+		let hdd = await setUpNewG14ControlKey(ROGmapperBuilder);
 		if (hdd) {
 			setHidMain(hdd);
 			LOGGER.info('ROG key HID built and listening.');

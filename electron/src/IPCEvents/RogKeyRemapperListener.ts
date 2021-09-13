@@ -1,7 +1,13 @@
 /** @format */
 
 import { BrowserWindow, IpcMain } from 'electron';
-import {g14Config, getROGHID, minMaxFunc, setHidMain, togglePlan} from '../electron';
+import {
+	g14Config,
+	getROGHID,
+	minMaxFunc,
+	setHidMain,
+	togglePlan,
+} from '../electron';
 import getLogger from '../Logger';
 import { killROGKey, setUpNewG14ControlKey } from './HID/HIDDevice';
 import { undoAllRenames } from './HID/utilities';
@@ -26,7 +32,7 @@ export const buildRogKeyRemapperListener = (
 		if (!g14Config.current.rogKey.enabled) {
 			switch (fnChoice) {
 				case 'minmax': {
-					let result = setUpNewG14ControlKey(ROGmapperBuilder);
+					let result = await setUpNewG14ControlKey(ROGmapperBuilder);
 					if (result) {
 						setHidMain(result);
 						LOGGER.info('Remap successful.');
@@ -52,15 +58,14 @@ export const buildRogKeyRemapperListener = (
 			return false;
 		}
 	});
-	
+
 	ipc.handle('remapFnF5', async (event, args: string) => {
-		if (g14Config.f5Switch
-			&& !g14Config.f5Switch.enabled) {
-			const hdd2 = setUpNewG14ControlKey(FnF5mapperBuilder);
+		if (g14Config.f5Switch && !g14Config.f5Switch.enabled) {
+			const hdd2 = await setUpNewG14ControlKey(FnF5mapperBuilder);
 			if (hdd2) {
 				setHidMain(hdd2);
 				LOGGER.info('FN+F5 HID built and listening.');
-				return true
+				return true;
 			} else {
 				LOGGER.info('There was an issue setting up FN+F5 HID');
 			}

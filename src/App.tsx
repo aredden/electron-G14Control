@@ -116,13 +116,8 @@ export default class App extends Component<Props, State> {
 	}
 
 	render() {
-		let {
-			config,
-			boostVisible,
-			showModal,
-			updateVisible,
-			updateText,
-		} = this.state;
+		let { config, boostVisible, showModal, updateVisible, updateText } =
+			this.state;
 		if (config) {
 			return (
 				<>

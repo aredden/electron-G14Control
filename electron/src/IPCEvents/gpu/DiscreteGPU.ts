@@ -160,10 +160,5 @@ export const setSwitchableDynamicGraphicsSettings = async (
 			LOGGER.error(`Trouble getting active plan from powercfg.`);
 			resolve(false);
 		}
-
-		// if(result){
-		// 	result.guid
-		// }
-		// ps.addCommand(`powercfg /q ${}`)
 	});
 };

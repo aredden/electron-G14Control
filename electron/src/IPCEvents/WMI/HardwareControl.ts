@@ -143,7 +143,8 @@ export const setBatteryLimiter = async (amount: number) => {
 };
 
 export const removeBatteryLimiter = async () => {
-	return new Promise((resolve) => { // TODO: maybe remove listener and do call 'removeLimit' directly? (then we can know if task successfully completed)
-		resolve(true)
+	return new Promise((resolve) => {
+		// TODO: maybe remove listener and do call 'removeLimit' directly? (then we can know if task successfully completed)
+		resolve(true);
 	});
-}
+};

@@ -1,16 +1,21 @@
 {
 	"compilerOptions": {
-		"target": "ES2020",
+		"target": "ESNext",
 		"module": "commonjs",
-		"lib": ["ES2020", "DOM"],
+		"lib": ["ESNext", "DOM"],
 		"allowJs": true,
 		"outDir": "build",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"downlevelIteration": true,
 		"sourceMap": true,
-		"moduleResolution": "node",
-		"isolatedModules": true
+		"moduleResolution": "node"
+	},
+	"ts-node": {
+		"compiler": "typescript",
+		"preferTsExts": true,
+		"files": true,
+		"emit": true
 	},
 	"include": ["**/*.ts", "**/*.d.ts", "**/*.js"],
 	"exclude": ["build", "node_modules"]

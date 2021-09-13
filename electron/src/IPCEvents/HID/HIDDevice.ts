@@ -279,6 +279,7 @@ export const setUpNewG14ControlKey = async (
 		hidDevice = new hid.HID(deviceInfo[0].path);
 		// Make the device listen using the callback that was given to the main function.
 		hidDevice.on('data', cb);
+		return hidDevice;
 	} else if (deviceInfo && deviceInfo.length > 1) {
 		LOGGER.error('More than one asus hotkey keyboard found');
 		return false;
