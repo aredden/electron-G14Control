@@ -138,6 +138,8 @@ Donate: https://www.paypal.com/pools/c/8uiaar8Sl9
 
 ## Major Contributors
 
+https://github.com/DaHyper/ (2021 g14 compatability)
+
 https://github.com/thesacredmoocow/g14control-r2 (g14control's previous maintainer)
 
 https://github.com/FlyGoat/RyzenAdj (adjusting tdp)
