@@ -4,6 +4,8 @@
 
 ![Build/release](https://github.com/aredden/electron-G14Control/workflows/Build/release/badge.svg)
 
+**ONLY WORKS ON G14 2020 (For the time being)**
+
 **Example youtube video:**
 
 [![](https://img.youtube.com/vi/4RbYqslijug/0.jpg)](http://www.youtube.com/watch?v=4RbYqslijug 'Click to play on Youtube.com')
