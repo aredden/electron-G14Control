@@ -104,7 +104,7 @@ export default class ContentLayout extends Component<Props, State> {
 									margin: '2rem 1rem',
 									height: 'auto',
 								}}>
-								G14ControlV2 ©2020 Created by Alex Redden
+								G14ControlV2 ©2022 Created by Alex Redden
 								<br />
 								Version {this.props.version.replace('v', '')}
 							</Footer>
