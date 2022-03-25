@@ -15,7 +15,7 @@
 	"author": "Alex Redden",
 	"license": "ISC",
 	"dependencies": {
-		"electron": "^10.2.0",
+		"electron": "^13.6.6",
 		"electron-is-dev": "^1.2.0",
 		"electron-updater": "^4.3.5",
 		"forcefocus": "^1.1.0",
